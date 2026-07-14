@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useGlobalWallet } from "@/context/WalletContext";
+import WalletButton from "@/components/WalletButton";
 import { 
   Menu, 
   X, 
@@ -47,7 +50,27 @@ const gradientStyle: React.CSSProperties = {
 // ==========================================
 
 export function AuraLanding() {
+  const router = useRouter();
+  const { isConnected, connect } = useGlobalWallet();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handlePortfolioClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isConnected) {
+      router.push("/portfolio");
+    } else {
+      try {
+        const { connectWallet } = await import("@/lib/stellar-wallet");
+        const addr = await connectWallet();
+        if (addr) {
+          await connect();
+          router.push("/portfolio");
+        }
+      } catch (err) {
+        console.error("Wallet connection rejected:", err);
+      }
+    }
+  };
 
   // Xero Animation State
   const pipelineRef = useRef<HTMLDivElement>(null);
@@ -194,30 +217,30 @@ export function AuraLanding() {
 
           {/* Center: Desktop links */}
           <div className="hidden md:flex items-center gap-8">
-            {[
-              { name: 'Swap', href: '/swap' },
-              { name: 'Liquidity', href: '/liquidity' },
-              { name: 'Portfolio', href: '/portfolio' }
-            ].map((link, i) => (
-              <motion.div
-                key={link.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 + i * 0.05, ease: "easeOut" }}
-              >
-                <Link
-                  href={link.href}
-                  className="text-white/70 text-sm font-medium hover:text-white transition-colors duration-200"
-                >
-                  {link.name}
-                </Link>
-              </motion.div>
-            ))}
+            <Link
+              href="/swap"
+              className="text-white/70 text-sm font-medium hover:text-white transition-colors duration-200"
+            >
+              Swap
+            </Link>
+            <Link
+              href="/liquidity"
+              className="text-white/70 text-sm font-medium hover:text-white transition-colors duration-200"
+            >
+              Liquidity
+            </Link>
+            <a
+              href="/portfolio"
+              onClick={handlePortfolioClick}
+              className="text-white/70 text-sm font-medium hover:text-white transition-colors duration-200"
+            >
+              Portfolio
+            </a>
           </div>
 
           {/* Right: Desktop connect button */}
           <div className="hidden md:flex items-center">
-            <ActionButton label="Wallet Connect" />
+            <WalletButton />
           </div>
 
           {/* Mobile menu button */}
@@ -242,22 +265,32 @@ export function AuraLanding() {
               className="md:hidden border-t border-white/10 bg-[#0a0a0f]/95 backdrop-blur-xl overflow-hidden"
             >
               <div className="px-6 py-6 flex flex-col gap-4">
-                {[
-                  { name: 'Swap', href: '/swap' },
-                  { name: 'Liquidity', href: '/liquidity' },
-                  { name: 'Portfolio', href: '/portfolio' }
-                ].map((link) => (
-                  <Link 
-                    key={link.name} 
-                    href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-white/80 hover:text-white text-base py-2 font-medium"
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-                <div className="pt-4 border-t border-white/5">
-                  <ActionButton label="Wallet Connect" full />
+                <Link 
+                  href="/swap"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white/80 hover:text-white text-base py-2 font-medium"
+                >
+                  Swap
+                </Link>
+                <Link 
+                  href="/liquidity"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white/80 hover:text-white text-base py-2 font-medium"
+                >
+                  Liquidity
+                </Link>
+                <a 
+                  href="/portfolio"
+                  onClick={(e) => {
+                    setMobileMenuOpen(false);
+                    handlePortfolioClick(e);
+                  }}
+                  className="text-white/80 hover:text-white text-base py-2 font-medium"
+                >
+                  Portfolio
+                </a>
+                <div className="pt-4 border-t border-white/5 flex justify-center">
+                  <WalletButton />
                 </div>
               </div>
             </motion.div>
