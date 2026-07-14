@@ -19,9 +19,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aura — AI-native Email Client",
+  title: "Aura — Concentrated Liquidity DEX on Stellar",
   description:
-    "Aura is the premier inbox platform for the current era. It leverages powerful AI to organize, prioritize, and refine your messages into total clarity.",
+    "Trade with concentrated liquidity, tight spreads, and instant settlement — fully non-custodial on Stellar Soroban.",
 };
 
 export default function RootLayout({
