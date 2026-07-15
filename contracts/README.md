@@ -1,4 +1,4 @@
-# AstroFlo Contracts — Concentrated Liquidity DEX on Soroman
+# StellarSwap Contracts — Concentrated Liquidity DEX on Soroban
 
 A Uniswap-V3-style **Concentrated Liquidity Market Maker (CLMM)** implemented for
 Stellar **Soroban**. Liquidity providers supply capital within custom price
@@ -8,7 +8,7 @@ ranges (ticks); swappers trade against the active liquidity at the current tick.
 
 ```
 contracts/
-├── Cargo.toml            # virtual workspace (4 members, shared release profile)
+├── Cargo.toml            # virtual workspace (5 members, shared release profile)
 ├── Cargo.lock            # pinned dependency graph
 ├── Makefile              # build / test / fmt / lint / optimize / deploy
 ├── README.md             # this file
@@ -20,11 +20,13 @@ contracts/
 │       └── test.rs       # unit + integration tests (soroban_sdk::testutils)
 ├── position_manager/     # position lifecycle wrapper (mint/collect/burn)
 │   └── src/{lib,storage}.rs
-└── router/               # swap routing entrypoint
-    └── src/{lib,storage}.rs
+├── router/               # swap routing entrypoint
+│   └── src/{lib,storage}.rs
+└── user_profile/         # user profile registry contract
+    └── src/lib.rs
 ```
 
-## The four contracts
+## The five contracts
 
 | Contract | Responsibility | Key public functions |
 |---|---|---|
@@ -32,6 +34,7 @@ contracts/
 | **pool** | Core CLMM: tick math, swaps, liquidity, fee growth accounting. | `swap`, `mint`, `burn`, `collect`, `slot0`, `liquidity`, `get_tick_info`, `get_position_info`, `token_0`, `token_1`, `fee`, `tick_spacing` |
 | **position_manager** | Wraps pool positions behind stable integer position IDs and per-owner enumeration. | `initialize`, `mint`, `decrease_liquidity`, `collect`, `burn`, `get_position`, `positions_of`, `next_id` |
 | **router** | User-facing swap entrypoint; resolves the pool via the factory and executes single-hop swaps with slippage bounds. | `initialize`, `exact_input_single`, `exact_output_single`, `get_pool`, `factory` |
+| **user_profile** | User Profile registry enabling reads and writes of users' on-chain nickname profiles. | `get_profile`, `save_profile` |
 
 ## Inter-contract communication
 
@@ -127,10 +130,11 @@ test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 | Contract | Address |
 |---|---|
-| Factory | `CDFY5UX77PQDP2QGNY4YGZVKK6FE6J2LSSVZFXTQSHRO2JIES7LSZGPE` |
-| Pool (XLM/USDC, 0.3%) | `CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32` |
-| Router | `CDLCGPUP7NW4B4SSFG5H4I75PKDGPUZDHOX5C6YICJY7RDJ7VP7BAT62` |
-| Position Manager | `CC6IBQ7VNVK7CQYIZX47NJPDH5DL5ISQSA26BLBZXVMVEQ3QGUAZDREI` |
+| Factory | `CCDUWTVMG6J4V6SZJBWKO5E24IEYHZEHXJZNIVKQURFN6DATWISOL72T` |
+| Pool (XLM/USDC, 0.3%) | `CBR7MAQPM35KPK3ULM4FBLEQMQFJZC6N7YWXMPWPYWVPOL2OVNKKBPQV` |
+| Router | `CBJR47MFKAATLVITCHAYDXEML4FB4HVTZXK4DPZQPWYNN3AG4GJU3ERD` |
+| Position Manager | `CDARU3KCM2CKQLQ74V4NYJ6V5X6Q4IXLKJGSDEIOLEQAUOAYUQ27QKBH` |
+| User Profile | `CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U` |
 | XLM (SAC) | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` |
 | USDC (SAC) | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` |
 
