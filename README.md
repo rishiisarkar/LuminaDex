@@ -13,25 +13,8 @@
 </div>
 
 ---
+<img width="2558" height="1305" alt="image" src="https://github.com/user-attachments/assets/f89dc34a-cd41-4bf2-892f-541bbb64585a" />
 
-## 🏆 Stellar Journey to Master
-
-### 🧭 Belt System Progress
-
-| Level | Belt | Focus | Status |
-|-------|------|-------|--------|
-| ⚪️ Level 1 | White Belt | Wallets & transactions | ✅ Completed |
-| 🟡 Level 2 | Yellow Belt | Multi-wallet, contracts & events | ✅ Completed |
-| 🟠 Level 3 | Orange Belt | Mini dApp + tests | ✅ **Completed** |
-| 🟢 Level 4 | Green Belt | Advanced contracts & production readiness | 🔜 Upcoming |
-| 🔵 Level 5 | Blue Belt | Real MVP (5+ users) | 🔜 Upcoming |
-| ⚫️ Level 6 | Black Belt | Scale + Demo Day readiness | 🔜 Upcoming |
-
-### 🟠 Current Status: ORANGE BELT — LEVEL 3 COMPLETE
-
-At Level 3, LuminaDex ships a working mini dApp on Stellar Testnet: deployed and initialized Soroban contracts, a functional Swap / Liquidity / Portfolio frontend wired to those contracts, and passing contract test suites for the core CLMM math and lifecycle.
-
----
 
 ## 🌟 What is LuminaDex?
 
@@ -59,6 +42,49 @@ A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete
 | Wallet | Freighter (browser extension) |
 
 ---
+## 🚀 Deployed Contracts (Stellar Testnet)
+
+The `contracts/` directory was reorganized as a **Cargo workspace** with all contracts as members. Compilations and optimizations were performed, followed by fresh deployments using the `rishii` account on Stellar Testnet.
+
+**Network:** Stellar Testnet · **Passphrase:** `Test SDF Network ; September 2015`
+
+| Contract | Deployed Address (Testnet) | Notes | Explorer |
+|---|---|---|---|
+| **Factory** | `CCDUWTVMG6J4V6SZJBWKO5E24IEYHZEHXJZNIVKQURFN6DATWISOL72T` | Pool registry & deployer | [view](https://stellar.expert/explorer/testnet/contract/CCDUWTVMG6J4V6SZJBWKO5E24IEYHZEHXJZNIVKQURFN6DATWISOL72T) |
+| **Pool (XLM/USDC, 0.3% Fee)** | `CBR7MAQPM35KPK3ULM4FBLEQMQFJZC6N7YWXMPWPYWVPOL2OVNKKBPQV` | Deployed and initialized at live market price of **~$0.183** | [view](https://stellar.expert/explorer/testnet/contract/CBR7MAQPM35KPK3ULM4FBLEQMQFJZC6N7YWXMPWPYWVPOL2OVNKKBPQV) |
+| **Router** | `CBJR47MFKAATLVITCHAYDXEML4FB4HVTZXK4DPZQPWYNN3AG4GJU3ERD` | Exact-in / exact-out swap entrypoints | [view](https://stellar.expert/explorer/testnet/contract/CBJR47MFKAATLVITCHAYDXEML4FB4HVTZXK4DPZQPWYNN3AG4GJU3ERD) |
+| **Position Manager** | `CDARU3KCM2CKQLQ74V4NYJ6V5X6Q4IXLKJGSDEIOLEQAUOAYUQ27QKBH` | LP position lifecycle | [view](https://stellar.expert/explorer/testnet/contract/CDARU3KCM2CKQLQ74V4NYJ6V5X6Q4IXLKJGSDEIOLEQAUOAYUQ27QKBH) |
+| **UserProfile Contract** | `CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U` | On-chain user profile registry (organized under `contracts/`) | [view](https://stellar.expert/explorer/testnet/contract/CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U) |
+
+> ℹ️ **These are the current, live testnet deployments** and supersede any previously published contract addresses for this project.
+
+### Token Addresses (Stellar Testnet)
+
+| Token | Type | Soroban Address (SAC) | Classic Issuer | Asset Code | Explorer |
+|---|---|---|---|---|---|
+| XLM | Native Stellar asset (SAC) | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` | `native` | — | [view](https://stellar.expert/explorer/testnet/contract/CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC) |
+| USDC | SEP-41 SAC over classic USDC | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` | `GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5` | `USDC` | [view](https://stellar.expert/explorer/testnet/contract/CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA) |
+
+> USDC is a SAC wrapping the classic asset issued by the address above — the G-address is used only for building `change_trust` trustline transactions, never for Soroban token calls.
+## 🏆 Stellar Journey to Master
+
+### 🧭 Belt System Progress
+
+| Level | Belt | Focus | Status |
+|-------|------|-------|--------|
+| ⚪️ Level 1 | White Belt | Wallets & transactions | ✅ Completed |
+| 🟡 Level 2 | Yellow Belt | Multi-wallet, contracts & events | ✅ Completed |
+| 🟠 Level 3 | Orange Belt | Mini dApp + tests | ✅ **Completed** |
+| 🟢 Level 4 | Green Belt | Advanced contracts & production readiness | 🔜 Upcoming |
+| 🔵 Level 5 | Blue Belt | Real MVP (5+ users) | 🔜 Upcoming |
+| ⚫️ Level 6 | Black Belt | Scale + Demo Day readiness | 🔜 Upcoming |
+
+### 🟠 Current Status: ORANGE BELT — LEVEL 3 COMPLETE
+
+At Level 3, LuminaDex ships a working mini dApp on Stellar Testnet: deployed and initialized Soroban contracts, a functional Swap / Liquidity / Portfolio frontend wired to those contracts, and passing contract test suites for the core CLMM math and lifecycle.
+
+---
+
 
 ## ⚠️ Why CLMM on Stellar
 
@@ -187,32 +213,7 @@ Portfolio / Swap UI updates
 
 ---
 
-## 🚀 Deployed Contracts (Stellar Testnet)
 
-The `contracts/` directory was reorganized as a **Cargo workspace** with all contracts as members. Compilations and optimizations were performed, followed by fresh deployments using the `rishii` account on Stellar Testnet.
-
-**Network:** Stellar Testnet · **Passphrase:** `Test SDF Network ; September 2015`
-
-| Contract | Deployed Address (Testnet) | Notes |
-|---|---|---|
-| **Factory** | `CCDUWTVMG6J4V6SZJBWKO5E24IEYHZEHXJZNIVKQURFN6DATWISOL72T` | Pool registry & deployer |
-| **Pool (XLM/USDC, 0.3% Fee)** | `CBR7MAQPM35KPK3ULM4FBLEQMQFJZC6N7YWXMPWPYWVPOL2OVNKKBPQV` | Deployed and initialized at live market price of **~$0.183** |
-| **Router** | `CBJR47MFKAATLVITCHAYDXEML4FB4HVTZXK4DPZQPWYNN3AG4GJU3ERD` | Exact-in / exact-out swap entrypoints |
-| **Position Manager** | `CDARU3KCM2CKQLQ74V4NYJ6V5X6Q4IXLKJGSDEIOLEQAUOAYUQ27QKBH` | LP position lifecycle |
-| **UserProfile Contract** | `CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U` | On-chain user profile registry (organized under `contracts/`) |
-
-> ℹ️ **These are the current, live testnet deployments** and supersede any previously published contract addresses for this project.
-
-### Token Addresses (Stellar Testnet)
-
-| Token | Type | Soroban address (SAC) | Classic issuer |
-|---|---|---|---|
-| XLM | Native Stellar asset (SAC) | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` | `native` |
-| USDC | SEP-41 SAC over classic USDC | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` | `GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5` |
-
-> USDC is a SAC wrapping the classic asset issued by the address above — the G-address is used only for building `change_trust` trustline transactions, never for Soroban token calls.
-
----
 
 ## ⚙️ Environment Setup
 
