@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getLatestLedger, getRpc } from "@/lib/stellar";
-import { POOL_ADDRESS, PM_ADDRESS, PROFILE_CONTRACT_ADDRESS } from "@/lib/constants";
+import { POOL_ADDRESS, PM_ADDRESS, PROFILE_CONTRACT_ADDRESS } from "@/lib/stellar/contracts";
 
 export function EventSyncProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();

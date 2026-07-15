@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { usePool } from "@/hooks/usePool";
 import { computeSwapQuote } from "@/lib/math";
-import { FEE_TIER } from "@/lib/constants";
+import { FEE_TIER } from "@/lib/stellar/assets";
 
 export interface SwapQuote {
   amountOut: bigint;

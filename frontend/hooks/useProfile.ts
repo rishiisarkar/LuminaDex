@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { simulateContractRead, addressToScVal, buildContractTx, submitTransaction } from "@/lib/stellar";
-import { PROFILE_CONTRACT_ADDRESS } from "@/lib/constants";
+import { PROFILE_CONTRACT_ADDRESS } from "@/lib/stellar/contracts";
 import { useWallet } from "@/hooks/useWallet";
 import { useTxTracker } from "@/context/TxTrackerContext";
 import { scValToNative, xdr } from "@stellar/stellar-sdk";

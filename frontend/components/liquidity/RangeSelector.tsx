@@ -1,6 +1,14 @@
 "use client";
 
-import { RANGE_PRESETS, TICK_SPACING, MIN_TICK_USABLE, MAX_TICK_USABLE } from "@/lib/constants";
+const RANGE_PRESETS = [
+  { label: "±5%", pct: 0.05 },
+  { label: "±10%", pct: 0.10 },
+  { label: "±20%", pct: 0.20 },
+  { label: "±50%", pct: 0.50 },
+  { label: "Full", pct: null },
+] as const;
+
+import { TICK_SPACING, MIN_TICK_USABLE, MAX_TICK_USABLE } from "@/lib/math";
 import { priceToTick, roundTick, tickToPrice, clampTick, applyPreset } from "@/lib/math";
 
 interface Props {

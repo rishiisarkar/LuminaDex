@@ -8,15 +8,15 @@
 //
 // STEP 4 cross-check: every public function of contracts/pool/src/lib.rs has a
 // counterpart here or in ./transactions.ts — see CONTRACT_FUNCTION_MAP.
-import { server, networkPassphrase, StellarSdk } from "./stellar-sdk";
+import { server, NETWORK_PASSPHRASE as networkPassphrase, StellarSdk } from "./stellar/client";
 import { simulateContractRead, parseSlot0, parseU128 } from "./stellar";
-import { POOL_ADDRESS } from "./constants";
+import { POOL_ADDRESS } from "./stellar/contracts";
 
 const { Contract, TransactionBuilder, Keypair, BASE_FEE, scValToNative, xdr } =
   StellarSdk;
 
 /** Default contract this module targets (the XLM/USDC pool). */
-export const CONTRACT_ID = process.env.NEXT_PUBLIC_POOL_ADDRESS ?? POOL_ADDRESS;
+export const CONTRACT_ID = POOL_ADDRESS;
 
 /**
  * Generic contract write: load source account, invoke a contract function,

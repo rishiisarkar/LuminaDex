@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { simulateContractRead, addressToScVal, parseU128 } from "@/lib/stellar";
-import { XLM_ADDRESS, USDC_ADDRESS } from "@/lib/constants";
+import { XLM_ADDRESS, USDC_ADDRESS } from "@/lib/stellar/assets";
 
 export interface Balances {
   xlm: bigint; // stroops (7 decimals)

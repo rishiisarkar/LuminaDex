@@ -8,7 +8,9 @@ import {
   u64ToScVal,
   i32ToScVal,
 } from "./stellar";
-import { PM_ADDRESS, POOL_ADDRESS, USDC_ADDRESS, MIN_SQRT_RATIO, MAX_SQRT_RATIO } from "./constants";
+import { PM_ADDRESS, POOL_ADDRESS } from "./stellar/contracts";
+import { USDC_ADDRESS } from "./stellar/assets";
+import { MIN_SQRT_RATIO, MAX_SQRT_RATIO } from "./math";
 import { xdr } from "@stellar/stellar-sdk";
 
 /**

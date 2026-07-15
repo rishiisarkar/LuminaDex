@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HORIZON_URL } from "@/lib/constants";
+import { HORIZON_URL } from "@/lib/stellar/network";
 
 interface HorizonEffect {
   id: string;

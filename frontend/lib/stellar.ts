@@ -10,7 +10,7 @@ import {
   scValToNative,
   BASE_FEE,
 } from "@stellar/stellar-sdk";
-import { SOROBAN_RPC_URL, HORIZON_URL, NETWORK_PASSPHRASE } from "./constants";
+import { RPC_URL as SOROBAN_RPC_URL, HORIZON_URL, NETWORK_PASSPHRASE } from "./stellar/network";
 
 type RpcServer = InstanceType<typeof SorobanRpc.Server>;
 type GetTransactionResponse = Awaited<ReturnType<RpcServer["getTransaction"]>>;

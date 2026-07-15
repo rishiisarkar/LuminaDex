@@ -28,15 +28,9 @@ import {
 import { buildMintTx, buildApprovalTx } from "@/lib/transactions";
 import { submitTransaction, getLatestLedger, hasTrustline, buildTrustlineTx } from "@/lib/stellar";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  TICK_SPACING,
-  POOL_ADDRESS,
-  XLM_ADDRESS,
-  USDC_ADDRESS,
-  USDC_ISSUER,
-  USDC_ASSET_CODE,
-  STROOP,
-} from "@/lib/constants";
+import { POOL_ADDRESS } from "@/lib/stellar/contracts";
+import { XLM_ADDRESS, USDC_ADDRESS, USDC_ISSUER, USDC_ASSET_CODE, STROOP } from "@/lib/stellar/assets";
+import { TICK_SPACING } from "@/lib/math";
 
 const PRESETS = [
   { label: "±1%", pct: 0.01 },

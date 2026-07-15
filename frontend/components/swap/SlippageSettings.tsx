@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SLIPPAGE_PRESETS } from "@/lib/constants";
+const SLIPPAGE_PRESETS = [0.1, 0.5, 1.0] as const;
 
 interface Props {
   slippage: number;

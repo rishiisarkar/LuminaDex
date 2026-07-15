@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useWallet } from "@/hooks/useWallet";
 import { Loader2, User, Save, CheckCircle2, Globe } from "lucide-react";
-import { PROFILE_CONTRACT_ADDRESS } from "@/lib/constants";
+import { PROFILE_CONTRACT_ADDRESS } from "@/lib/stellar/contracts";
 
 export default function UserProfileCard() {
   const { address } = useWallet();

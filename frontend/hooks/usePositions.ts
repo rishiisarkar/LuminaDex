@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { simulateContractRead, addressToScVal, i32ToScVal, bigintToU128 } from "@/lib/stellar";
-import { PM_ADDRESS, POOL_ADDRESS, Q64 } from "@/lib/constants";
+import { PM_ADDRESS, POOL_ADDRESS } from "@/lib/stellar/contracts";
+import { Q64 } from "@/lib/math";
 import {
   getAmountsForLiquidity,
   priceToSqrtPriceX64,

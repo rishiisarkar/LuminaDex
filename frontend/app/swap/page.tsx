@@ -13,7 +13,8 @@ import { usePrices } from "@/hooks/usePrices";
 import { toStroops, fromStroops, computePriceImpact, toUsd, formatUsd, sqrtPriceX64ToPrice } from "@/lib/math";
 import { buildSwapTx, buildApprovalTx } from "@/lib/transactions";
 import { submitTransaction, getLatestLedger } from "@/lib/stellar";
-import { XLM_ADDRESS, USDC_ADDRESS, FEE_TIER, POOL_ADDRESS } from "@/lib/constants";
+import { POOL_ADDRESS } from "@/lib/stellar/contracts";
+import { XLM_ADDRESS, USDC_ADDRESS, FEE_TIER } from "@/lib/stellar/assets";
 import { useToast } from "@/components/Toast";
 import { useTxTracker } from "@/context/TxTrackerContext";
 

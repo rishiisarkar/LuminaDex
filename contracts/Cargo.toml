@@ -1,18 +1,26 @@
-[package]
-name = "user-profile"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+    "factory",
+    "pool",
+    "position_manager",
+    "router",
+    "user_profile",
+]
+resolver = "2"
 
-[lib]
-crate-type = ["cdylib"]
-
-[dependencies]
-soroban-sdk = "22.0.0"
+[workspace.dependencies]
+soroban-sdk = { version = "22.0.0", features = ["alloc"] }
 
 [profile.release]
 opt-level = "z"
 overflow-checks = true
-debug = false
+debug = 0
+strip = "symbols"
+debug-assertions = false
 panic = "abort"
-lto = true
 codegen-units = 1
+lto = true
+
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true

@@ -1,4 +1,12 @@
-import { Q64, Q128, MIN_TICK, MAX_TICK, MIN_TICK_USABLE, MAX_TICK_USABLE, TICK_SPACING } from "./constants";
+export const Q64 = 2n ** 64n;
+export const Q128 = 2n ** 128n;
+export const MIN_TICK = -443636;
+export const MAX_TICK = 443636;
+export const MIN_TICK_USABLE = -443630;
+export const MAX_TICK_USABLE = 443630;
+export const MIN_SQRT_RATIO = 72057594037927936n;
+export const MAX_SQRT_RATIO = 4722366482869645213696n;
+export const TICK_SPACING = 10;
 
 // ── Float helpers (display-only, mirrors contract math) ──────────────────────
 
