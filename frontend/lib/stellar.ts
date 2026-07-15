@@ -135,7 +135,7 @@ export async function simulateContractRead(
   return successSim.result?.retval ?? null;
 }
 
-export async function submitTransaction(signedXdr: string): Promise<GetTransactionResponse> {
+export async function submitTransaction(signedXdr: string): Promise<any> {
   const server = getRpc();
   const tx = TransactionBuilder.fromXDR(signedXdr, NETWORK_PASSPHRASE);
   const result = await server.sendTransaction(tx);
@@ -157,7 +157,10 @@ export async function submitTransaction(signedXdr: string): Promise<GetTransacti
     throw new Error("Transaction failed on-chain");
   }
 
-  return response;
+  return {
+    ...response,
+    hash: result.hash,
+  };
 }
 
 export function bigintToU128(value: bigint): xdr.ScVal {

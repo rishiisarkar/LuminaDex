@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Providers from "@/context/Providers";
+import WalletModal from "@/components/wallet/WalletModal";
+import TxStatusModal from "@/components/wallet/TxStatusModal";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -24,8 +27,6 @@ export const metadata: Metadata = {
     "Trade with concentrated liquidity, tight spreads, and instant settlement — fully non-custodial on Stellar Soroban.",
 };
 
-import { WalletProvider } from "@/context/WalletContext";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,9 +37,11 @@ export default function RootLayout({
       <body
         className={`${instrumentSans.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <WalletProvider>
+        <Providers>
           {children}
-        </WalletProvider>
+          <WalletModal />
+          <TxStatusModal />
+        </Providers>
       </body>
     </html>
   );

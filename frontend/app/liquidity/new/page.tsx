@@ -3,10 +3,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import LiquidityChart from "@/components/liquidity/LiquidityChart";
+import Navbar from "@/components/Navbar";
 import AprDonut from "@/components/liquidity/AprDonut";
 import { usePool } from "@/hooks/usePool";
 import { useWallet } from "@/hooks/useWallet";
 import { useToast } from "@/components/Toast";
+import { useTxTracker } from "@/context/TxTrackerContext";
 import { useSpotPrices, useMarket24h } from "@/hooks/useMarketData";
 import { useBalances } from "@/hooks/useBalances";
 import { usePoolReserves } from "@/hooks/usePoolStats";
@@ -52,6 +54,7 @@ export default function AddLiquidityPage() {
   const { data: pool } = usePool();
   const { address, connect, sign } = useWallet();
   const { addToast } = useToast();
+  const { trackTx } = useTxTracker();
   const { data: spot } = useSpotPrices();
   const { data: market } = useMarket24h();
   const { data: balances } = useBalances(address);
@@ -227,42 +230,63 @@ export default function AddLiquidityPage() {
       const currentLedger = await getLatestLedger();
       const approvalExpiry = currentLedger + 500;
 
-      // USDC here is a Stellar Asset Contract wrapping a classic asset — the
-      // wallet's account must hold a trustline for it before it can receive
-      // any transfer (SAC transfer_from fails otherwise). Establish it first
-      // if missing, before approving/minting.
-      if (a0Usdc > 0n && !(await hasTrustline(address, USDC_ASSET_CODE, USDC_ISSUER))) {
-        addToast("Establishing USDC trustline...", "info");
-        const trustXdr = await buildTrustlineTx(address, USDC_ASSET_CODE, USDC_ISSUER);
-        await submitTransaction(await sign(trustXdr));
-        addToast("USDC trustline established", "success");
-      }
+      await trackTx("Add Liquidity", async (updateStep) => {
+        // Step 1: Trustline if missing
+        if (a0Usdc > 0n && !(await hasTrustline(address, USDC_ASSET_CODE, USDC_ISSUER))) {
+          updateStep("preparing");
+          const trustXdr = await buildTrustlineTx(address, USDC_ASSET_CODE, USDC_ISSUER);
+          updateStep("waiting_signature");
+          const signedTrust = await sign(trustXdr);
+          updateStep("submitting");
+          updateStep("pending");
+          await submitTransaction(signedTrust);
+        }
 
-      if (a1Xlm > 0n) {
-        addToast("Approving XLM...", "info");
-        const xdr = await buildApprovalTx(address, XLM_ADDRESS, POOL_ADDRESS, a1Xlm * 2n, approvalExpiry);
-        await submitTransaction(await sign(xdr));
-        addToast("XLM approved", "success");
-      }
-      if (a0Usdc > 0n) {
-        addToast("Approving USDC...", "info");
-        const xdr = await buildApprovalTx(address, USDC_ADDRESS, POOL_ADDRESS, a0Usdc * 2n, approvalExpiry);
-        await submitTransaction(await sign(xdr));
-        addToast("USDC approved", "success");
-      }
+        // Step 2: Approve XLM if needed
+        if (a1Xlm > 0n) {
+          updateStep("preparing");
+          const xdr = await buildApprovalTx(address, XLM_ADDRESS, POOL_ADDRESS, a1Xlm * 2n, approvalExpiry);
+          updateStep("waiting_signature");
+          const signed = await sign(xdr);
+          updateStep("submitting");
+          updateStep("pending");
+          await submitTransaction(signed);
+        }
 
-      addToast("Adding liquidity...", "info");
-      const mintXdr = await buildMintTx(
-        address, POOL_ADDRESS, tickLower, tickUpper, liquidity,
-        0n, 0n, deadline
-      );
-      await submitTransaction(await sign(mintXdr));
-      addToast("✓ Liquidity added successfully!", "success");
+        // Step 3: Approve USDC if needed
+        if (a0Usdc > 0n) {
+          updateStep("preparing");
+          const xdr = await buildApprovalTx(address, USDC_ADDRESS, POOL_ADDRESS, a0Usdc * 2n, approvalExpiry);
+          updateStep("waiting_signature");
+          const signed = await sign(xdr);
+          updateStep("submitting");
+          updateStep("pending");
+          await submitTransaction(signed);
+        }
+
+        // Step 4: Add Liquidity
+        updateStep("preparing");
+        const mintXdr = await buildMintTx(
+          address, POOL_ADDRESS, tickLower, tickUpper, liquidity,
+          0n, 0n, deadline
+        );
+        updateStep("waiting_signature");
+        const signedMint = await sign(mintXdr);
+        updateStep("submitting");
+        updateStep("pending");
+        const response = await submitTransaction(signedMint);
+
+        return {
+          hash: response.hash,
+          ledger: response.ledger,
+        };
+      });
+
       queryClient.invalidateQueries({ queryKey: ["positions"] });
       queryClient.invalidateQueries({ queryKey: ["balances"] });
       router.push("/liquidity");
     } catch (err: unknown) {
-      addToast(`Failed: ${err instanceof Error ? err.message : String(err)}`, "error");
+      console.error("Add liquidity submission error:", err);
     } finally {
       setLoading(false);
     }
@@ -272,9 +296,19 @@ export default function AddLiquidityPage() {
   const fmtP = (p: number) => (p >= 1 ? p.toFixed(4) : p.toFixed(6));
 
   return (
-    <div style={{ maxWidth: "1180px", margin: "0 auto", padding: "28px 24px 60px" }}>
-      <button
-        onClick={() => router.push("/liquidity")}
+    <div className="w-full min-h-screen flex flex-col text-white">
+      <Navbar />
+      <div
+        style={{
+          flex: 1,
+          maxWidth: "1180px",
+          width: "100%",
+          margin: "0 auto",
+          padding: "28px 24px 60px",
+        }}
+      >
+        <button
+          onClick={() => router.push("/liquidity")}
         style={{ background: "transparent", border: "none", color: "oklch(0.45 0.02 60)", cursor: "pointer", fontSize: 14, marginBottom: 16 }}
       >
         ← Back to Positions
@@ -461,6 +495,7 @@ export default function AddLiquidityPage() {
             ) : !address ? "Connect Wallet" : liquidity === 0n ? "Enter Amounts" : "Add Liquidity"}
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

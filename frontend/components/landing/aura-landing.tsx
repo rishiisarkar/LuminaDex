@@ -59,16 +59,7 @@ export function AuraLanding() {
     if (isConnected) {
       router.push("/portfolio");
     } else {
-      try {
-        const { connectWallet } = await import("@/lib/stellar-wallet");
-        const addr = await connectWallet();
-        if (addr) {
-          await connect();
-          router.push("/portfolio");
-        }
-      } catch (err) {
-        console.error("Wallet connection rejected:", err);
-      }
+      await connect();
     }
   };
 

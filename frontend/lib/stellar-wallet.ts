@@ -1,76 +1,107 @@
-// Freighter wallet integration (Stellar TESTNET).
-// All @stellar/freighter-api imports are explicit and at the top of the file.
-import {
-  isConnected,
-  isAllowed,
-  setAllowed,
-  requestAccess,
-  getAddress,
-  signTransaction,
-} from "@stellar/freighter-api";
+// Stellar Multi-Wallet Integration (Stellar TESTNET).
+// Uses `@creit.tech/stellar-wallets-kit` to support Freighter, Albedo, xBull, and Lobstr.
+import { StellarWalletsKit } from "@creit.tech/stellar-wallets-kit";
+import { FreighterModule } from "@creit.tech/stellar-wallets-kit/modules/freighter";
+import { AlbedoModule } from "@creit.tech/stellar-wallets-kit/modules/albedo";
+import { xBullModule } from "@creit.tech/stellar-wallets-kit/modules/xbull";
+import { LobstrModule } from "@creit.tech/stellar-wallets-kit/modules/lobstr";
 
 export const STELLAR_TESTNET_PASSPHRASE = "Test SDF Network ; September 2015";
 export const HORIZON_TESTNET_URL = "https://horizon-testnet.stellar.org";
 
-/** Detect whether the Freighter extension is installed/available. */
+let isKitInitialized = false;
+
+/** Initialize the StellarWalletsKit on the client side once. */
+export function initWalletKit() {
+  if (typeof window === "undefined") return;
+  if (isKitInitialized) return;
+
+  StellarWalletsKit.init({
+    modules: [
+      new FreighterModule(),
+      new AlbedoModule(),
+      new xBullModule(),
+      new LobstrModule(),
+    ],
+    network: STELLAR_TESTNET_PASSPHRASE as any,
+  });
+  isKitInitialized = true;
+}
+
+/** Check if Freighter extension is available in the browser. */
 export async function detectFreighter(): Promise<boolean> {
+  if (typeof window === "undefined") return false;
   try {
-    const res = await isConnected();
-    if (res.error) return false;
-    return res.isConnected;
+    const { isConnected } = await import("@stellar/freighter-api");
+    const result = await isConnected();
+    return !!result.isConnected;
   } catch {
     return false;
   }
 }
 
 /**
- * Request permission (if not already granted) and return the wallet address.
- * Uses isAllowed() + requestAccess() + getAddress().
+ * Connect to a specific wallet.
+ * Stores the wallet selection in localStorage and returns the address.
  */
-export async function connectWallet(): Promise<string> {
-  const allowed = await isAllowed();
-  if (allowed.error) throw new Error(allowed.error.message);
+export async function connectWallet(walletId: "freighter" | "albedo" | "xbull" | "lobstr"): Promise<string> {
+  initWalletKit();
 
-  if (!allowed.isAllowed) {
-    const granted = await setAllowed();
-    if (granted.error) throw new Error(granted.error.message);
-    if (!granted.isAllowed) throw new Error("Access to Freighter was rejected");
-  }
-
-  const access = await requestAccess();
-  if (access.error) throw new Error(access.error.message);
-  if (access.address) return access.address;
-
-  // Fallback: pull the address explicitly if requestAccess didn't return one.
-  const addr = await getAddress();
-  if (addr.error) throw new Error(addr.error.message);
-  if (!addr.address) throw new Error("Freighter returned no address");
-  return addr.address;
-}
-
-/** Return the connected address if the app is already allowed, else null. */
-export async function getWalletAddress(): Promise<string | null> {
   try {
-    const allowed = await isAllowed();
-    if (allowed.error || !allowed.isAllowed) return null;
-    const addr = await getAddress();
-    if (addr.error || !addr.address) return null;
-    return addr.address;
-  } catch {
-    return null;
+    StellarWalletsKit.setWallet(walletId);
+    const { address } = await StellarWalletsKit.fetchAddress();
+    if (!address) throw new Error("Wallet returned no address");
+
+    localStorage.setItem("selectedWalletId", walletId);
+    return address;
+  } catch (err: any) {
+    throw new Error(err?.message || `Failed to connect to ${walletId}`);
   }
 }
 
-/** Sign a transaction XDR with Freighter on the Stellar testnet. */
-export async function signTx(xdr: string): Promise<string> {
-  const result = await signTransaction(xdr, {
-    networkPassphrase: STELLAR_TESTNET_PASSPHRASE,
-  });
-  if (result.error) {
-    const msg = typeof result.error === "string"
-      ? result.error
-      : (result.error.message || JSON.stringify(result.error));
-    throw new Error(msg);
+/** Retrieve the connected address from the kit if already authorized. */
+export async function getWalletAddress(): Promise<{ address: string | null; walletId: string | null }> {
+  if (typeof window === "undefined") return { address: null, walletId: null };
+
+  const savedWalletId = localStorage.getItem("selectedWalletId");
+  if (!savedWalletId) return { address: null, walletId: null };
+
+  initWalletKit();
+  try {
+    StellarWalletsKit.setWallet(savedWalletId);
+    // Silent check or fetchAddress
+    const { address } = await StellarWalletsKit.getAddress();
+    return { address: address || null, walletId: savedWalletId };
+  } catch {
+    // If getAddress fails, we try a fetchAddress
+    try {
+      const { address } = await StellarWalletsKit.fetchAddress();
+      return { address: address || null, walletId: savedWalletId };
+    } catch {
+      localStorage.removeItem("selectedWalletId");
+      return { address: null, walletId: null };
+    }
   }
-  return result.signedTxXdr;
+}
+
+/** Sign a transaction XDR with the currently selected wallet. */
+export async function signTx(xdr: string, walletAddress: string): Promise<string> {
+  initWalletKit();
+
+  const savedWalletId = localStorage.getItem("selectedWalletId");
+  if (!savedWalletId) {
+    throw new Error("No wallet connected. Please connect a wallet first.");
+  }
+
+  StellarWalletsKit.setWallet(savedWalletId);
+
+  try {
+    const { signedTxXdr } = await StellarWalletsKit.signTransaction(xdr, {
+      address: walletAddress,
+      networkPassphrase: STELLAR_TESTNET_PASSPHRASE,
+    });
+    return signedTxXdr;
+  } catch (err: any) {
+    throw new Error(err?.message || "Transaction signing rejected or failed.");
+  }
 }

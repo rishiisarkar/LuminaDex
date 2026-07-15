@@ -6,6 +6,7 @@ import { usePositions } from "@/hooks/usePositions";
 import { usePool } from "@/hooks/usePool";
 import PositionCard from "@/components/liquidity/PositionCard";
 import { useQueryClient } from "@tanstack/react-query";
+import Navbar from "@/components/Navbar";
 
 export default function LiquidityPage() {
   const { address, connect } = useWallet();
@@ -19,15 +20,19 @@ export default function LiquidityPage() {
   }
 
   return (
-    <div
-      style={{
-        maxWidth: "900px",
-        margin: "0 auto",
-        padding: "40px 24px",
-        background:
-          "radial-gradient(ellipse 60% 40% at 50% 0%, oklch(0.12 0.01 60 / 0.05) 0%, transparent 100%)",
-      }}
-    >
+    <div className="w-full min-h-screen flex flex-col text-white">
+      <Navbar />
+      <div
+        style={{
+          flex: 1,
+          maxWidth: "900px",
+          width: "100%",
+          margin: "0 auto",
+          padding: "40px 24px",
+          background:
+            "radial-gradient(ellipse 60% 40% at 50% 0%, oklch(0.12 0.01 60 / 0.05) 0%, transparent 100%)",
+        }}
+      >
       {/* Header */}
       <div className="page-header-row" style={{ marginBottom: "32px" }}>
         <div>
@@ -132,6 +137,7 @@ export default function LiquidityPage() {
           }
         />
       )}
+      </div>
     </div>
   );
 }

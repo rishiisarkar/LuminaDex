@@ -83,8 +83,8 @@ export default function StellarWalletPanel() {
       {!isConnected ? (
         <button
           className="btn-primary"
-          onClick={connect}
-          disabled={isLoading || hasFreighter === false}
+          onClick={() => connect()}
+          disabled={isLoading}
           style={{ padding: "12px 24px", fontSize: 15 }}
         >
           {isLoading ? "Connecting…" : "Connect Wallet"}

@@ -9,6 +9,7 @@ import { buildCollectTx, buildDecreaseLiquidityTx } from "@/lib/transactions";
 import { submitTransaction } from "@/lib/stellar";
 import { useToast } from "@/components/Toast";
 import { useState } from "react";
+import { useTxTracker } from "@/context/TxTrackerContext";
 
 interface Props {
   position: Position;
@@ -20,6 +21,7 @@ export default function PositionCard({ position, onRefresh }: Props) {
   const { xlmUsd, usdcUsd } = usePrices();
   const { address, sign } = useWallet();
   const { addToast } = useToast();
+  const { trackTx } = useTxTracker();
   const [loading, setLoading] = useState<"collect" | "remove" | null>(null);
 
   // Pool: token_0 = USDC, token_1 = XLM
@@ -38,13 +40,22 @@ export default function PositionCard({ position, onRefresh }: Props) {
     if (!address || !sign) return;
     setLoading("collect");
     try {
-      const xdr = await buildCollectTx(address, position.id, address);
-      const signed = await sign(xdr);
-      await submitTransaction(signed);
-      addToast("Fees collected!", "success");
+      await trackTx(`Collect Fees for Position #${position.id.toString()}`, async (updateStep) => {
+        updateStep("preparing");
+        const xdr = await buildCollectTx(address, position.id, address);
+        updateStep("waiting_signature");
+        const signed = await sign(xdr);
+        updateStep("submitting");
+        updateStep("pending");
+        const response = await submitTransaction(signed);
+        return {
+          hash: response.hash,
+          ledger: response.ledger,
+        };
+      });
       onRefresh();
     } catch (err: unknown) {
-      addToast(`Failed: ${err instanceof Error ? err.message : String(err)}`, "error");
+      console.error("Collect fees submission error:", err);
     } finally {
       setLoading(null);
     }
@@ -55,20 +66,29 @@ export default function PositionCard({ position, onRefresh }: Props) {
     setLoading("remove");
     try {
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 300);
-      const xdr = await buildDecreaseLiquidityTx(
-        address,
-        position.id,
-        position.liquidity,
-        0n,
-        0n,
-        deadline
-      );
-      const signed = await sign(xdr);
-      await submitTransaction(signed);
-      addToast("Liquidity removed! Collect your tokens.", "success");
+      await trackTx(`Remove Liquidity from Position #${position.id.toString()}`, async (updateStep) => {
+        updateStep("preparing");
+        const xdr = await buildDecreaseLiquidityTx(
+          address,
+          position.id,
+          position.liquidity,
+          0n,
+          0n,
+          deadline
+        );
+        updateStep("waiting_signature");
+        const signed = await sign(xdr);
+        updateStep("submitting");
+        updateStep("pending");
+        const response = await submitTransaction(signed);
+        return {
+          hash: response.hash,
+          ledger: response.ledger,
+        };
+      });
       onRefresh();
     } catch (err: unknown) {
-      addToast(`Failed: ${err instanceof Error ? err.message : String(err)}`, "error");
+      console.error("Remove liquidity submission error:", err);
     } finally {
       setLoading(null);
     }

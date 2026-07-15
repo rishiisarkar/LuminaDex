@@ -42,10 +42,6 @@ export default function WalletButton() {
   };
 
   const handleConnect = async () => {
-    if (hasFreighter === false) {
-      window.open("https://freighter.app", "_blank");
-      return;
-    }
     await connect();
   };
 
@@ -67,8 +63,6 @@ export default function WalletButton() {
               <Loader2 className="w-4 h-4 animate-spin text-black" />
               <span>Connecting...</span>
             </>
-          ) : hasFreighter === false ? (
-            <span>Install Freighter</span>
           ) : (
             <span>Connect Wallet</span>
           )}

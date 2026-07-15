@@ -6,6 +6,7 @@ import TokenInputBox from "@/components/swap/TokenInputBox";
 import PriceInfo from "@/components/swap/PriceInfo";
 import SlippageSettings from "@/components/swap/SlippageSettings";
 import { useWallet } from "@/hooks/useWallet";
+import Navbar from "@/components/Navbar";
 import { usePool } from "@/hooks/usePool";
 import { useSwapQuote } from "@/hooks/useSwapQuote";
 import { usePrices } from "@/hooks/usePrices";
@@ -14,6 +15,7 @@ import { buildSwapTx, buildApprovalTx } from "@/lib/transactions";
 import { submitTransaction, getLatestLedger } from "@/lib/stellar";
 import { XLM_ADDRESS, USDC_ADDRESS, FEE_TIER, POOL_ADDRESS } from "@/lib/constants";
 import { useToast } from "@/components/Toast";
+import { useTxTracker } from "@/context/TxTrackerContext";
 
 const XLM = { symbol: "XLM", name: "Stellar Lumens", logo: "/tokens/xlm.png" };
 const USDC = { symbol: "USDC", name: "USD Coin", logo: "/tokens/usdc.png" };
@@ -23,6 +25,7 @@ export default function SwapPage() {
   const { data: pool } = usePool();
   const prices = usePrices();
   const { addToast } = useToast();
+  const { trackTx } = useTxTracker();
 
   const [amountIn, setAmountIn] = useState("");
   const [slippage, setSlippage] = useState(0.5);
@@ -111,49 +114,57 @@ export default function SwapPage() {
       }
 
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 300);
-      // Fetch real ledger from RPC — Unix-epoch-based estimates are wildly wrong
-      // vs actual testnet ledger sequences (approval expiry must be ≤ current + max_ttl).
-      const currentLedger = await getLatestLedger();
-
       const tokenInAddress = zeroForOne ? XLM_ADDRESS : USDC_ADDRESS;
       const tokenOutAddress = zeroForOne ? USDC_ADDRESS : XLM_ADDRESS;
 
-      // Build approval for token_in → pool spender
-      addToast("Building approval transaction...", "info");
-      const approvalXdr = await buildApprovalTx(
-        address,
-        tokenInAddress,
-        POOL_ADDRESS,
-        amountInStroops * 2n,
-        currentLedger + 500
-      );
-      const signedApproval = await sign(approvalXdr);
-      await submitTransaction(signedApproval);
-      addToast("Token approved!", "success");
+      await trackTx(`Swap ${amountIn} ${tokenIn.symbol} → ${tokenOut.symbol}`, async (updateStep) => {
+        // Step 1: Pre-Approve Spender
+        updateStep("preparing");
+        const currentLedger = await getLatestLedger();
+        const approvalXdr = await buildApprovalTx(
+          address,
+          tokenInAddress,
+          POOL_ADDRESS,
+          amountInStroops * 2n,
+          currentLedger + 500
+        );
 
-      // Build swap
-      addToast("Building swap transaction...", "info");
-      const swapXdr = await buildSwapTx(
-        address,
-        tokenInAddress,
-        tokenOutAddress,
-        FEE_TIER,
-        amountInStroops,
-        amountOutMin,
-        deadline,
-        0n
-      );
-      const signedSwap = await sign(swapXdr);
-      await submitTransaction(signedSwap);
+        updateStep("waiting_signature");
+        const signedApproval = await sign(approvalXdr);
 
-      addToast(
-        `✓ Swapped ${amountIn} ${tokenIn.symbol} for ~${amountOut} ${tokenOut.symbol}`,
-        "success"
-      );
+        updateStep("submitting");
+        updateStep("pending");
+        await submitTransaction(signedApproval);
+
+        // Step 2: Swap Execution
+        updateStep("preparing");
+        const swapXdr = await buildSwapTx(
+          address,
+          tokenInAddress,
+          tokenOutAddress,
+          FEE_TIER,
+          amountInStroops,
+          amountOutMin,
+          deadline,
+          0n
+        );
+
+        updateStep("waiting_signature");
+        const signedSwap = await sign(swapXdr);
+
+        updateStep("submitting");
+        updateStep("pending");
+        const response = await submitTransaction(signedSwap);
+
+        return {
+          hash: response.hash,
+          ledger: response.ledger,
+        };
+      });
+
       setAmountIn("");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      addToast(`Swap failed: ${msg}`, "error");
+      console.error("Swap submission error:", err);
     } finally {
       setLoading(false);
     }
@@ -168,16 +179,18 @@ export default function SwapPage() {
     (priceImpactResult.severity !== "very_high" || highImpactAcknowledged);
 
   return (
-    <div
-      style={{
-        minHeight: "calc(100vh - 64px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "40px 16px",
-      }}
-    >
-      <div style={{ width: "100%", maxWidth: "460px", position: "relative" }}>
+    <div className="w-full min-h-screen flex flex-col text-white">
+      <Navbar />
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "40px 16px",
+        }}
+      >
+        <div style={{ width: "100%", maxWidth: "460px", position: "relative" }}>
         {/* Floating settings button */}
         <div className="swap-settings-btn">
           <SlippageSettings
@@ -349,6 +362,7 @@ export default function SwapPage() {
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

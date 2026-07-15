@@ -13,8 +13,8 @@ import {
   submitSignedTx,
 } from "@/lib/stellar-payments";
 
-/** Pull a readable message out of any error, including Horizon's result_codes. */
-function errMessage(err: unknown): string {
+/** Map Stellar errors to readable messages. */
+export function errMessage(err: unknown): string {
   const e = err as {
     message?: string;
     response?: { data?: { extras?: { result_codes?: unknown } } };
@@ -33,7 +33,10 @@ export interface UseStellarWallet {
   error: string | null;
   /** null = detection pending, false = not installed, true = available */
   hasFreighter: boolean | null;
-  connect: () => Promise<void>;
+  walletId: string | null;
+  isModalOpen: boolean;
+  setIsModalOpen: (open: boolean) => void;
+  connect: (id?: "freighter" | "albedo" | "xbull" | "lobstr") => Promise<void>;
   disconnect: () => void;
   refreshBalance: () => Promise<void>;
   sendXlm: (to: string, amount: string) => Promise<{ hash: string }>;
@@ -41,31 +44,37 @@ export interface UseStellarWallet {
 
 export function useStellarWallet(): UseStellarWallet {
   const [address, setAddress] = useState<string | null>(null);
+  const [walletId, setWalletId] = useState<string | null>(null);
   const [balance, setBalance] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasFreighter, setHasFreighter] = useState<boolean | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const loadBalance = useCallback(async (addr: string) => {
     const bal = await fetchXlmBalance(addr);
     setBalance(bal);
   }, []);
 
-  // Detect Freighter on mount and restore an already-authorized session.
+  // Restore session and detect Freighter on mount
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const detected = await detectFreighter();
       if (cancelled) return;
       setHasFreighter(detected);
-      if (!detected) return;
-      const addr = await getWalletAddress();
-      if (cancelled || !addr) return;
-      setAddress(addr);
-      try {
-        await loadBalance(addr);
-      } catch (e) {
-        if (!cancelled) setError(errMessage(e));
+
+      const session = await getWalletAddress();
+      if (cancelled) return;
+
+      if (session.address && session.walletId) {
+        setAddress(session.address);
+        setWalletId(session.walletId);
+        try {
+          await loadBalance(session.address);
+        } catch (e) {
+          if (!cancelled) setError(errMessage(e));
+        }
       }
     })();
     return () => {
@@ -73,29 +82,43 @@ export function useStellarWallet(): UseStellarWallet {
     };
   }, [loadBalance]);
 
-  const connect = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const detected = await detectFreighter();
-      setHasFreighter(detected);
-      if (!detected) {
-        throw new Error(
-          "Freighter not detected. Install it from https://freighter.app"
-        );
+  const connect = useCallback(
+    async (id?: "freighter" | "albedo" | "xbull" | "lobstr") => {
+      // If no wallet ID specified, open the selection modal
+      if (!id) {
+        setIsModalOpen(true);
+        return;
       }
-      const addr = await connectWallet();
-      setAddress(addr);
-      await loadBalance(addr);
-    } catch (e) {
-      setError(errMessage(e));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [loadBalance]);
+
+      setIsLoading(true);
+      setError(null);
+      try {
+        if (id === "freighter") {
+          const freighterInstalled = await detectFreighter();
+          if (!freighterInstalled) {
+            throw new Error("Freighter not detected. Please install it from freighter.app.");
+          }
+        }
+
+        const addr = await connectWallet(id);
+        setAddress(addr);
+        setWalletId(id);
+        setIsModalOpen(false); // close modal on success
+        await loadBalance(addr);
+      } catch (e) {
+        setError(errMessage(e));
+        throw e;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [loadBalance]
+  );
 
   const disconnect = useCallback(() => {
+    localStorage.removeItem("selectedWalletId");
     setAddress(null);
+    setWalletId(null);
     setBalance(null);
     setError(null);
   }, []);
@@ -120,7 +143,7 @@ export function useStellarWallet(): UseStellarWallet {
       setError(null);
       try {
         const xdr = await buildPaymentXdr(address, to, amount);
-        const signed = await signTx(xdr);
+        const signed = await signTx(xdr, address);
         const result = await submitSignedTx(signed);
         await loadBalance(address);
         return result;
@@ -142,6 +165,9 @@ export function useStellarWallet(): UseStellarWallet {
     isLoading,
     error,
     hasFreighter,
+    walletId,
+    isModalOpen,
+    setIsModalOpen,
     connect,
     disconnect,
     refreshBalance,

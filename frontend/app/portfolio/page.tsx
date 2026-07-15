@@ -6,11 +6,11 @@ import { usePositions } from "@/hooks/usePositions";
 import SummaryCards from "@/components/portfolio/SummaryCards";
 import ActivityFeed from "@/components/portfolio/ActivityFeed";
 import PositionCard from "@/components/liquidity/PositionCard";
+import UserProfileCard from "@/components/portfolio/UserProfileCard";
 import StellarWalletPanel from "@/components/wallet/StellarWalletPanel";
 import ContractStatus from "@/components/ContractStatus";
 import Link from "next/link";
-import WalletButton from "@/components/WalletButton";
-import { LogoMark } from "@/components/landing/aura-landing";
+import Navbar from "@/components/Navbar";
 
 export default function PortfolioPage() {
   const { address, connect } = useWallet();
@@ -30,32 +30,7 @@ export default function PortfolioPage() {
   return (
     <div className="w-full min-h-screen flex flex-col items-center pb-24 text-white">
       {/* Navbar */}
-      <nav className="w-full border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-md sticky top-0 left-0 right-0 z-40 px-6">
-        <div className="max-w-[1000px] mx-auto h-20 flex items-center justify-between">
-          <div className="flex items-center">
-            <Link href="/" className="no-underline flex items-center gap-2">
-              <LogoMark className="w-8 h-8 text-white hover:opacity-85 transition-opacity" />
-              <span className="font-bold tracking-tight text-white hidden sm:inline-block">StellarSwap</span>
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-8">
-            <Link href="/swap" className="text-white/70 text-sm font-medium hover:text-white no-underline transition-colors">
-              Swap
-            </Link>
-            <Link href="/liquidity" className="text-white/70 text-sm font-medium hover:text-white no-underline transition-colors">
-              Liquidity
-            </Link>
-            <Link href="/portfolio" className="text-white text-sm font-medium border-b border-white pb-1 no-underline">
-              Portfolio
-            </Link>
-          </div>
-
-          <div className="flex items-center">
-            <WalletButton />
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Main Content Container */}
       <div
@@ -82,6 +57,9 @@ export default function PortfolioPage() {
 
       {/* Live on-chain pool state via the contract.ts read layer */}
       <ContractStatus />
+
+      {/* On-chain user profile metadata contract integration */}
+      <UserProfileCard />
 
       {/* Freighter wallet — detect · connect · balance · send XLM (Testnet) */}
       <StellarWalletPanel />

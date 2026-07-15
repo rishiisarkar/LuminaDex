@@ -66,7 +66,7 @@ export default function SendModal({ isOpen, onClose }: SendModalProps) {
 
   const handleConfirm = async () => {
     setStep("loading");
-    setLoadingText("Waiting for Freighter signature...");
+    setLoadingText("Waiting for wallet signature...");
     
     try {
       // Step 1: Sign & Submit Transaction via useGlobalWallet
