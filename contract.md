@@ -5,7 +5,7 @@ Reorganized the `contracts/` directory as a Cargo workspace with all contracts a
 *   **Pool Contract (XLM/USDC, 0.3% Fee)**: CBR7MAQPM35KPK3ULM4FBLEQMQFJZC6N7YWXMPWPYWVPOL2OVNKKBPQV (deployed and initialized at the live market price of ~$0.183)
 *   **Router Contract**: CBJR47MFKAATLVITCHAYDXEML4FB4HVTZXK4DPZQPWYNN3AG4GJU3ERD
 *   **Position Manager**: CDARU3KCM2CKQLQ74V4NYJ6V5X6Q4IXLKJGSDEIOLEQAUOAYUQ27QKBH
-*   **UserProfile Contract**: CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U (organized under `contracts/user_profile/`)
+*   **UserProfile Contract**: CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U (organized under `contracts`)
 
 #  Environment Setup
  containing only the latest deployed contract addresses:

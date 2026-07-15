@@ -92,10 +92,9 @@ export function parseStellarError(err: any): StellarError {
 
   // 4. Wrong Network
   if (
-    rawString.includes("network") ||
-    rawString.includes("passphrase") ||
     rawString.includes("wrong network") ||
-    rawString.includes("test sdf network") === false && rawString.includes("testnet")
+    rawString.includes("network mismatch") ||
+    rawString.includes("unsupported network")
   ) {
     return new StellarError({
       type: "WRONG_NETWORK",
@@ -107,8 +106,9 @@ export function parseStellarError(err: any): StellarError {
 
   // 5. Wallet Locked
   if (
-    rawString.includes("locked") ||
-    rawString.includes("unlock") ||
+    rawString.includes("wallet locked") ||
+    rawString.includes("wallet is locked") ||
+    rawString.includes("unlock your wallet") ||
     rawString.includes("not logged in")
   ) {
     return new StellarError({

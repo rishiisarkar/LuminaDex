@@ -10,6 +10,7 @@ import { submitTransaction } from "@/lib/stellar";
 import { useToast } from "@/components/Toast";
 import { useState } from "react";
 import { useTxTracker } from "@/context/TxTrackerContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   position: Position;
@@ -22,6 +23,7 @@ export default function PositionCard({ position, onRefresh }: Props) {
   const { address, sign } = useWallet();
   const { addToast } = useToast();
   const { trackTx } = useTxTracker();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState<"collect" | "remove" | null>(null);
 
   // Pool: token_0 = USDC, token_1 = XLM
@@ -36,6 +38,20 @@ export default function PositionCard({ position, onRefresh }: Props) {
       parseFloat(fromStroops(position.amount1)) * xlmUsd
     : 0;
 
+  const hasOwedTokens = position.tokensOwed0 > 0n || position.tokensOwed1 > 0n;
+  const isPositionClosed = position.liquidity === 0n;
+
+  /** Refresh positions and wallet balances after any on-chain state change. */
+  function refreshAll() {
+    onRefresh();
+    queryClient.invalidateQueries({ queryKey: ["balances"] });
+    queryClient.invalidateQueries({ queryKey: ["pool"] });
+  }
+
+  /**
+   * Collect owed tokens (fees + any burned amounts) from the position.
+   * This calls PM.collect → pool.collect which transfers tokens to the user.
+   */
   async function handleCollect() {
     if (!address || !sign) return;
     setLoading("collect");
@@ -53,20 +69,34 @@ export default function PositionCard({ position, onRefresh }: Props) {
           ledger: response.ledger,
         };
       });
-      onRefresh();
+      addToast("Fees collected successfully!", "success");
+      refreshAll();
     } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
       console.error("Collect fees submission error:", err);
+      addToast(`Failed to collect fees: ${msg}`, "error");
     } finally {
       setLoading(null);
     }
   }
 
+  /**
+   * Remove all liquidity from the position AND collect the owed tokens.
+   *
+   * Uniswap V3 (and our CLMM) uses a 2-step process:
+   *   1. decrease_liquidity → burns liquidity, marks tokens as "owed"
+   *   2. collect → actually transfers the owed tokens to the user
+   *
+   * We chain both into a single user flow so the user receives their funds
+   * after one confirmation sequence.
+   */
   async function handleRemove() {
     if (!address || !sign) return;
     setLoading("remove");
     try {
+      // ── Step 1: Burn all liquidity ────────────────────────────────
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 300);
-      await trackTx(`Remove Liquidity from Position #${position.id.toString()}`, async (updateStep) => {
+      await trackTx(`Remove Liquidity – Position #${position.id.toString()}`, async (updateStep) => {
         updateStep("preparing");
         const xdr = await buildDecreaseLiquidityTx(
           address,
@@ -86,9 +116,33 @@ export default function PositionCard({ position, onRefresh }: Props) {
           ledger: response.ledger,
         };
       });
-      onRefresh();
+
+      // ── Step 2: Collect all owed tokens ───────────────────────────
+      // After decrease_liquidity, the pool owes the user their deposited
+      // tokens + any accrued fees. We must call collect() to transfer them.
+      await trackTx(`Collect Tokens – Position #${position.id.toString()}`, async (updateStep) => {
+        updateStep("preparing");
+        const xdr = await buildCollectTx(address, position.id, address);
+        updateStep("waiting_signature");
+        const signed = await sign(xdr);
+        updateStep("submitting");
+        updateStep("pending");
+        const response = await submitTransaction(signed);
+        return {
+          hash: response.hash,
+          ledger: response.ledger,
+        };
+      });
+
+      addToast("Position closed! Tokens returned to your wallet.", "success");
+      refreshAll();
     } catch (err: unknown) {
-      console.error("Remove liquidity submission error:", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error("Remove liquidity error:", err);
+      addToast(`Failed to remove liquidity: ${msg}`, "error");
+      // Even if the collect step fails, the decrease step may have succeeded.
+      // Refresh to show the updated position state so the user can retry collect.
+      refreshAll();
     } finally {
       setLoading(null);
     }
@@ -148,9 +202,19 @@ export default function PositionCard({ position, onRefresh }: Props) {
           </div>
         </div>
         <span
-          className={position.inRange ? "badge-in-range" : "badge-out-range"}
+          className={
+            isPositionClosed
+              ? "badge-out-range"
+              : position.inRange
+              ? "badge-in-range"
+              : "badge-out-range"
+          }
         >
-          {position.inRange ? "✓ In Range" : "⚠ Out of Range"}
+          {isPositionClosed
+            ? "Closed"
+            : position.inRange
+            ? "✓ In Range"
+            : "⚠ Out of Range"}
         </span>
       </div>
 
@@ -212,8 +276,8 @@ export default function PositionCard({ position, onRefresh }: Props) {
         </p>
       )}
 
-      {/* Fees */}
-      {(position.tokensOwed0 > 0n || position.tokensOwed1 > 0n) && (
+      {/* Owed tokens / Fees section */}
+      {hasOwedTokens && (
         <div
           style={{
             background: "rgba(34,197,94,0.05)",
@@ -225,7 +289,7 @@ export default function PositionCard({ position, onRefresh }: Props) {
           <p
             style={{ color: "#22c55e", fontSize: "12px", marginBottom: "6px", fontWeight: 600 }}
           >
-            Uncollected Fees
+            {isPositionClosed ? "Tokens to Collect" : "Uncollected Fees"}
           </p>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span style={{ color: "oklch(0.45 0.02 60)", fontSize: "13px" }}>
@@ -240,12 +304,10 @@ export default function PositionCard({ position, onRefresh }: Props) {
 
       {/* Actions */}
       <div style={{ display: "flex", gap: "10px" }}>
+        {/* Collect button — visible when there are owed tokens */}
         <button
           onClick={handleCollect}
-          disabled={
-            loading !== null ||
-            (position.tokensOwed0 === 0n && position.tokensOwed1 === 0n)
-          }
+          disabled={loading !== null || !hasOwedTokens}
           style={{
             flex: 1,
             padding: "10px",
@@ -253,36 +315,39 @@ export default function PositionCard({ position, onRefresh }: Props) {
             border: "1px solid rgba(34,197,94,0.3)",
             background: "rgba(34,197,94,0.1)",
             color: "#22c55e",
-            cursor: "pointer",
+            cursor: loading !== null || !hasOwedTokens ? "not-allowed" : "pointer",
             fontWeight: 600,
             fontSize: "14px",
-            opacity:
-              loading !== null ||
-              (position.tokensOwed0 === 0n && position.tokensOwed1 === 0n)
-                ? 0.4
-                : 1,
+            opacity: loading !== null || !hasOwedTokens ? 0.4 : 1,
           }}
         >
-          {loading === "collect" ? "Collecting..." : "Collect Fees"}
+          {loading === "collect"
+            ? "Collecting..."
+            : isPositionClosed
+            ? "Collect Tokens"
+            : "Collect Fees"}
         </button>
-        <button
-          onClick={handleRemove}
-          disabled={loading !== null}
-          style={{
-            flex: 1,
-            padding: "10px",
-            borderRadius: "10px",
-            border: "1px solid rgba(239,68,68,0.3)",
-            background: "rgba(239,68,68,0.08)",
-            color: "#f87171",
-            cursor: "pointer",
-            fontWeight: 600,
-            fontSize: "14px",
-            opacity: loading !== null ? 0.4 : 1,
-          }}
-        >
-          {loading === "remove" ? "Removing..." : "Remove"}
-        </button>
+        {/* Remove button — only when there is still liquidity */}
+        {!isPositionClosed && (
+          <button
+            onClick={handleRemove}
+            disabled={loading !== null}
+            style={{
+              flex: 1,
+              padding: "10px",
+              borderRadius: "10px",
+              border: "1px solid rgba(239,68,68,0.3)",
+              background: "rgba(239,68,68,0.08)",
+              color: "#f87171",
+              cursor: loading !== null ? "not-allowed" : "pointer",
+              fontWeight: 600,
+              fontSize: "14px",
+              opacity: loading !== null ? 0.4 : 1,
+            }}
+          >
+            {loading === "remove" ? "Removing..." : "Remove"}
+          </button>
+        )}
       </div>
     </div>
   );

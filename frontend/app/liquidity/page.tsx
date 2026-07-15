@@ -17,6 +17,8 @@ export default function LiquidityPage() {
   function handleRefresh() {
     refetch();
     queryClient.invalidateQueries({ queryKey: ["positions"] });
+    queryClient.invalidateQueries({ queryKey: ["balances"] });
+    queryClient.invalidateQueries({ queryKey: ["pool"] });
   }
 
   return (
