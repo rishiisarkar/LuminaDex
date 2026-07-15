@@ -30,7 +30,7 @@ export default function TokenInputBox({
   return (
     <div
       style={{
-        background: "oklch(0.96 0.005 90)",
+        background: "var(--bg-input)",
         borderRadius: "28px",
         padding: "24px 28px",
       }}
@@ -39,7 +39,7 @@ export default function TokenInputBox({
         style={{
           fontFamily: "var(--font-instrument)",
           fontSize: "22px",
-          color: "oklch(0.12 0.01 60)",
+          color: "var(--text-primary)",
           marginBottom: "18px",
         }}
       >
@@ -67,7 +67,7 @@ export default function TokenInputBox({
                 background: "transparent",
                 border: "none",
                 outline: "none",
-                color: "oklch(0.12 0.01 60)",
+                color: "var(--text-primary)",
                 fontFamily: "var(--font-instrument)",
                 fontSize: "56px",
                 lineHeight: 1,
@@ -76,7 +76,7 @@ export default function TokenInputBox({
           )}
           <p
             style={{
-              color: "oklch(0.55 0.02 60)",
+              color: "var(--text-secondary)",
               fontSize: "15px",
               marginTop: "10px",
             }}
@@ -91,9 +91,9 @@ export default function TokenInputBox({
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            background: "oklch(1 0 0)",
-            border: "1px solid oklch(0.12 0.01 60 / 0.06)",
-            boxShadow: "0 1px 3px oklch(0.12 0.01 60 / 0.08)",
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.3)",
             borderRadius: "9999px",
             padding: "10px 18px 10px 10px",
             whiteSpace: "nowrap",
@@ -109,7 +109,7 @@ export default function TokenInputBox({
           />
           <span
             style={{
-              color: "oklch(0.12 0.01 60)",
+              color: "var(--text-primary)",
               fontWeight: 600,
               fontSize: "17px",
               fontFamily: "var(--font-instrument)",
@@ -117,7 +117,7 @@ export default function TokenInputBox({
           >
             {token.symbol}
           </span>
-          <ChevronDown size={16} style={{ color: "oklch(0.45 0.02 60)" }} />
+          <ChevronDown size={16} style={{ color: "var(--text-secondary)" }} />
         </div>
       </div>
     </div>

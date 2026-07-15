@@ -151,8 +151,8 @@ export default function PositionCard({ position, onRefresh }: Props) {
   return (
     <div
       style={{
-        background: "oklch(1 0 0)",
-        border: "1px solid oklch(0.12 0.01 60 / 0.15)",
+        background: "var(--bg-card)",
+        border: "1px solid var(--border)",
         borderRadius: "16px",
         padding: "20px",
         display: "flex",
@@ -162,11 +162,11 @@ export default function PositionCard({ position, onRefresh }: Props) {
       }}
       onMouseEnter={(e) =>
         ((e.currentTarget as HTMLDivElement).style.borderColor =
-          "oklch(0.12 0.01 60 / 0.3)")
+          "rgba(255, 255, 255, 0.3)")
       }
       onMouseLeave={(e) =>
         ((e.currentTarget as HTMLDivElement).style.borderColor =
-          "oklch(0.12 0.01 60 / 0.15)")
+          "var(--border)")
       }
     >
       {/* Header */}
@@ -180,7 +180,7 @@ export default function PositionCard({ position, onRefresh }: Props) {
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <div
             style={{
-              background: "oklch(0.12 0.01 60 / 0.1)",
+              background: "rgba(255, 255, 255, 0.08)",
               borderRadius: "10px",
               padding: "8px 12px",
               display: "flex",
@@ -189,14 +189,14 @@ export default function PositionCard({ position, onRefresh }: Props) {
             }}
           >
             <img src="/tokens/xlm.png" alt="XLM" style={{ width: 20, height: 20, borderRadius: "50%", objectFit: "cover" }} />
-            <span style={{ color: "oklch(0.45 0.02 60)", fontSize: "14px" }}>/</span>
+            <span style={{ color: "var(--text-secondary)", fontSize: "14px" }}>/</span>
             <img src="/tokens/usdc.png" alt="USDC" style={{ width: 20, height: 20, borderRadius: "50%", objectFit: "cover" }} />
           </div>
           <div>
-            <p style={{ color: "oklch(0.12 0.01 60)", fontWeight: 700, fontSize: "15px" }}>
+            <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "15px" }}>
               XLM / USDC
             </p>
-            <p style={{ color: "oklch(0.45 0.02 60)", fontSize: "12px" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "12px" }}>
               Position #{position.id.toString()}
             </p>
           </div>
@@ -221,13 +221,13 @@ export default function PositionCard({ position, onRefresh }: Props) {
       {/* Price range */}
       <div
         style={{
-          background: "oklch(0.12 0.01 60 / 0.05)",
-          border: "1px solid oklch(0.12 0.01 60 / 0.1)",
+          background: "rgba(255, 255, 255, 0.03)",
+          border: "1px solid var(--border)",
           borderRadius: "10px",
           padding: "12px 16px",
         }}
       >
-        <p style={{ color: "oklch(0.45 0.02 60)", fontSize: "11px", marginBottom: "6px" }}>
+        <p style={{ color: "var(--text-secondary)", fontSize: "11px", marginBottom: "6px" }}>
           PRICE RANGE (USDC per XLM)
         </p>
         <div
@@ -238,22 +238,22 @@ export default function PositionCard({ position, onRefresh }: Props) {
           }}
         >
           <div>
-            <p style={{ color: "oklch(0.45 0.02 60)", fontSize: "11px" }}>Min</p>
-            <p style={{ color: "oklch(0.12 0.01 60)", fontWeight: 600 }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "11px" }}>Min</p>
+            <p style={{ color: "var(--text-primary)", fontWeight: 600 }}>
               ${(1 / position.priceUpper).toFixed(4)}
             </p>
           </div>
-          <div style={{ color: "oklch(0.45 0.02 60)" }}>→</div>
+          <div style={{ color: "var(--text-secondary)" }}>→</div>
           <div style={{ textAlign: "right" }}>
-            <p style={{ color: "oklch(0.45 0.02 60)", fontSize: "11px" }}>Max</p>
-            <p style={{ color: "oklch(0.12 0.01 60)", fontWeight: 600 }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "11px" }}>Max</p>
+            <p style={{ color: "var(--text-primary)", fontWeight: 600 }}>
               ${(1 / position.priceLower).toFixed(4)}
             </p>
           </div>
         </div>
         {pool && (
           <div style={{ marginTop: "8px", textAlign: "center" }}>
-            <span style={{ color: "oklch(0.12 0.01 60)", fontSize: "12px" }}>
+            <span style={{ color: "var(--text-primary)", fontSize: "12px" }}>
               Current: ${(1 / pool.currentPrice).toFixed(4)}
             </span>
           </div>
@@ -268,9 +268,9 @@ export default function PositionCard({ position, onRefresh }: Props) {
 
       {/* USD value */}
       {usdTotal > 0 && (
-        <p style={{ color: "oklch(0.45 0.02 60)", fontSize: "13px", textAlign: "center" }}>
+        <p style={{ color: "var(--text-secondary)", fontSize: "13px", textAlign: "center" }}>
           Total Value ≈{" "}
-          <span style={{ color: "oklch(0.12 0.01 60)", fontWeight: 600 }}>
+          <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>
             ${usdTotal.toFixed(2)}
           </span>
         </p>
@@ -292,10 +292,10 @@ export default function PositionCard({ position, onRefresh }: Props) {
             {isPositionClosed ? "Tokens to Collect" : "Uncollected Fees"}
           </p>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "oklch(0.45 0.02 60)", fontSize: "13px" }}>
+            <span style={{ color: "var(--text-secondary)", fontSize: "13px" }}>
               {feeUsdc} USDC
             </span>
-            <span style={{ color: "oklch(0.45 0.02 60)", fontSize: "13px" }}>
+            <span style={{ color: "var(--text-secondary)", fontSize: "13px" }}>
               {feeXlm} XLM
             </span>
           </div>
@@ -365,8 +365,8 @@ function TokenAmount({
   return (
     <div
       style={{
-        background: "oklch(0.12 0.01 60 / 0.05)",
-        border: "1px solid oklch(0.12 0.01 60 / 0.1)",
+        background: "rgba(255, 255, 255, 0.03)",
+        border: "1px solid var(--border)",
         borderRadius: "10px",
         padding: "12px",
       }}
@@ -380,9 +380,9 @@ function TokenAmount({
         }}
       >
         <img src={logo} alt={symbol} style={{ width: 16, height: 16, borderRadius: "50%", objectFit: "cover" }} />
-        <span style={{ color: "oklch(0.45 0.02 60)", fontSize: "12px" }}>{symbol}</span>
+        <span style={{ color: "var(--text-secondary)", fontSize: "12px" }}>{symbol}</span>
       </div>
-      <p style={{ color: "oklch(0.12 0.01 60)", fontWeight: 600, fontSize: "15px" }}>
+      <p style={{ color: "var(--text-primary)", fontWeight: 600, fontSize: "15px" }}>
         {amount}
       </p>
     </div>

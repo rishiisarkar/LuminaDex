@@ -32,7 +32,7 @@ export default function LiquidityPage() {
           margin: "0 auto",
           padding: "40px 24px",
           background:
-            "radial-gradient(ellipse 60% 40% at 50% 0%, oklch(0.12 0.01 60 / 0.05) 0%, transparent 100%)",
+            "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 100%)",
         }}
       >
       {/* Header */}
@@ -44,7 +44,7 @@ export default function LiquidityPage() {
           >
             Liquidity
           </h1>
-          <p style={{ color: "oklch(0.45 0.02 60)", fontSize: "14px" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "14px" }}>
             Provide liquidity to earn 0.3% trading fees
           </p>
         </div>
@@ -77,20 +77,20 @@ export default function LiquidityPage() {
             <div
               key={label}
               style={{
-                background: "oklch(1 0 0)",
-                border: "1px solid oklch(0.12 0.01 60 / 0.12)",
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
                 borderRadius: "12px",
                 padding: "16px",
                 textAlign: "center",
               }}
             >
-              <p style={{ color: "oklch(0.45 0.02 60)", fontSize: "12px", marginBottom: "6px" }}>
+              <p style={{ color: "var(--text-secondary)", fontSize: "12px", marginBottom: "6px" }}>
                 {label}
               </p>
-              <p style={{ color: "oklch(0.12 0.01 60)", fontWeight: 700, fontSize: "18px" }}>
+              <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "18px" }}>
                 {value}
               </p>
-              <p style={{ color: "oklch(0.6 0.02 60)", fontSize: "11px", marginTop: "4px" }}>
+              <p style={{ color: "var(--text-secondary)", fontSize: "11px", marginTop: "4px" }}>
                 {sub}
               </p>
             </div>
@@ -112,8 +112,8 @@ export default function LiquidityPage() {
               key={i}
               style={{
                 height: "220px",
-                background: "oklch(0.94 0.005 90)",
-                border: "1px solid oklch(0.12 0.01 60 / 0.08)",
+                background: "var(--bg-input)",
+                border: "1px solid var(--border)",
                 borderRadius: "16px",
                 animation: "pulse 1.5s ease-in-out infinite",
               }}
@@ -158,15 +158,15 @@ function EmptyState({
       style={{
         textAlign: "center",
         padding: "60px 24px",
-        background: "oklch(0.94 0.005 90)",
-        border: "1px solid oklch(0.12 0.01 60 / 0.1)",
+        background: "var(--bg-input)",
+        border: "1px solid var(--border)",
         borderRadius: "16px",
       }}
     >
-      <h2 style={{ color: "oklch(0.12 0.01 60)", fontWeight: 700, marginBottom: "8px" }}>
+      <h2 style={{ color: "var(--text-primary)", fontWeight: 700, marginBottom: "8px" }}>
         {title}
       </h2>
-      <p style={{ color: "oklch(0.45 0.02 60)", marginBottom: "24px" }}>{desc}</p>
+      <p style={{ color: "var(--text-secondary)", marginBottom: "24px" }}>{desc}</p>
       {action}
     </div>
   );

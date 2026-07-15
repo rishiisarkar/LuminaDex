@@ -203,9 +203,9 @@ export default function SwapPage() {
                   width: "56px",
                   height: "56px",
                   borderRadius: "50%",
-                  background: "oklch(1 0 0)",
-                  border: "1px solid oklch(0.12 0.01 60 / 0.08)",
-                  boxShadow: "0 2px 8px oklch(0.12 0.01 60 / 0.1)",
+                  background: "var(--bg-card)",
+                  border: "1px solid var(--border)",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -213,7 +213,7 @@ export default function SwapPage() {
                 }}
                 title="Slippage settings"
               >
-                <SlidersHorizontal size={20} style={{ color: "oklch(0.12 0.01 60)", transform: "rotate(90deg)" }} />
+                <SlidersHorizontal size={20} style={{ color: "var(--text-primary)", transform: "rotate(90deg)" }} />
               </button>
             }
           />
@@ -222,10 +222,10 @@ export default function SwapPage() {
         {/* Card */}
         <div
           style={{
-            background: "oklch(1 0 0)",
+            background: "var(--bg-card)",
             borderRadius: "36px",
             padding: "12px",
-            boxShadow: "0 8px 32px oklch(0.12 0.01 60 / 0.06)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
           }}
         >
           <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -259,10 +259,10 @@ export default function SwapPage() {
                   width: "52px",
                   height: "52px",
                   borderRadius: "50%",
-                  background: "oklch(1 0 0)",
-                  border: "1px solid oklch(0.12 0.01 60 / 0.08)",
-                  boxShadow: "0 2px 8px oklch(0.12 0.01 60 / 0.12)",
-                  color: "oklch(0.12 0.01 60)",
+                  background: "var(--bg-card)",
+                  border: "1px solid var(--border)",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                  color: "var(--text-primary)",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -355,8 +355,8 @@ export default function SwapPage() {
               { label: "Fee", value: "0.3%" },
             ].map(({ label, value }) => (
               <div key={label} style={{ textAlign: "center" }}>
-                <p style={{ color: "oklch(0.45 0.02 60)", fontSize: "11px" }}>{label}</p>
-                <p style={{ color: "oklch(0.45 0.02 60)", fontSize: "13px", fontWeight: 600 }}>
+                <p style={{ color: "var(--text-secondary)", fontSize: "11px" }}>{label}</p>
+                <p style={{ color: "var(--text-secondary)", fontSize: "13px", fontWeight: 600 }}>
                   {value}
                 </p>
               </div>

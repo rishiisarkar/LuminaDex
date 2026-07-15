@@ -160,12 +160,12 @@ export default function LiquidityChart({
       >
         <defs>
           <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="oklch(0.12 0.01 60)" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="oklch(0.12 0.01 60)" stopOpacity="0.05" />
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.15)" stopOpacity="0.22" />
+            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.15)" stopOpacity="0.05" />
           </linearGradient>
           <linearGradient id="barGradActive" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="oklch(0.12 0.01 60)" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="oklch(0.12 0.01 60)" stopOpacity="0.3" />
+            <stop offset="0%" stopColor="#7c5cff" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#7c5cff" stopOpacity="0.3" />
           </linearGradient>
         </defs>
 
@@ -176,7 +176,7 @@ export default function LiquidityChart({
             y={PAD_TOP}
             width={Math.max(0, priceToX(high24h) - priceToX(low24h))}
             height={plotH}
-            fill="oklch(0.12 0.01 60 / 0.05)"
+            fill="rgba(255, 255, 255, 0.03)"
           />
         )}
 
@@ -186,7 +186,7 @@ export default function LiquidityChart({
           y={PAD_TOP}
           width={Math.abs(xUpper - xLower)}
           height={plotH}
-          fill="oklch(0.12 0.01 60 / 0.06)"
+          fill="rgba(124, 92, 255, 0.08)"
         />
 
         {/* Histogram */}
@@ -211,14 +211,14 @@ export default function LiquidityChart({
           y1={PAD_TOP}
           x2={xCurrent}
           y2={PAD_TOP + plotH}
-          stroke="oklch(0.12 0.01 60)"
+          stroke="#ffffff"
           strokeWidth={1.5}
           strokeDasharray="4 3"
         />
 
         {/* Range handles */}
-        <Handle x={xLower} h={plotH} color="oklch(0.12 0.01 60)" onDown={() => (dragging.current = "lower")} disabled={disabled} />
-        <Handle x={xUpper} h={plotH} color="oklch(0.12 0.01 60)" onDown={() => (dragging.current = "upper")} disabled={disabled} />
+        <Handle x={xLower} h={plotH} color="#7c5cff" onDown={() => (dragging.current = "lower")} disabled={disabled} />
+        <Handle x={xUpper} h={plotH} color="#7c5cff" onDown={() => (dragging.current = "upper")} disabled={disabled} />
 
         {/* X axis labels */}
         {axisTicks.map((t, i) => (
@@ -227,7 +227,7 @@ export default function LiquidityChart({
             x={priceToX(t)}
             y={H - 8}
             fontSize={11}
-            fill="oklch(0.45 0.02 60)"
+            fill="var(--text-secondary)"
             textAnchor="middle"
           >
             {fmt(t)}
@@ -243,19 +243,19 @@ export default function LiquidityChart({
           flexWrap: "wrap",
           marginTop: 8,
           fontSize: 12,
-          color: "oklch(0.45 0.02 60)",
+          color: "var(--text-secondary)",
         }}
       >
         <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ width: 14, height: 0, borderTop: "1.5px dashed oklch(0.12 0.01 60)" }} />
+          <span style={{ width: 14, height: 0, borderTop: "1.5px dashed #ffffff" }} />
           Current Price&nbsp;
-          <strong style={{ color: "oklch(0.12 0.01 60)" }}>{fmt(currentPrice)}</strong>&nbsp;USDC per XLM
+          <strong style={{ color: "#ffffff" }}>{fmt(currentPrice)}</strong>&nbsp;USDC per XLM
         </span>
         {low24h && high24h && (
           <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 12, height: 12, background: "oklch(0.12 0.01 60 / 0.15)", borderRadius: 2 }} />
+            <span style={{ width: 12, height: 12, background: "rgba(255, 255, 255, 0.15)", borderRadius: 2 }} />
             24h Range&nbsp;
-            <strong style={{ color: "oklch(0.12 0.01 60)" }}>
+            <strong style={{ color: "#ffffff" }}>
               {fmt(low24h)} – {fmt(high24h)}
             </strong>
           </span>
@@ -265,19 +265,21 @@ export default function LiquidityChart({
   );
 }
 
+interface HandleProps {
+  x: number;
+  h: number;
+  color: string;
+  onDown: () => void;
+  disabled: boolean;
+}
+
 function Handle({
   x,
   h,
   color,
   onDown,
   disabled,
-}: {
-  x: number;
-  h: number;
-  color: string;
-  onDown: () => void;
-  disabled: boolean;
-}) {
+}: HandleProps) {
   return (
     <g
       style={{ cursor: disabled ? "default" : "ew-resize" }}
@@ -305,9 +307,9 @@ function ZoomBtn({ label, onClick, title }: { label: string; onClick: () => void
         width: 28,
         height: 28,
         borderRadius: 8,
-        border: "1px solid oklch(0.12 0.01 60 / 0.15)",
-        background: "oklch(0.94 0.005 90)",
-        color: "oklch(0.12 0.01 60)",
+        border: "1px solid var(--border)",
+        background: "rgba(255, 255, 255, 0.05)",
+        color: "var(--text-primary)",
         cursor: "pointer",
         fontSize: 14,
         display: "flex",

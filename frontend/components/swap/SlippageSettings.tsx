@@ -19,10 +19,10 @@ export default function SlippageSettings({ slippage, onChange, trigger }: Props)
         {trigger ?? (
           <button
             style={{
-              background: "oklch(0.12 0.01 60 / 0.08)",
-              border: "1px solid oklch(0.12 0.01 60 / 0.2)",
+              background: "rgba(255, 255, 255, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
               borderRadius: "8px",
-              color: "oklch(0.45 0.02 60)",
+              color: "var(--text-secondary)",
               padding: "6px 12px",
               cursor: "pointer",
               display: "flex",
@@ -33,7 +33,7 @@ export default function SlippageSettings({ slippage, onChange, trigger }: Props)
             title="Slippage settings"
           >
             <span>⚙</span>
-            <span style={{ color: "oklch(0.12 0.01 60)" }}>{slippage}%</span>
+            <span style={{ color: "var(--text-primary)" }}>{slippage}%</span>
           </button>
         )}
       </div>
@@ -42,19 +42,19 @@ export default function SlippageSettings({ slippage, onChange, trigger }: Props)
         <div
           className="slippage-panel"
           style={{
-            background: "oklch(1 0 0)",
-            border: "1px solid oklch(0.12 0.01 60 / 0.1)",
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
             borderRadius: "12px",
             padding: "16px",
             width: "240px",
             maxWidth: "calc(100vw - 32px)",
-            boxShadow: "0 8px 24px oklch(0.12 0.01 60 / 0.12)",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
             zIndex: 100,
           }}
         >
           <p
             style={{
-              color: "oklch(0.45 0.02 60)",
+              color: "var(--text-secondary)",
               fontSize: "12px",
               marginBottom: "10px",
               fontWeight: 600,
@@ -79,13 +79,13 @@ export default function SlippageSettings({ slippage, onChange, trigger }: Props)
                   border: "1px solid",
                   borderColor:
                     slippage === p
-                      ? "oklch(0.12 0.01 60 / 0.6)"
-                      : "oklch(0.12 0.01 60 / 0.15)",
+                      ? "rgba(255, 255, 255, 0.6)"
+                      : "rgba(255, 255, 255, 0.15)",
                   background:
                     slippage === p
-                      ? "oklch(0.12 0.01 60 / 0.2)"
+                      ? "rgba(255, 255, 255, 0.2)"
                       : "transparent",
-                  color: slippage === p ? "oklch(0.12 0.01 60)" : "oklch(0.45 0.02 60)",
+                  color: slippage === p ? "var(--text-primary)" : "var(--text-secondary)",
                   cursor: "pointer",
                   fontSize: "13px",
                   fontWeight: 600,
@@ -99,8 +99,8 @@ export default function SlippageSettings({ slippage, onChange, trigger }: Props)
             style={{
               display: "flex",
               alignItems: "center",
-              background: "oklch(0.92 0.01 90)",
-              border: "1px solid oklch(0.12 0.01 60 / 0.15)",
+              background: "var(--bg-input)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
               borderRadius: "8px",
               padding: "8px 12px",
               gap: "6px",
@@ -120,11 +120,11 @@ export default function SlippageSettings({ slippage, onChange, trigger }: Props)
                 background: "transparent",
                 border: "none",
                 outline: "none",
-                color: "oklch(0.12 0.01 60)",
+                color: "var(--text-primary)",
                 fontSize: "13px",
               }}
             />
-            <span style={{ color: "oklch(0.45 0.02 60)", fontSize: "13px" }}>%</span>
+            <span style={{ color: "var(--text-secondary)", fontSize: "13px" }}>%</span>
           </div>
           {slippage > 1 && (
             <p style={{ color: "#eab308", fontSize: "11px", marginTop: "8px" }}>

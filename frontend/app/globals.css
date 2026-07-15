@@ -18,25 +18,25 @@
   --text-secondary: var(--muted-foreground);
 
   /* Landing page design tokens (shadcn/ui) */
-  --background: oklch(0.985 0.002 90);
-  --foreground: oklch(0.12 0.01 60);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.12 0.01 60);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.12 0.01 60);
-  --primary: oklch(0.12 0.01 60);
-  --primary-foreground: oklch(0.985 0.002 90);
-  --secondary: oklch(0.96 0.005 90);
-  --secondary-foreground: oklch(0.12 0.01 60);
-  --muted: oklch(0.94 0.005 90);
-  --muted-foreground: oklch(0.45 0.02 60);
-  --accent-landing: oklch(0.92 0.01 90);
-  --accent-landing-foreground: oklch(0.12 0.01 60);
+  --background: #0a0a0f;
+  --foreground: #f0f0f5;
+  --card: #111118;
+  --card-foreground: #f0f0f5;
+  --popover: #111118;
+  --popover-foreground: #f0f0f5;
+  --primary: #7c5cff;
+  --primary-foreground: #ffffff;
+  --secondary: #111118;
+  --secondary-foreground: #f0f0f5;
+  --muted: rgba(255, 255, 255, 0.04);
+  --muted-foreground: #8888a8;
+  --accent-landing: #c8a0e0;
+  --accent-landing-foreground: #0a0a0f;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border-landing: oklch(0.88 0.01 90);
-  --input-landing: oklch(0.92 0.01 90);
-  --ring: oklch(0.12 0.01 60);
+  --border-landing: rgba(255, 255, 255, 0.08);
+  --input-landing: rgba(255, 255, 255, 0.03);
+  --ring: #7c5cff;
   --radius: 0.25rem;
 }
 
@@ -202,7 +202,7 @@ body {
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: oklch(0.12 0.01 60 / 0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
 
 .glass-card {
   background: var(--bg-card);
@@ -218,7 +218,7 @@ body {
   transition: border-color 0.2s;
 }
 .token-input:focus-within {
-  border-color: oklch(0.12 0.01 60 / 0.4);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .gradient-text {
@@ -255,12 +255,12 @@ body {
 }
 .nav-link:hover {
   color: var(--text-primary);
-  background: oklch(0.12 0.01 60 / 0.05);
+  background: rgba(255, 255, 255, 0.04);
 }
 .nav-link.active {
   color: var(--foreground);
   font-weight: 700;
-  background: oklch(0.12 0.01 60 / 0.06);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .badge-in-range {
@@ -330,8 +330,8 @@ body {
     width: 38px;
     height: 38px;
     border-radius: 10px;
-    border: 1px solid oklch(0.12 0.01 60 / 0.15);
-    background: oklch(0.12 0.01 60 / 0.05);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
     color: var(--foreground);
     font-size: 18px;
     cursor: pointer;
@@ -341,8 +341,8 @@ body {
     flex-direction: column;
     padding: 8px 14px 14px;
     gap: 4px;
-    border-top: 1px solid oklch(0.12 0.01 60 / 0.1);
-    background: oklch(0.985 0.002 90 / 0.97);
+    border-top: 1px solid var(--border);
+    background: rgba(17, 17, 24, 0.97);
   }
   .nav-mobile-menu .nav-link { padding: 12px 14px; font-size: 15px; }
 }

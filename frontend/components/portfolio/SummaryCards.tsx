@@ -31,7 +31,7 @@ export default function SummaryCards({ positions }: Props) {
       label: "Total Position Value",
       value: `$${totalValueUsd.toFixed(2)}`,
       sub: `${positions.length} position${positions.length !== 1 ? "s" : ""}`,
-      color: "oklch(0.12 0.01 60)",
+      color: "var(--text-primary)",
       icon: "💼",
     },
     {
@@ -81,7 +81,7 @@ export default function SummaryCards({ positions }: Props) {
             <span style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: "13px", fontWeight: 500 }}>{label}</span>
             <span style={{ fontSize: "20px" }}>{icon}</span>
           </div>
-          <p style={{ color: color === "oklch(0.12 0.01 60)" ? "#ffffff" : color, fontSize: "26px", fontWeight: 700, marginBottom: "6px", letterSpacing: "-0.02em" }}>
+          <p style={{ color: color === "var(--text-primary)" ? "#ffffff" : color, fontSize: "26px", fontWeight: 700, marginBottom: "6px", letterSpacing: "-0.02em" }}>
             {value}
           </p>
           <p style={{ color: "rgba(255, 255, 255, 0.35)", fontSize: "12px" }}>{sub}</p>
