@@ -157,6 +157,14 @@ export async function submitTransaction(signedXdr: string): Promise<GetTransacti
     throw new Error("Transaction failed on-chain");
   }
 
+  // Narrow: at this point response can only be the SUCCESS variant
+  // (NOT_FOUND excluded by the loop condition, FAILED excluded above).
+  // This check is a type-level guarantee only — it should never throw
+  // given the logic above, but keeps TS in sync with that guarantee.
+  if (response.status !== SorobanRpc.Api.GetTransactionStatus.SUCCESS) {
+    throw new Error("Unexpected transaction status after submit");
+  }
+
   return {
     ...response,
     hash: result.hash,
