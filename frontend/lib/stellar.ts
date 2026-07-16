@@ -135,7 +135,9 @@ export async function simulateContractRead(
   return successSim.result?.retval ?? null;
 }
 
-export async function submitTransaction(signedXdr: string): Promise<GetTransactionResponse & { hash: string }> {
+export async function submitTransaction(
+  signedXdr: string
+): Promise<SorobanRpc.Api.GetSuccessfulTransactionResponse & { hash: string }> {
   const server = getRpc();
   const tx = TransactionBuilder.fromXDR(signedXdr, NETWORK_PASSPHRASE);
   const result = await server.sendTransaction(tx);
@@ -159,8 +161,6 @@ export async function submitTransaction(signedXdr: string): Promise<GetTransacti
 
   // Narrow: at this point response can only be the SUCCESS variant
   // (NOT_FOUND excluded by the loop condition, FAILED excluded above).
-  // This check is a type-level guarantee only — it should never throw
-  // given the logic above, but keeps TS in sync with that guarantee.
   if (response.status !== SorobanRpc.Api.GetTransactionStatus.SUCCESS) {
     throw new Error("Unexpected transaction status after submit");
   }
