@@ -169,9 +169,17 @@ export function usePositions(owner: string | null) {
 
   const refetch = () => setTrigger((prev) => prev + 1);
 
-  useEffect(() => {
+  const [prevOwner, setPrevOwner] = useState<string | null>(null);
+
+  if (owner !== prevOwner) {
+    setPrevOwner(owner);
     if (!owner) {
       setData([]);
+    }
+  }
+
+  useEffect(() => {
+    if (!owner) {
       return;
     }
 

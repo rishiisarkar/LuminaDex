@@ -88,8 +88,8 @@ export default function WalletModal() {
     try {
       await connect(wallet.id);
       setIsModalOpen(false);
-    } catch (err: any) {
-      setLocalError(err?.message || `Failed to connect to ${wallet.name}`);
+    } catch (err) {
+      setLocalError((err as Error)?.message || `Failed to connect to ${wallet.name}`);
     } finally {
       setConnectingId(null);
     }

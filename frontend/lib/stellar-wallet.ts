@@ -1,6 +1,6 @@
 // Stellar Multi-Wallet Integration (Stellar TESTNET).
 // Uses `@creit.tech/stellar-wallets-kit` to support Freighter, Albedo, xBull, and Lobstr.
-import { StellarWalletsKit } from "@creit.tech/stellar-wallets-kit";
+import { StellarWalletsKit, Networks } from "@creit.tech/stellar-wallets-kit";
 import { FreighterModule } from "@creit.tech/stellar-wallets-kit/modules/freighter";
 import { AlbedoModule } from "@creit.tech/stellar-wallets-kit/modules/albedo";
 import { xBullModule } from "@creit.tech/stellar-wallets-kit/modules/xbull";
@@ -23,7 +23,7 @@ export function initWalletKit() {
       new xBullModule(),
       new LobstrModule(),
     ],
-    network: STELLAR_TESTNET_PASSPHRASE as any,
+    network: Networks.TESTNET,
   });
   isKitInitialized = true;
 }
@@ -54,8 +54,8 @@ export async function connectWallet(walletId: "freighter" | "albedo" | "xbull" |
 
     localStorage.setItem("selectedWalletId", walletId);
     return address;
-  } catch (err: any) {
-    throw new Error(err?.message || `Failed to connect to ${walletId}`);
+  } catch (err) {
+    throw new Error((err as Error)?.message || `Failed to connect to ${walletId}`);
   }
 }
 
@@ -101,7 +101,7 @@ export async function signTx(xdr: string, walletAddress: string): Promise<string
       networkPassphrase: STELLAR_TESTNET_PASSPHRASE,
     });
     return signedTxXdr;
-  } catch (err: any) {
-    throw new Error(err?.message || "Transaction signing rejected or failed.");
+  } catch (err) {
+    throw new Error((err as Error)?.message || "Transaction signing rejected or failed.");
   }
 }

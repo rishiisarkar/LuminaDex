@@ -27,7 +27,7 @@ interface TxTrackerContextType {
   closeModal: () => void;
   trackTx: (
     actionName: string,
-    txExecutionFn: (updateStep: (step: TxStep) => void) => Promise<{ hash: string; ledger?: number } | any>
+    txExecutionFn: (updateStep: (step: TxStep) => void) => Promise<{ hash: string; ledger?: number; id?: string } | void | null>
   ) => Promise<void>;
   retryTx: () => void;
 }
@@ -47,7 +47,7 @@ export function TxTrackerProvider({ children }: { children: React.ReactNode }) {
   // Keep a reference to the active transaction execution function for retry
   const [activeTx, setActiveTx] = useState<{
     actionName: string;
-    fn: (updateStep: (step: TxStep) => void) => Promise<any>;
+    fn: (updateStep: (step: TxStep) => void) => Promise<{ hash: string; ledger?: number; id?: string } | void | null>;
   } | null>(null);
 
   const closeModal = useCallback(() => {
@@ -67,7 +67,7 @@ export function TxTrackerProvider({ children }: { children: React.ReactNode }) {
   const trackTx = useCallback(
     async (
       actionName: string,
-      txExecutionFn: (updateStep: (step: TxStep) => void) => Promise<any>
+      txExecutionFn: (updateStep: (step: TxStep) => void) => Promise<{ hash: string; ledger?: number; id?: string } | void | null>
     ) => {
       setIsModalOpen(true);
       setActiveTx({ actionName, fn: txExecutionFn });
@@ -102,7 +102,7 @@ export function TxTrackerProvider({ children }: { children: React.ReactNode }) {
           error: null,
           title: actionName,
         });
-      } catch (err: any) {
+      } catch (err) {
         console.error("Transaction failed in tracker:", err);
         const parsed = parseStellarError(err);
         setState((prev) => ({

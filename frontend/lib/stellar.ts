@@ -135,7 +135,7 @@ export async function simulateContractRead(
   return successSim.result?.retval ?? null;
 }
 
-export async function submitTransaction(signedXdr: string): Promise<any> {
+export async function submitTransaction(signedXdr: string): Promise<GetTransactionResponse & { hash: string }> {
   const server = getRpc();
   const tx = TransactionBuilder.fromXDR(signedXdr, NETWORK_PASSPHRASE);
   const result = await server.sendTransaction(tx);

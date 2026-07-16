@@ -22,9 +22,9 @@ export class StellarError extends Error {
   public type: StellarErrorType;
   public title: string;
   public recovery: string;
-  public originalError: any;
+  public originalError: unknown;
 
-  constructor(details: StellarErrorDetails, originalError?: any) {
+  constructor(details: StellarErrorDetails, originalError?: unknown) {
     super(details.message);
     this.name = "StellarError";
     this.type = details.type;
@@ -38,10 +38,10 @@ export class StellarError extends Error {
  * Parse any error thrown by a wallet kit, Horizon client, or Soroban RPC server,
  * mapping it to a human-readable StellarError with recovery actions.
  */
-export function parseStellarError(err: any): StellarError {
+export function parseStellarError(err: unknown): StellarError {
   if (err instanceof StellarError) return err;
 
-  const rawMessage = err?.message || String(err);
+  const rawMessage = (err as { message?: string })?.message || String(err);
   const rawString = JSON.stringify(err).toLowerCase() + " " + rawMessage.toLowerCase();
 
   // 1. Wallet Not Installed

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useWallet } from "@/hooks/useWallet";
 import { Loader2, User, Save, CheckCircle2, Globe } from "lucide-react";
@@ -11,14 +11,12 @@ export default function UserProfileCard() {
   const { nickname, isLoading, isRefetching, updateProfile, isUpdating } = useProfile(address);
   const [inputName, setInputName] = useState("");
 
-  // Sync local state when blockchain refetches or loads
-  useEffect(() => {
-    if (nickname) {
-      setInputName(nickname);
-    } else {
-      setInputName("");
-    }
-  }, [nickname]);
+  const [prevNickname, setPrevNickname] = useState<string | null>(null);
+
+  if (nickname !== prevNickname) {
+    setPrevNickname(nickname);
+    setInputName(nickname);
+  }
 
   if (!address) return null;
 
