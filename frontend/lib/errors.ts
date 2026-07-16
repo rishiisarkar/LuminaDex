@@ -34,11 +34,22 @@ export class StellarError extends Error {
   }
 }
 
+export interface HorizonErrorResponse {
+  message?: string;
+  response?: {
+    data?: {
+      extras?: {
+        result_codes?: Record<string, unknown> | string[];
+      };
+    };
+  };
+}
+
 /**
  * Parse any error thrown by a wallet kit, Horizon client, or Soroban RPC server,
  * mapping it to a human-readable StellarError with recovery actions.
  */
-export function parseStellarError(err: unknown): StellarError {
+export function parseStellarError(err: Error | HorizonErrorResponse | null | undefined): StellarError {
   if (err instanceof StellarError) return err;
 
   const rawMessage = (err as { message?: string })?.message || String(err);
@@ -164,7 +175,7 @@ export function parseStellarError(err: unknown): StellarError {
 
   // 9. Fallback Unknown
   // Dig out transaction result codes if available
-  const resultCodes = err?.response?.data?.extras?.result_codes;
+  const resultCodes = (err as HorizonErrorResponse)?.response?.data?.extras?.result_codes;
   const errorDetails = resultCodes ? `Result codes: ${JSON.stringify(resultCodes)}` : rawMessage;
 
   return new StellarError({

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useCallback } from "react";
-import { parseStellarError, StellarError } from "@/lib/errors";
+import { parseStellarError, StellarError, HorizonErrorResponse } from "@/lib/errors";
 import { getLatestLedger } from "@/lib/stellar";
 
 export type TxStep =
@@ -104,7 +104,7 @@ export function TxTrackerProvider({ children }: { children: React.ReactNode }) {
         });
       } catch (err) {
         console.error("Transaction failed in tracker:", err);
-        const parsed = parseStellarError(err);
+        const parsed = parseStellarError(err as Error | HorizonErrorResponse);
         setState((prev) => ({
           ...prev,
           step: "failed",

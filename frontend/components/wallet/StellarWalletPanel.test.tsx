@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import StellarWalletPanel from "./StellarWalletPanel";
 import type { UseStellarWallet } from "@/hooks/use-stellar-wallet";
 
@@ -20,6 +21,9 @@ function buildState(overrides: Partial<UseStellarWallet>): UseStellarWallet {
     isLoading: false,
     error: null,
     hasFreighter: true,
+    walletId: null,
+    isModalOpen: false,
+    setIsModalOpen: vi.fn(),
     connect: vi.fn(),
     disconnect: vi.fn(),
     refreshBalance: vi.fn(),
