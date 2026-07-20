@@ -49,16 +49,11 @@ export default function ActivityFeed({ walletAddress }: { walletAddress: string 
 
   if (loading) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div className="flex flex-col gap-2">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            style={{
-              height: "56px",
-              background: "rgba(255, 255, 255, 0.03)",
-              borderRadius: "10px",
-              animation: "pulse 1.5s infinite",
-            }}
+            className="h-14 rounded-xl bg-white/[0.03] border border-white/[0.06] animate-pulse"
           />
         ))}
       </div>
@@ -67,14 +62,7 @@ export default function ActivityFeed({ walletAddress }: { walletAddress: string 
 
   if (error) {
     return (
-      <div
-        style={{
-          color: "rgba(255, 255, 255, 0.4)",
-          fontSize: "14px",
-          textAlign: "center",
-          padding: "24px",
-        }}
-      >
+      <div className="text-white/40 text-sm text-center py-6">
         Could not load activity: {error}
       </div>
     );
@@ -82,15 +70,8 @@ export default function ActivityFeed({ walletAddress }: { walletAddress: string 
 
   if (effects.length === 0) {
     return (
-      <div
-        style={{
-          color: "rgba(255, 255, 255, 0.4)",
-          fontSize: "14px",
-          textAlign: "center",
-          padding: "24px",
-        }}
-      >
-        No activity yet
+      <div className="text-white/40 text-sm text-center py-6">
+        No recent activity found
       </div>
     );
   }
@@ -104,52 +85,46 @@ export default function ActivityFeed({ walletAddress }: { walletAddress: string 
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-      {effects.map((effect) => (
-        <div
-          key={effect.id}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            padding: "12px 16px",
-            background: "rgba(255, 255, 255, 0.02)",
-            border: "1px solid rgba(255, 255, 255, 0.06)",
-            borderRadius: "10px",
-          }}
-        >
-          <span style={{ fontSize: "18px", flexShrink: 0 }}>
-            {icons[effect.type] ?? "⭕"}
-          </span>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p
-              style={{
-                color: "#ffffff",
-                fontSize: "13px",
-                fontWeight: 600,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
+    <div className="w-full overflow-x-auto">
+      <div className="flex flex-col gap-2 min-w-[300px]">
+        {effects.map((effect) => {
+          const assetCode = ("asset_code" in effect && effect.asset_code) ? String(effect.asset_code) : "XLM";
+          const isUsdc = assetCode.toUpperCase() === "USDC";
+          const iconSrc = isUsdc ? "/usdc.svg" : "/xlm.svg";
+
+          return (
+            <div
+              key={effect.id}
+              className="flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all"
             >
-              {formatType(effect.type)}
-            </p>
-            <p style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: "11px" }}>
-              {timeAgo(effect.created_at)}
-            </p>
-          </div>
-          {"amount" in effect && effect.amount ? (
-            <div style={{ textAlign: "right", flexShrink: 0 }}>
-              <p style={{ color: "#ffffff", fontSize: "13px", fontWeight: 600 }}>
-                {String(effect.amount)}{" "}
-                <span style={{ color: "rgba(255, 255, 255, 0.4)" }}>
-                  {String(("asset_code" in effect && effect.asset_code) ? effect.asset_code : "XLM")}
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-lg shrink-0">
+                  {icons[effect.type] ?? "⭕"}
                 </span>
-              </p>
+                <div className="min-w-0">
+                  <p className="text-white font-semibold text-xs sm:text-sm truncate">
+                    {formatType(effect.type)}
+                  </p>
+                  <p className="text-white/40 text-[11px]">
+                    {timeAgo(effect.created_at)}
+                  </p>
+                </div>
+              </div>
+              {"amount" in effect && effect.amount ? (
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-white font-semibold text-xs sm:text-sm">
+                    {String(effect.amount)}
+                  </span>
+                  <div className="flex items-center gap-1 bg-white/[0.06] border border-white/10 rounded-md px-2 py-0.5">
+                    <img src={iconSrc} alt={assetCode} className="w-3.5 h-3.5 rounded-full object-contain" />
+                    <span className="text-white/70 text-xs font-semibold">{assetCode}</span>
+                  </div>
+                </div>
+              ) : null}
             </div>
-          ) : null}
-        </div>
-      ))}
+          );
+        })}
+      </div>
     </div>
   );
 }

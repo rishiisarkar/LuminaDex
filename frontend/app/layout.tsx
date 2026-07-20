@@ -22,9 +22,12 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aura — Concentrated Liquidity DEX on Stellar",
+  title: "LuminaDex — Stellar CLMM DEX",
   description:
     "Trade with concentrated liquidity, tight spreads, and instant settlement — fully non-custodial on Stellar Soroban.",
+  icons: {
+    icon: "/lumina-logo.svg",
+  },
 };
 
 export default function RootLayout({

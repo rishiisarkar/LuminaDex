@@ -31,60 +31,42 @@ export default function SummaryCards({ positions }: Props) {
       label: "Total Position Value",
       value: `$${totalValueUsd.toFixed(2)}`,
       sub: `${positions.length} position${positions.length !== 1 ? "s" : ""}`,
-      color: "var(--text-primary)",
+      color: "text-white",
       icon: "💼",
     },
     {
       label: "Uncollected Fees",
       value: `$${totalFeesUsd.toFixed(4)}`,
       sub: `${fromStroops(totalFees0, 7)} USDC + ${fromStroops(totalFees1, 7)} XLM`,
-      color: "#22c55e",
+      color: "text-green-400",
       icon: "💰",
     },
     {
       label: "Active Positions",
       value: `${inRangeCount} / ${positions.length}`,
       sub: "Currently in range",
-      color: inRangeCount === positions.length ? "#22c55e" : "#eab308",
+      color: inRangeCount === positions.length ? "text-green-400" : "text-yellow-400",
       icon: "📊",
     },
   ];
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-        gap: "16px",
-        marginBottom: "32px",
-      }}
-    >
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
       {cards.map(({ label, value, sub, color, icon }) => (
         <div
           key={label}
-          style={{
-            background: "rgba(255, 255, 255, 0.02)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: "20px",
-            padding: "24px",
-            backdropFilter: "blur(12px)",
-          }}
+          className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-xl flex flex-col justify-between"
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: "12px",
-            }}
-          >
-            <span style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: "13px", fontWeight: 500 }}>{label}</span>
-            <span style={{ fontSize: "20px" }}>{icon}</span>
+          <div className="flex justify-between items-start mb-3">
+            <span className="text-white/50 text-xs font-medium">{label}</span>
+            <span className="text-xl">{icon}</span>
           </div>
-          <p style={{ color: color === "var(--text-primary)" ? "#ffffff" : color, fontSize: "26px", fontWeight: 700, marginBottom: "6px", letterSpacing: "-0.02em" }}>
-            {value}
-          </p>
-          <p style={{ color: "rgba(255, 255, 255, 0.35)", fontSize: "12px" }}>{sub}</p>
+          <div>
+            <p className={`text-2xl sm:text-3xl font-extrabold tracking-tight mb-1 ${color}`}>
+              {value}
+            </p>
+            <p className="text-white/40 text-xs truncate">{sub}</p>
+          </div>
         </div>
       ))}
     </div>

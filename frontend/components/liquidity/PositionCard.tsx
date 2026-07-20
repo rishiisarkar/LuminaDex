@@ -32,7 +32,6 @@ export default function PositionCard({ position, onRefresh }: Props) {
   const feeUsdc   = formatAmount(position.tokensOwed0, 7, 4);
   const feeXlm    = formatAmount(position.tokensOwed1, 7, 4);
 
-  // Use real CoinGecko USD prices for valuation
   const usdTotal = xlmUsd > 0
     ? parseFloat(fromStroops(position.amount0)) * usdcUsd +
       parseFloat(fromStroops(position.amount1)) * xlmUsd
@@ -41,17 +40,12 @@ export default function PositionCard({ position, onRefresh }: Props) {
   const hasOwedTokens = position.tokensOwed0 > 0n || position.tokensOwed1 > 0n;
   const isPositionClosed = position.liquidity === 0n;
 
-  /** Refresh positions and wallet balances after any on-chain state change. */
   function refreshAll() {
     onRefresh();
     queryClient.invalidateQueries({ queryKey: ["balances"] });
     queryClient.invalidateQueries({ queryKey: ["pool"] });
   }
 
-  /**
-   * Collect owed tokens (fees + any burned amounts) from the position.
-   * This calls PM.collect → pool.collect which transfers tokens to the user.
-   */
   async function handleCollect() {
     if (!address || !sign) return;
     setLoading("collect");
@@ -80,21 +74,10 @@ export default function PositionCard({ position, onRefresh }: Props) {
     }
   }
 
-  /**
-   * Remove all liquidity from the position AND collect the owed tokens.
-   *
-   * Uniswap V3 (and our CLMM) uses a 2-step process:
-   *   1. decrease_liquidity → burns liquidity, marks tokens as "owed"
-   *   2. collect → actually transfers the owed tokens to the user
-   *
-   * We chain both into a single user flow so the user receives their funds
-   * after one confirmation sequence.
-   */
   async function handleRemove() {
     if (!address || !sign) return;
     setLoading("remove");
     try {
-      // ── Step 1: Burn all liquidity ────────────────────────────────
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 300);
       await trackTx(`Remove Liquidity – Position #${position.id.toString()}`, async (updateStep) => {
         updateStep("preparing");
@@ -117,9 +100,6 @@ export default function PositionCard({ position, onRefresh }: Props) {
         };
       });
 
-      // ── Step 2: Collect all owed tokens ───────────────────────────
-      // After decrease_liquidity, the pool owes the user their deposited
-      // tokens + any accrued fees. We must call collect() to transfer them.
       await trackTx(`Collect Tokens – Position #${position.id.toString()}`, async (updateStep) => {
         updateStep("preparing");
         const xdr = await buildCollectTx(address, position.id, address);
@@ -140,8 +120,6 @@ export default function PositionCard({ position, onRefresh }: Props) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("Remove liquidity error:", err);
       addToast(`Failed to remove liquidity: ${msg}`, "error");
-      // Even if the collect step fails, the decrease step may have succeeded.
-      // Refresh to show the updated position state so the user can retry collect.
       refreshAll();
     } finally {
       setLoading(null);
@@ -149,66 +127,28 @@ export default function PositionCard({ position, onRefresh }: Props) {
   }
 
   return (
-    <div
-      style={{
-        background: "var(--bg-card)",
-        border: "1px solid var(--border)",
-        borderRadius: "16px",
-        padding: "20px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px",
-        transition: "border-color 0.2s",
-      }}
-      onMouseEnter={(e) =>
-        ((e.currentTarget as HTMLDivElement).style.borderColor =
-          "rgba(255, 255, 255, 0.3)")
-      }
-      onMouseLeave={(e) =>
-        ((e.currentTarget as HTMLDivElement).style.borderColor =
-          "var(--border)")
-      }
-    >
+    <div className="p-5 sm:p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/20 transition-all flex flex-col gap-4">
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
-            style={{
-              background: "rgba(255, 255, 255, 0.08)",
-              borderRadius: "10px",
-              padding: "8px 12px",
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-            }}
-          >
-            <img src="/tokens/xlm.png" alt="XLM" style={{ width: 20, height: 20, borderRadius: "50%", objectFit: "cover" }} />
-            <span style={{ color: "var(--text-secondary)", fontSize: "14px" }}>/</span>
-            <img src="/tokens/usdc.png" alt="USDC" style={{ width: 20, height: 20, borderRadius: "50%", objectFit: "cover" }} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 bg-white/[0.06] border border-white/10 rounded-xl px-3 py-1.5">
+            <img src="/xlm.svg" alt="XLM" className="w-5 h-5 rounded-full object-contain" />
+            <span className="text-white/40 text-xs">/</span>
+            <img src="/usdc.svg" alt="USDC" className="w-5 h-5 rounded-full object-contain" />
           </div>
           <div>
-            <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "15px" }}>
-              XLM / USDC
-            </p>
-            <p style={{ color: "var(--text-secondary)", fontSize: "12px" }}>
-              Position #{position.id.toString()}
-            </p>
+            <p className="text-white font-bold text-base">XLM / USDC</p>
+            <p className="text-white/40 text-xs">Position #{position.id.toString()}</p>
           </div>
         </div>
         <span
-          className={
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
             isPositionClosed
-              ? "badge-out-range"
+              ? "bg-red-500/10 border border-red-500/20 text-red-400"
               : position.inRange
-              ? "badge-in-range"
-              : "badge-out-range"
-          }
+              ? "bg-green-500/10 border border-green-500/20 text-green-400"
+              : "bg-yellow-500/10 border border-yellow-500/20 text-yellow-400"
+          }`}
         >
           {isPositionClosed
             ? "Closed"
@@ -219,107 +159,61 @@ export default function PositionCard({ position, onRefresh }: Props) {
       </div>
 
       {/* Price range */}
-      <div
-        style={{
-          background: "rgba(255, 255, 255, 0.03)",
-          border: "1px solid var(--border)",
-          borderRadius: "10px",
-          padding: "12px 16px",
-        }}
-      >
-        <p style={{ color: "var(--text-secondary)", fontSize: "11px", marginBottom: "6px" }}>
-          PRICE RANGE (USDC per XLM)
+      <div className="bg-white/[0.02] border border-white/10 rounded-xl p-3 sm:p-4">
+        <p className="text-white/40 text-[11px] font-semibold uppercase tracking-wider mb-2">
+          Price Range (USDC per XLM)
         </p>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <div className="flex items-center justify-between text-sm">
           <div>
-            <p style={{ color: "var(--text-secondary)", fontSize: "11px" }}>Min</p>
-            <p style={{ color: "var(--text-primary)", fontWeight: 600 }}>
-              ${(1 / position.priceUpper).toFixed(4)}
-            </p>
+            <p className="text-white/40 text-xs">Min</p>
+            <p className="text-white font-semibold">${(1 / position.priceUpper).toFixed(4)}</p>
           </div>
-          <div style={{ color: "var(--text-secondary)" }}>→</div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ color: "var(--text-secondary)", fontSize: "11px" }}>Max</p>
-            <p style={{ color: "var(--text-primary)", fontWeight: 600 }}>
-              ${(1 / position.priceLower).toFixed(4)}
-            </p>
+          <div className="text-white/30">→</div>
+          <div className="text-right">
+            <p className="text-white/40 text-xs">Max</p>
+            <p className="text-white font-semibold">${(1 / position.priceLower).toFixed(4)}</p>
           </div>
         </div>
         {pool && (
-          <div style={{ marginTop: "8px", textAlign: "center" }}>
-            <span style={{ color: "var(--text-primary)", fontSize: "12px" }}>
-              Current: ${(1 / pool.currentPrice).toFixed(4)}
-            </span>
+          <div className="mt-2 text-center text-xs text-white/60">
+            Current: ${(1 / pool.currentPrice).toFixed(4)}
           </div>
         )}
       </div>
 
       {/* Token amounts */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-        <TokenAmount symbol="USDC" logo="/tokens/usdc.png" amount={usdcValue} />
-        <TokenAmount symbol="XLM"  logo="/tokens/xlm.png" amount={xlmValue} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <TokenAmount symbol="USDC" logo="/usdc.svg" amount={usdcValue} />
+        <TokenAmount symbol="XLM"  logo="/xlm.svg" amount={xlmValue} />
       </div>
 
       {/* USD value */}
       {usdTotal > 0 && (
-        <p style={{ color: "var(--text-secondary)", fontSize: "13px", textAlign: "center" }}>
+        <p className="text-white/50 text-xs sm:text-sm text-center">
           Total Value ≈{" "}
-          <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>
-            ${usdTotal.toFixed(2)}
-          </span>
+          <span className="text-white font-semibold">${usdTotal.toFixed(2)}</span>
         </p>
       )}
 
       {/* Owed tokens / Fees section */}
       {hasOwedTokens && (
-        <div
-          style={{
-            background: "rgba(34,197,94,0.05)",
-            border: "1px solid rgba(34,197,94,0.15)",
-            borderRadius: "10px",
-            padding: "12px 16px",
-          }}
-        >
-          <p
-            style={{ color: "#22c55e", fontSize: "12px", marginBottom: "6px", fontWeight: 600 }}
-          >
+        <div className="bg-green-500/5 border border-green-500/20 rounded-xl p-3 sm:p-4">
+          <p className="text-green-400 text-xs font-semibold uppercase tracking-wider mb-2">
             {isPositionClosed ? "Tokens to Collect" : "Uncollected Fees"}
           </p>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "var(--text-secondary)", fontSize: "13px" }}>
-              {feeUsdc} USDC
-            </span>
-            <span style={{ color: "var(--text-secondary)", fontSize: "13px" }}>
-              {feeXlm} XLM
-            </span>
+          <div className="flex justify-between text-sm text-white/80 font-medium">
+            <span>{feeUsdc} USDC</span>
+            <span>{feeXlm} XLM</span>
           </div>
         </div>
       )}
 
       {/* Actions */}
-      <div style={{ display: "flex", gap: "10px" }}>
-        {/* Collect button — visible when there are owed tokens */}
+      <div className="flex flex-col sm:flex-row gap-2.5">
         <button
           onClick={handleCollect}
           disabled={loading !== null || !hasOwedTokens}
-          style={{
-            flex: 1,
-            padding: "10px",
-            borderRadius: "10px",
-            border: "1px solid rgba(34,197,94,0.3)",
-            background: "rgba(34,197,94,0.1)",
-            color: "#22c55e",
-            cursor: loading !== null || !hasOwedTokens ? "not-allowed" : "pointer",
-            fontWeight: 600,
-            fontSize: "14px",
-            opacity: loading !== null || !hasOwedTokens ? 0.4 : 1,
-          }}
+          className="flex-1 py-2.5 px-4 rounded-xl border border-green-500/30 bg-green-500/10 text-green-400 font-semibold text-sm hover:bg-green-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
         >
           {loading === "collect"
             ? "Collecting..."
@@ -327,25 +221,13 @@ export default function PositionCard({ position, onRefresh }: Props) {
             ? "Collect Tokens"
             : "Collect Fees"}
         </button>
-        {/* Remove button — only when there is still liquidity */}
         {!isPositionClosed && (
           <button
             onClick={handleRemove}
             disabled={loading !== null}
-            style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "10px",
-              border: "1px solid rgba(239,68,68,0.3)",
-              background: "rgba(239,68,68,0.08)",
-              color: "#f87171",
-              cursor: loading !== null ? "not-allowed" : "pointer",
-              fontWeight: 600,
-              fontSize: "14px",
-              opacity: loading !== null ? 0.4 : 1,
-            }}
+            className="flex-1 py-2.5 px-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 font-semibold text-sm hover:bg-red-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
-            {loading === "remove" ? "Removing..." : "Remove"}
+            {loading === "remove" ? "Removing..." : "Remove Liquidity"}
           </button>
         )}
       </div>
@@ -363,28 +245,12 @@ function TokenAmount({
   amount: string;
 }) {
   return (
-    <div
-      style={{
-        background: "rgba(255, 255, 255, 0.03)",
-        border: "1px solid var(--border)",
-        borderRadius: "10px",
-        padding: "12px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-          marginBottom: "4px",
-        }}
-      >
-        <img src={logo} alt={symbol} style={{ width: 16, height: 16, borderRadius: "50%", objectFit: "cover" }} />
-        <span style={{ color: "var(--text-secondary)", fontSize: "12px" }}>{symbol}</span>
+    <div className="bg-white/[0.02] border border-white/10 rounded-xl p-3">
+      <div className="flex items-center gap-1.5 mb-1">
+        <img src={logo} alt={symbol} className="w-4 h-4 rounded-full object-contain" />
+        <span className="text-white/50 text-xs font-medium">{symbol}</span>
       </div>
-      <p style={{ color: "var(--text-primary)", fontWeight: 600, fontSize: "15px" }}>
-        {amount}
-      </p>
+      <p className="text-white font-semibold text-base">{amount}</p>
     </div>
   );
 }

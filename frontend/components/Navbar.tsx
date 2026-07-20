@@ -7,26 +7,26 @@ import { motion, AnimatePresence } from "motion/react";
 import WalletButton from "@/components/WalletButton";
 import { Menu, X } from "lucide-react";
 
-function LuminaLogo({ className = "w-7 h-7" }: { className?: string }) {
+export function LogoMark({ className = "w-5 h-5", size }: { className?: string; size?: number }) {
+  const style = size ? { width: size, height: size } : undefined;
   return (
-    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-      <defs>
-        <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#7c5cff" />
-          <stop offset="100%" stopColor="#00d4ff" />
-        </linearGradient>
-      </defs>
-      <path d="M16 2L28 8v8l-12 6L4 16V8l12-6z" stroke="url(#logo-grad)" strokeWidth="1.5" fill="none" />
-      <path d="M16 6l8 4v5.5L16 20 8 15.5V10l8-4z" fill="url(#logo-grad)" fillOpacity="0.15" stroke="url(#logo-grad)" strokeWidth="1" />
-      <circle cx="16" cy="13" r="3" fill="url(#logo-grad)" />
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={style}
+    >
+      {/* Planet Ring & Orbit */}
+      <ellipse cx="24" cy="24" rx="20" ry="7" stroke="currentColor" strokeWidth="3" transform="rotate(-25 24 24)" />
+      <circle cx="24" cy="24" r="11" fill="currentColor" />
+      <path d="M 9 27 C 12 33 21 37 31 34" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
   );
 }
 
-// Keep the old export for backward compat with landing page
-export { LuminaLogo as LogoMark };
-
 const NAV_LINKS = [
+  { href: "/", label: "Home" },
   { href: "/swap", label: "Swap" },
   { href: "/liquidity", label: "Liquidity" },
   { href: "/portfolio", label: "Portfolio" },
@@ -42,52 +42,42 @@ export default function Navbar() {
   };
 
   return (
-    <motion.nav
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="w-full sticky top-0 left-0 right-0 z-40"
-      style={{
-        background: "rgba(6, 6, 11, 0.8)",
-        backdropFilter: "blur(20px) saturate(1.2)",
-        borderBottom: "1px solid rgba(255,255,255,0.04)",
-      }}
-    >
-      <div className="max-w-[1200px] mx-auto h-16 flex items-center justify-between px-6">
-        {/* Logo */}
-        <Link href="/" className="no-underline flex items-center gap-2.5 group">
-          <LuminaLogo className="w-7 h-7 transition-transform group-hover:scale-105" />
-          <span
-            className="font-bold tracking-tight text-white text-[15px] hidden sm:inline-block"
-            style={{ letterSpacing: "-0.02em" }}
-          >
-            LuminaDex
-          </span>
+    <header className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[960px]">
+      <motion.nav
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full bg-[#18181b]/90 backdrop-blur-xl border border-white/15 rounded-full p-2.5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex items-center justify-between transition-all"
+      >
+        {/* Left: White Circle Planet Logo */}
+        <Link
+          href="/"
+          className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-black shrink-0 hover:scale-105 transition-transform duration-200 shadow-md group cursor-pointer"
+          title="LuminaDex Home"
+        >
+          <LogoMark className="w-6 h-6 text-black group-hover:rotate-12 transition-transform duration-300" />
         </Link>
 
-        {/* Desktop Nav Links */}
-        <div className="hidden md:flex items-center gap-1">
+        {/* Center: Desktop Navigation Links */}
+        <div className="hidden md:flex items-center gap-6 lg:gap-8 px-4">
           {NAV_LINKS.map((link) => {
             const active = isLinkActive(link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className="relative no-underline px-4 py-2 rounded-lg transition-colors"
+                className="relative text-sm font-medium transition-colors duration-200 cursor-pointer no-underline"
                 style={{
-                  color: active ? "#f0f0f5" : "#6b6b8a",
-                  fontSize: "14px",
+                  color: active ? "#ffffff" : "rgba(255, 255, 255, 0.7)",
                   fontWeight: active ? 600 : 500,
-                  background: active ? "rgba(124, 92, 255, 0.08)" : "transparent",
                 }}
               >
                 {link.label}
                 {active && (
                   <motion.div
-                    layoutId="nav-indicator"
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full"
-                    style={{ background: "linear-gradient(90deg, #7c5cff, #00d4ff)" }}
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                    layoutId="active-pill-dot"
+                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
                   />
                 )}
               </Link>
@@ -95,75 +85,57 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Right: Network Badge + Wallet */}
-        <div className="flex items-center gap-3">
-          <span
-            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide uppercase"
-            style={{
-              border: "1px solid rgba(0, 212, 255, 0.15)",
-              background: "rgba(0, 212, 255, 0.05)",
-              color: "#00d4ff",
-            }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] animate-pulse" />
-            Testnet
-          </span>
+        {/* Right: Action Pill (Wallet Button) */}
+        <div className="hidden sm:flex items-center gap-2">
           <WalletButton />
+        </div>
 
-          {/* Mobile Hamburger */}
+        {/* Mobile Hamburger Toggle Button */}
+        <div className="flex items-center gap-2 sm:hidden">
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg transition-colors cursor-pointer"
-            style={{
-              border: "1px solid rgba(255,255,255,0.06)",
-              background: "rgba(255,255,255,0.03)",
-              color: "#f0f0f5",
-            }}
+            className="w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-white active:scale-95 transition-transform cursor-pointer"
             aria-label="Toggle Menu"
           >
-            {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
-      </div>
+      </motion.nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Dropdown */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden overflow-hidden"
-            style={{
-              borderTop: "1px solid rgba(255,255,255,0.04)",
-              background: "rgba(6, 6, 11, 0.95)",
-              backdropFilter: "blur(20px)",
-            }}
+            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="mt-3 p-4 rounded-3xl bg-[#18181b]/95 border border-white/15 backdrop-blur-2xl shadow-2xl flex flex-col gap-2 overflow-hidden"
           >
-            <div className="px-4 py-3 flex flex-col gap-1">
-              {NAV_LINKS.map((link) => {
-                const active = isLinkActive(link.href);
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="no-underline px-4 py-3 rounded-lg transition-colors"
-                    style={{
-                      color: active ? "#f0f0f5" : "#6b6b8a",
-                      fontSize: "15px",
-                      fontWeight: active ? 600 : 500,
-                      background: active ? "rgba(124, 92, 255, 0.08)" : "transparent",
-                    }}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
+            {NAV_LINKS.map((link) => {
+              const active = isLinkActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="px-4 py-3 rounded-2xl flex items-center justify-between text-base font-medium transition-colors no-underline"
+                  style={{
+                    color: active ? "#ffffff" : "rgba(255, 255, 255, 0.7)",
+                    background: active ? "rgba(255, 255, 255, 0.1)" : "transparent",
+                  }}
+                >
+                  <span>{link.label}</span>
+                  {active && <span className="w-2 h-2 rounded-full bg-white" />}
+                </Link>
+              );
+            })}
+            <div className="pt-3 border-t border-white/10 flex justify-center">
+              <WalletButton />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </header>
   );
 }

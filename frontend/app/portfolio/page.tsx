@@ -28,174 +28,114 @@ export default function PortfolioPage() {
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center pb-24 text-white">
+    <div className="w-full min-h-screen flex flex-col items-center pb-24 text-white bg-[#06060c]">
       {/* Navbar */}
       <Navbar />
 
       {/* Main Content Container */}
-      <div
-        className="w-full max-w-[1000px] px-6 mt-12 flex flex-col"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 255, 255, 0.01) 0%, transparent 100%)",
-        }}
-      >
-      {/* Header */}
-      <div style={{ marginBottom: "32px" }}>
-        <h1
-          className="gradient-text"
-          style={{ fontSize: "28px", fontWeight: 800, marginBottom: "6px" }}
-        >
-          Portfolio
-        </h1>
-        <p style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: "14px" }}>
-          {address
-            ? `${address.slice(0, 8)}...${address.slice(-6)}`
-            : "Connect a wallet to view your positions, fees, and activity"}
-        </p>
-      </div>
-
-      {/* Live on-chain pool state via the contract.ts read layer */}
-      <ContractStatus />
-
-      {/* On-chain user profile metadata contract integration */}
-      <UserProfileCard />
-
-      {/* Freighter wallet — detect · connect · balance · send XLM (Testnet) */}
-      <StellarWalletPanel />
-
-      {!address ? (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "48px 24px",
-            background: "rgba(255, 255, 255, 0.02)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: "20px",
-            backdropFilter: "blur(12px)",
-          }}
-        >
-          <h2
-            style={{ color: "#ffffff", fontSize: "20px", fontWeight: 700, marginBottom: "10px" }}
-          >
-            Connect to view your positions
-          </h2>
-          <p style={{ color: "rgba(255, 255, 255, 0.4)", marginBottom: "24px" }}>
-            Your liquidity positions, fees, and activity will appear here.
+      <div className="w-full max-w-[1020px] px-4 sm:px-6 pt-28 flex flex-col">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
+            User Portfolio
+          </h1>
+          <p className="text-white/40 text-xs sm:text-sm mt-1">
+            {address
+              ? `${address.slice(0, 10)}...${address.slice(-8)}`
+              : "Connect your wallet to view your positions, balances, and history"}
           </p>
-          <button
-            className="btn-primary"
-            onClick={connect}
-            style={{ padding: "14px 32px", fontSize: "15px" }}
-          >
-            Connect Freighter
-          </button>
         </div>
-      ) : (
-      <>
-      {/* Summary cards */}
-      {positions && positions.length > 0 && (
-        <SummaryCards positions={positions} />
-      )}
 
-      {/* Positions */}
-      <div style={{ marginBottom: "40px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "16px",
-          }}
-        >
-          <h2 style={{ color: "#ffffff", fontSize: "18px", fontWeight: 700 }}>
-            Positions
-          </h2>
-          <Link href="/liquidity/new" style={{ textDecoration: "none" }}>
+        {/* Live on-chain pool status */}
+        <ContractStatus />
+
+        {/* On-chain user profile metadata */}
+        <UserProfileCard />
+
+        {/* Freighter wallet panel */}
+        <StellarWalletPanel />
+
+        {!address ? (
+          <div className="text-center py-16 px-6 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-xl">
+            <h2 className="text-white text-lg sm:text-xl font-bold mb-2">
+              Connect to view your portfolio
+            </h2>
+            <p className="text-white/40 text-sm mb-6 max-w-md mx-auto">
+              Your active positions, fees earned, and recent Stellar transaction history will be shown here.
+            </p>
             <button
-              className="btn-primary"
-              style={{ padding: "8px 18px", fontSize: "13px" }}
+              className="btn-primary px-8 py-3.5 text-sm font-bold rounded-xl"
+              onClick={connect}
             >
-              + New Position
+              Connect Freighter Wallet
             </button>
-          </Link>
-        </div>
-
-        {isLoading ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {[1, 2].map((i) => (
-              <div
-                key={i}
-                style={{
-                  height: "200px",
-                  background: "rgba(255, 255, 255, 0.02)",
-                  borderRadius: "20px",
-                  animation: "pulse 1.5s infinite",
-                }}
-              />
-            ))}
-          </div>
-        ) : positions && positions.length > 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {positions.map((p) => (
-              <PositionCard
-                key={p.id.toString()}
-                position={p}
-                onRefresh={handleRefresh}
-              />
-            ))}
           </div>
         ) : (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "48px 24px",
-              background: "rgba(255, 255, 255, 0.02)",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-              borderRadius: "20px",
-              backdropFilter: "blur(12px)",
-            }}
-          >
-            <div style={{ fontSize: "40px", marginBottom: "14px" }}>📭</div>
-            <p style={{ color: "#ffffff", fontWeight: 600, marginBottom: "6px" }}>
-              No positions found
-            </p>
-            <p style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: "14px", marginBottom: "20px" }}>
-              Add liquidity to start earning fees
-            </p>
-            <Link href="/liquidity/new" style={{ textDecoration: "none" }}>
-              <button
-                className="btn-primary"
-                style={{ padding: "12px 24px" }}
-              >
-                Add Liquidity
-              </button>
-            </Link>
-          </div>
-        )}
-      </div>
+          <>
+            {/* Summary cards */}
+            {positions && positions.length > 0 && (
+              <SummaryCards positions={positions} />
+            )}
 
-      {/* Activity feed */}
-      <div>
-        <h2
-          style={{
-            color: "#ffffff",
-            fontSize: "18px",
-            fontWeight: 700,
-            marginBottom: "16px",
-          }}
-        >
-          Recent Activity
-        </h2>
-        <div
-          className="glass-card"
-          style={{ padding: "16px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "20px" }}
-        >
-          <ActivityFeed walletAddress={address} />
-        </div>
-      </div>
-      </>
-      )}
+            {/* Positions */}
+            <div className="mb-10">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-white text-lg font-bold">Positions</h2>
+                <Link href="/liquidity/new">
+                  <button className="btn-primary px-4 py-2 text-xs sm:text-sm font-bold rounded-xl">
+                    + New Position
+                  </button>
+                </Link>
+              </div>
+
+              {isLoading ? (
+                <div className="flex flex-col gap-3">
+                  {[1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="h-44 rounded-2xl bg-white/[0.02] border border-white/10 animate-pulse"
+                    />
+                  ))}
+                </div>
+              ) : positions && positions.length > 0 ? (
+                <div className="flex flex-col gap-3">
+                  {positions.map((p) => (
+                    <PositionCard
+                      key={p.id.toString()}
+                      position={p}
+                      onRefresh={handleRefresh}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-14 px-6 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-xl">
+                  <div className="text-4xl mb-3">📭</div>
+                  <p className="text-white font-bold text-base mb-1">
+                    No positions found
+                  </p>
+                  <p className="text-white/40 text-sm mb-5">
+                    Provide liquidity to the XLM/USDC pool to earn trading fees
+                  </p>
+                  <Link href="/liquidity/new">
+                    <button className="btn-primary px-6 py-3 font-bold text-sm rounded-xl">
+                      Add Liquidity
+                    </button>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Activity feed */}
+            <div>
+              <h2 className="text-white text-lg font-bold mb-4">
+                Recent On-Chain Activity
+              </h2>
+              <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-xl">
+                <ActivityFeed walletAddress={address} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

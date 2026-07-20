@@ -8,9 +8,7 @@ interface Props {
   amount1: string;
   onAmount0Change: (v: string) => void;
   onAmount1Change: (v: string) => void;
-  // price0Only: price BELOW tickLower → pool position is 100% USDC (token_0); XLM (amount0) = 0
   price0Only: boolean;
-  // price1Only: price ABOVE tickUpper → pool position is 100% XLM (token_1); USDC (amount1) = 0
   price1Only: boolean;
 }
 
@@ -29,24 +27,14 @@ export default function AmountInputs({
   const totalUsd = xlmUsd + usdcUsd;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-      <p style={{ color: "var(--text-secondary)", fontSize: "12px", fontWeight: 600 }}>
-        DEPOSIT AMOUNTS
+    <div className="flex flex-col gap-3">
+      <p className="text-white/50 text-xs font-semibold tracking-wider uppercase">
+        Deposit Amounts
       </p>
 
       {/* Out-of-range notice */}
       {(price0Only || price1Only) && (
-        <div
-          style={{
-            background: "rgba(234,179,8,0.08)",
-            border: "1px solid rgba(234,179,8,0.25)",
-            borderRadius: "10px",
-            padding: "10px 14px",
-            fontSize: "12px",
-            color: "#ca8a04",
-            lineHeight: 1.5,
-          }}
-        >
+        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 text-xs text-yellow-400 leading-relaxed">
           {price1Only ? (
             <>
               <strong>Price is below your range.</strong> Your deposit will be
@@ -62,41 +50,23 @@ export default function AmountInputs({
       )}
 
       {/* Token 0 — XLM */}
-      {/* Disabled when price0Only (below range): XLM contribution is 0 */}
       <div
-        style={{
-          background: "var(--bg-input)",
-          border: `1px solid ${price0Only ? "rgba(255, 255, 255, 0.03)" : "var(--border)"}`,
-          borderRadius: "12px",
-          padding: "16px",
-          opacity: price0Only ? 0.4 : 1,
-        }}
+        className={`p-4 rounded-xl bg-white/[0.03] border ${
+          price0Only ? "border-white/5 opacity-50" : "border-white/10"
+        } transition-all`}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-          <span style={{ color: "var(--text-secondary)", fontSize: "12px" }}>XLM Amount</span>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-white/50 text-xs font-medium">XLM Amount</span>
           {price0Only && (
-            <span style={{ color: "var(--text-secondary)", fontSize: "11px" }}>
+            <span className="text-white/40 text-[11px]">
               Price above range — no XLM needed
             </span>
           )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
-            style={{
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid var(--border)",
-              borderRadius: "8px",
-              padding: "6px 12px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <img src="/tokens/xlm.png" alt="XLM" style={{ width: 18, height: 18, borderRadius: "50%", objectFit: "cover" }} />
-            <span style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "14px" }}>
-              XLM
-            </span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-white/[0.06] border border-white/10 rounded-lg px-3 py-1.5 shrink-0">
+            <img src="/xlm.svg" alt="XLM" className="w-5 h-5 rounded-full object-contain" />
+            <span className="text-white font-bold text-sm">XLM</span>
           </div>
           <input
             type="text"
@@ -105,62 +75,34 @@ export default function AmountInputs({
             value={amount0}
             onChange={(e) => onAmount0Change(e.target.value)}
             disabled={price0Only}
-            style={{
-              flex: 1,
-              background: "transparent",
-              border: "none",
-              outline: "none",
-              color: "var(--text-primary)",
-              fontSize: "20px",
-              fontWeight: 600,
-              textAlign: "right",
-              fontFamily: "var(--font-jetbrains)",
-            }}
+            className="flex-1 bg-transparent border-none outline-none text-white text-xl font-semibold text-right font-jetbrains"
           />
         </div>
         {xlmUsd > 0 && !price0Only && (
-          <p style={{ color: "var(--text-secondary)", fontSize: "11px", textAlign: "right", marginTop: "4px" }}>
+          <p className="text-white/40 text-xs text-right mt-1">
             ≈ {formatUsd(xlmUsd)}
           </p>
         )}
       </div>
 
       {/* Token 1 — USDC */}
-      {/* Disabled when price1Only (above range): USDC contribution is 0 */}
       <div
-        style={{
-          background: "var(--bg-input)",
-          border: `1px solid ${price1Only ? "rgba(255, 255, 255, 0.03)" : "var(--border)"}`,
-          borderRadius: "12px",
-          padding: "16px",
-          opacity: price1Only ? 0.4 : 1,
-        }}
+        className={`p-4 rounded-xl bg-white/[0.03] border ${
+          price1Only ? "border-white/5 opacity-50" : "border-white/10"
+        } transition-all`}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-          <span style={{ color: "var(--text-secondary)", fontSize: "12px" }}>USDC Amount</span>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-white/50 text-xs font-medium">USDC Amount</span>
           {price1Only && (
-            <span style={{ color: "var(--text-secondary)", fontSize: "11px" }}>
+            <span className="text-white/40 text-[11px]">
               Price below range — no USDC needed
             </span>
           )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
-            style={{
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid var(--border)",
-              borderRadius: "8px",
-              padding: "6px 12px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <img src="/tokens/usdc.png" alt="USDC" style={{ width: 18, height: 18, borderRadius: "50%", objectFit: "cover" }} />
-            <span style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "14px" }}>
-              USDC
-            </span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-white/[0.06] border border-white/10 rounded-lg px-3 py-1.5 shrink-0">
+            <img src="/usdc.svg" alt="USDC" className="w-5 h-5 rounded-full object-contain" />
+            <span className="text-white font-bold text-sm">USDC</span>
           </div>
           <input
             type="text"
@@ -169,21 +111,11 @@ export default function AmountInputs({
             value={amount1}
             onChange={(e) => onAmount1Change(e.target.value)}
             disabled={price1Only}
-            style={{
-              flex: 1,
-              background: "transparent",
-              border: "none",
-              outline: "none",
-              color: "var(--text-primary)",
-              fontSize: "20px",
-              fontWeight: 600,
-              textAlign: "right",
-              fontFamily: "var(--font-jetbrains)",
-            }}
+            className="flex-1 bg-transparent border-none outline-none text-white text-xl font-semibold text-right font-jetbrains"
           />
         </div>
         {usdcUsd > 0 && !price1Only && (
-          <p style={{ color: "var(--text-secondary)", fontSize: "11px", textAlign: "right", marginTop: "4px" }}>
+          <p className="text-white/40 text-xs text-right mt-1">
             ≈ {formatUsd(usdcUsd)}
           </p>
         )}
@@ -191,17 +123,9 @@ export default function AmountInputs({
 
       {/* Total deposit value */}
       {totalUsd > 0 && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: "12px",
-            color: "var(--text-secondary)",
-            padding: "0 4px",
-          }}
-        >
-          <span>Total deposit value</span>
-          <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{formatUsd(totalUsd)}</span>
+        <div className="flex justify-between text-xs text-white/50 px-1 pt-1">
+          <span>Total Deposit Value</span>
+          <span className="text-white font-semibold">{formatUsd(totalUsd)}</span>
         </div>
       )}
     </div>

@@ -1,9 +1,5 @@
 "use client";
 
-// Self-contained Freighter wallet panel (Stellar TESTNET):
-// detect -> connect -> balance -> send XLM -> tx hash.
-// The Freighter integration (detectFreighter / connectWallet / signTx from
-// @/lib/stellar-wallet) is composed by the useStellarWallet hook below.
 import { useState } from "react";
 import { useStellarWallet } from "@/hooks/use-stellar-wallet";
 
@@ -113,12 +109,15 @@ export default function StellarWalletPanel() {
             </div>
             <div style={{ flex: "1 1 160px" }}>
               <Label>XLM Balance</Label>
-              <p style={{ color: "#ffffff", fontSize: 24, fontWeight: 800, marginTop: 6 }}>
-                {balance !== null ? `${parseFloat(balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}` : "—"}{" "}
-                <span style={{ fontSize: 14, color: "rgba(255, 255, 255, 0.4)", fontWeight: 600 }}>
-                  XLM
-                </span>
-              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+                <img src="/xlm.svg" alt="XLM" style={{ width: 24, height: 24, borderRadius: "50%", objectFit: "contain" }} />
+                <p style={{ color: "#ffffff", fontSize: 24, fontWeight: 800 }}>
+                  {balance !== null ? `${parseFloat(balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}` : "—"}{" "}
+                  <span style={{ fontSize: 14, color: "rgba(255, 255, 255, 0.4)", fontWeight: 600 }}>
+                    XLM
+                  </span>
+                </p>
+              </div>
               {balance === "0" && (
                 <p style={{ color: "#fbbf24", fontSize: 11, marginTop: 4 }}>
                   Account not funded

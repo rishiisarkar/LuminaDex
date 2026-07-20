@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 interface Token {
   symbol: string;
   name: string;
-  logo: string; // image path
+  logo: string;
 }
 
 interface Props {
@@ -29,29 +29,18 @@ export default function TokenInputBox({
 }: Props) {
   return (
     <div
-      style={{
-        background: "var(--bg-input)",
-        borderRadius: "28px",
-        padding: "24px 28px",
-      }}
+      className="p-5 sm:p-6 rounded-[24px] bg-white/[0.03] border border-white/[0.08] transition-all hover:border-white/15"
     >
-      <p
-        style={{
-          fontFamily: "var(--font-instrument)",
-          fontSize: "22px",
-          color: "var(--text-primary)",
-          marginBottom: "18px",
-        }}
-      >
+      <p className="text-xs font-semibold uppercase tracking-wider text-white/50 mb-3">
         {label}
       </p>
 
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
-        {/* Amount */}
-        <div style={{ minWidth: 0, flex: 1 }}>
+      <div className="flex items-center justify-between gap-4">
+        {/* Input & USD value */}
+        <div className="min-w-0 flex-1">
           {loading ? (
-            <div style={{ display: "flex", alignItems: "center", height: "56px" }}>
-              <div className="spinner" style={{ width: "22px", height: "22px" }} />
+            <div className="flex items-center h-12">
+              <div className="spinner w-5 h-5" />
             </div>
           ) : (
             <input
@@ -61,63 +50,25 @@ export default function TokenInputBox({
               value={value}
               onChange={(e) => onChange?.(e.target.value)}
               readOnly={readOnly}
-              className="swap-amount-input"
-              style={{
-                width: "100%",
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                color: "var(--text-primary)",
-                fontFamily: "var(--font-instrument)",
-                fontSize: "56px",
-                lineHeight: 1,
-              }}
+              className="w-full bg-transparent border-none outline-none text-white text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight font-instrument"
             />
           )}
-          <p
-            style={{
-              color: "var(--text-secondary)",
-              fontSize: "15px",
-              marginTop: "10px",
-            }}
-          >
-            ${usdValue ?? "0"}
+          <p className="text-white/40 text-xs sm:text-sm mt-1">
+            ${usdValue ?? "0.00"}
           </p>
         </div>
 
-        {/* Token pill */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "var(--bg-card)",
-            border: "1px solid var(--border)",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.3)",
-            borderRadius: "9999px",
-            padding: "10px 18px 10px 10px",
-            whiteSpace: "nowrap",
-            flexShrink: 0,
-          }}
-        >
+        {/* Token Pill */}
+        <div className="flex items-center gap-2.5 bg-white/[0.06] border border-white/10 hover:border-white/20 rounded-full px-3.5 py-2 shrink-0 select-none shadow-md">
           <img
             src={token.logo}
             alt={token.symbol}
-            width={32}
-            height={32}
-            style={{ borderRadius: "50%", objectFit: "cover" }}
+            className="w-7 h-7 rounded-full object-contain shrink-0"
           />
-          <span
-            style={{
-              color: "var(--text-primary)",
-              fontWeight: 600,
-              fontSize: "17px",
-              fontFamily: "var(--font-instrument)",
-            }}
-          >
+          <span className="text-white font-bold text-base sm:text-lg">
             {token.symbol}
           </span>
-          <ChevronDown size={16} style={{ color: "var(--text-secondary)" }} />
+          <ChevronDown size={16} className="text-white/50 ml-0.5" />
         </div>
       </div>
     </div>
