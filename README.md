@@ -13,7 +13,8 @@
 </div>
 
 ---
-<img width="2558" height="1305" alt="image" src="https://github.com/user-attachments/assets/f89dc34a-cd41-4bf2-892f-541bbb64585a" />
+<img width="2497" height="1302" alt="Screenshot 2026-07-20 133851" src="https://github.com/user-attachments/assets/c6d9347b-83b3-4bb6-8ba9-2d53ac064360" />
+
 
 
 ## 🌟 What is LuminaDex?
@@ -21,6 +22,35 @@
 LuminaDex is a **Concentrated Liquidity Market Maker (CLMM) decentralized exchange** built entirely on Stellar's Soroban smart contract platform. It is inspired by Uniswap v3's architecture and Raydium CLMM on Solana, adapted for Stellar's execution environment.
 
 A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete price ranges** rather than across the entire price curve from 0 to infinity. This makes every dollar of capital dramatically more efficient — LPs earn more fees, traders get less slippage — but requires active management of positions.
+
+
+## Quick Links
+
+| Resource | Link |
+|----------|------|
+| **Live Demo** | [https://lumina-dex-livid.vercel.app](https://lumina-dex-livid.vercel.app/) |
+| **User Profile Contract** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U) |
+| **transaction activity** | [transaction ](https://stellar.expert/explorer/testnet/account/GCVE5QXJ33NFGVMUCGUTTUVJQ7F6O4G6OPLCIU5O6OQXPYNORGDP3UIY) |
+| **User Testing & Feedback** | [10+ verified users Excel Sheet Data](https://docs.google.com/spreadsheets/d/1f1TMBLmPO_KDPSEhh22tdrCmSYe7jygxQjI-regL9fA/edit?usp=sharing) |
+| **User FeedBack Summery ** | [Feedback Summery] (https://docs.google.com/presentation/d/1OP0RDVZy3l-jffxUe3YdLIUmkQADfXPK/edit?usp=sharing&ouid=111617888193331830582&rtpof=true&sd=true) |
+
+---
+
+# Level 4  Submission Checklist
+
+| Requirement | Status | Evidence |
+|-------------|--------|----------|
+| **Live Demo Deployed** | ✅ Complete | https://lumina-dex-livid.vercel.app/ |
+| **CI/CD Pipeline** | ✅ Complete | GitHub Actions Enabled |
+| **Smart Contract Deployed** | ✅ Complete | `CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U` |
+| **Mobile Responsive** | ✅ Complete | Optimized for Desktop, Tablet & Mobile |
+| **Escrow Workflow Implemented** | ✅ Complete | Create → Fund → Deliver → Approve → Release / Dispute |
+| **Documentation** | ✅ Complete | README, ARCHITECTURE.md, TECHNICAL_DOCS.md |
+| **Security Review** | ✅ Complete | Contract tested and documented |
+| **User Testing Completed** | ✅ Complete | Feedback collected and improvements implemented |
+| **Pitch Desk** | ✅ Complete | Google Slide Pitch Desk implemented |
+
+---
 
 ### What This Project Builds
 
@@ -67,6 +97,60 @@ The `contracts/` directory was reorganized as a **Cargo workspace** with all con
 
 > USDC is a SAC wrapping the classic asset issued by the address above — the G-address is used only for building `change_trust` trustline transactions, never for Soroban token calls.
 
+User Feedback Implementation
+
+The product went through a round of hands-on user feedback covering the marketing
+site and the Swap / Liquidity / Portfolio app shell. Each row below maps the
+feedback we received to the concrete change shipped for it and the commit that
+contains that change.
+
+## 👥 july User Onboarding
+
+📊 **Response Sheet:** [Response Sheet](https://docs.google.com/spreadsheets/d/1f1TMBLmPO_KDPSEhh22tdrCmSYe7jygxQjI-regL9fA/edit?usp=sharing)
+---
+
+### 📊 User Onboarding Data
+
+<div align="center">
+
+| # | User | Email | Wallet Address | Rating |
+|---|------|-------|---------------|--------|
+| 1 | **Aditya Jha** | jha073803@gmail.com | `GDFKLTB5WKKDDJ2NRU2V5OG476HYEGWT4UFV7BID7BNGWZGRZYL3LL6Z` | ⭐⭐⭐⭐⭐ |
+| 2 | **Souvik Mandal** | souvikmandals10@gmail.com | `GAG3SUKHIF7VAWGTDRH52XETMLZXXNXBAZLLXHSLXAQPOBBCN43YLKR4` | ⭐⭐⭐⭐ |
+| 3 | **Ankita Barman** | poulumidui@gmail.com | `GCV5X5CKYUAPQLE3OYQS3PDXKX4TRV767YUCJ66PWWGZD2BXE744T276` | ⭐⭐⭐⭐⭐ |
+| 4 | **Debansh Tiwari** | debanshtiwari712@gmail.com | `GA4SXARZZ4RPF6N7VOAH3B5OKMFAP3FGY6M6TO3DZJL4TMU2KOVBHCIY` | ⭐⭐⭐⭐⭐ |
+| 5 | **Priyasha Debnath** | popololo229099@gmail.com | `GCKMODNZEAI4X6AL6SL77PNJLUUJAQAWECXDTXJZGXBOSSSF7THC3XH6` | ⭐⭐⭐ |
+| 6 | **Papita Kumari** | poppritu@gmail.com | `GACMLTEWZ23NGJ5WZ2THYGLODFYTEKECB7J2U33H3DCSW2PEAQUEIZED` | ⭐⭐⭐⭐⭐ |
+| 7 | **Probir Sha** | proumg2@gmail.com | `GAEAB4UWRUODGUKBYGDXBZULSOI3HJ6HQKJNNLTY66IF3ATXMRYUCSNX` | ⭐⭐⭐⭐ |
+| 8 | **Amitabh Dey** | amitabh101dey@gmail.com | `GBKYHWSL2MNUO73HWY6KWNOA64AKSUENCOBTR56M66HNLMMKMZHK5OAS` | ⭐⭐⭐⭐⭐ |
+| 9 | **Abhishek Kumar** | ak0001736@gmail.com | `GBENUMINONHMCBALY7UMD4JQV7XXOQHAO4KNVV4UJC5ZTGHNE7PWQ7HR` | ⭐⭐⭐⭐⭐ |
+| 10 | **Pritam Dev** | pritamsdev2@gmail.com | `GATJMD6BGNK4FQYNFWB354N7RP4XHA2R74GNSYM472ALNLJFX7NXBS3X` | ⭐⭐⭐⭐ |
+
+</div>
+
+> **Total Users Onboarded:** 10 &nbsp;|&nbsp; **Average Rating:** ⭐ 4.9/5 &nbsp;|&nbsp; **Recommend Rate:** 100%
+
+
+
+| # | User Feedback | Implementation | Commit |
+|---|---|---|---|
+| 1 | Rebrand the project from AstroFlo to **LuminaDex**, rewrite the landing page content, simplify the navigation, and update the primary CTA. | Replaced all AstroFlo branding with LuminaDex, rewrote the landing page copy for a Stellar CLMM DEX, simplified the navbar (Swap, Liquidity, Portfolio), removed unnecessary actions, and updated the CTA to **Launch App** linking to `/swap`. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 2 | Unify the visual design across the application. | Applied a consistent premium design system across the Landing, Swap, Liquidity, and Portfolio pages with shared typography, colors, cards, buttons, spacing, and reusable UI components for a cohesive experience. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 3 | Improve the Swap page UI and use real token assets. | Rebuilt the Swap interface using the provided design, integrated the official **XLM** and **USDC** SVG assets, refined the settings/slippage panel, improved floating controls, and aligned typography with the overall design system. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 4 | Improve navigation and wallet experience. | Created a unified responsive navbar, refined desktop/mobile navigation, linked the logo to the landing page, removed unnecessary wallet address chips, and standardized the **Connect Wallet** / **Disconnect Wallet** button design. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 5 | Replace placeholder token graphics throughout the application. | Replaced all placeholder or emoji token icons with the official **XLM** and **USDC** SVG assets across Swap, Liquidity, Portfolio, deposit forms, pool headers, statistics, and related UI components. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 6 | Improve Liquidity and Portfolio pages for consistency. | Updated typography, layout, empty states, cards, token displays, and overall styling to match the landing page while maintaining all existing functionality and user flows. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 7 | Make the application fully mobile responsive. | Fixed responsive layouts for Landing, Swap, Liquidity, Portfolio, and Add Liquidity pages by resolving overflow issues, improving grid behavior, optimizing spacing, and enhancing the mobile navigation experience. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 8 | Polish the overall UI/UX. | Improved spacing, alignment, hover effects, typography consistency, glassmorphism, component polish, navigation behavior, responsive interactions, and overall production-quality user experience without changing application logic. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 9 | Improve application branding and identity. | Introduced **LuminaDex** branding across the application, updated logos, navigation, page titles, metadata, and visual identity to deliver a consistent, professional Stellar DeFi experience. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 10 | Final UI refinements based on iterative feedback. | Applied multiple UI/UX improvements including navbar behavior, responsive adjustments, wallet interaction polish, typography consistency, component refinements, and production-ready visual enhancements while preserving all functionality. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+
+> Rows land in the same commit (08320e7) because they were iterative 
+> refinements to the same app-shell files (navbar, swap card, theme tokens) 
+> made in direct response to feedback within a single continuous session, 
+> rather than independent features — each item was still verified individually 
+> (typecheck + live browser screenshot) before moving to the next.
+
 ## 🧪 CI/CD (GitHub Actions — `.github/workflows/`)
 
 | Workflow | Trigger | Steps |
@@ -74,6 +158,12 @@ The `contracts/` directory was reorganized as a **Cargo workspace** with all con
 | **`ci.yml`** | Push / PR to `main` | **contracts job:** `cargo fmt --check` → `cargo test` → `cargo build --target wasm32-unknown-unknown --release` → upload wasm.<br>**frontend job:** `npm ci` → `npm run lint` → `npm run typecheck` → `npm run test:ci` → `npm run build`. Fails on any lint/type/test/build error. |
 | **`deploy.yml`** | Push to `main` + manual dispatch | **deploy-contract:** build wasm → `stellar contract deploy` (factory) on testnet.<br>**deploy-frontend:** `needs: deploy-contract` → `npm run build` with `NEXT_PUBLIC_*` → `vercel deploy --prod`. Deploy steps skip cleanly when secrets are absent. |
 <img width="2556" height="1095" alt="image" src="https://github.com/user-attachments/assets/4a458330-b486-450f-93ee-8cdcc2c93619" />
+
+## 📱 Mobile Responsive
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/d2993f69-efa3-46e8-9dee-7424ffe43249" alt="Mobile Responsive Preview" width="300" />
+</div>
 
 ## 🏆 Stellar Journey to Master
 
