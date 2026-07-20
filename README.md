@@ -32,7 +32,7 @@ A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete
 | **User Profile Contract** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U) |
 | **transaction activity** | [transaction ](https://stellar.expert/explorer/testnet/account/GCVE5QXJ33NFGVMUCGUTTUVJQ7F6O4G6OPLCIU5O6OQXPYNORGDP3UIY) |
 | **User Testing & Feedback** | [10+ verified users Excel Sheet Data](https://docs.google.com/spreadsheets/d/1f1TMBLmPO_KDPSEhh22tdrCmSYe7jygxQjI-regL9fA/edit?usp=sharing) |
-| **User FeedBack Summery ** | [Feedback Summery] (https://docs.google.com/presentation/d/1OP0RDVZy3l-jffxUe3YdLIUmkQADfXPK/edit?usp=sharing&ouid=111617888193331830582&rtpof=true&sd=true) |
+| **User FeedBack Summery** | [Feedback Summery](https://docs.google.com/presentation/d/1OP0RDVZy3l-jffxUe3YdLIUmkQADfXPK/edit?usp=sharing&ouid=111617888193331830582&rtpof=true&sd=true) |
 
 ---
 
