@@ -44,8 +44,6 @@ A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete
 | **CI/CD Pipeline** | ✅ Complete | GitHub Actions Enabled |
 | **Smart Contract Deployed** | ✅ Complete | `CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U` |
 | **Mobile Responsive** | ✅ Complete | Optimized for Desktop, Tablet & Mobile |
-| **Escrow Workflow Implemented** | ✅ Complete | Create → Fund → Deliver → Approve → Release / Dispute |
-| **Documentation** | ✅ Complete | README, ARCHITECTURE.md, TECHNICAL_DOCS.md |
 | **Security Review** | ✅ Complete | Contract tested and documented |
 | **User Testing Completed** | ✅ Complete | Feedback collected and improvements implemented |
 | **Pitch Desk** | ✅ Complete | Google Slide Pitch Desk implemented |
