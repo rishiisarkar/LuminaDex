@@ -24,15 +24,18 @@ LuminaDex is a **Concentrated Liquidity Market Maker (CLMM) decentralized exchan
 
 A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete price ranges** rather than across the entire price curve from 0 to infinity. This makes every dollar of capital dramatically more efficient — LPs earn more fees, traders get less slippage — but requires active management of positions.
 
+### 🔗 Project Resources & Links
 
-## Quick Links
-
-| Resource | Link |
-|----------|------|
+| Resource | Link / Details |
+| :--- | :--- |
 | **Live Demo** | [https://lumina-dex-livid.vercel.app](https://lumina-dex-livid.vercel.app/) |
-| **User Profile Contract** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32) |
-| **User Testing & Feedback** | [50+ verified users Excel Sheet Data]https://docs.google.com/spreadsheets/d/131JXBW54fSMdmeeXcjTRUYZhYKoJSFi1WKzNA8zrSOo/edit?usp=sharing) |
-| **User FeedBack Summery** | [Feedback Summery](https://docs.google.com/presentation/d/1OP0RDVZy3l-jffxUe3YdLIUmkQADfXPK/edit?usp=sharing&ouid=111617888193331830582&rtpof=true&sd=true) |
+| 📜 **Contract Address (Testnet)** | `CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32` |
+| 🔍 **Proof of 59+ Wallet Interactions** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32) |
+| 📈 **Pitch Deck (Presentation)** | [View on Google Drive](https://docs.google.com/presentation/d/1135sJMAdPgD99A1Jt0SJ0oHWpn-uwUY6/edit?usp=sharing&ouid=111617888193331830582&rtpof=true&sd=true) |
+| 📊 **Live Demo Video** | [docs/pitch-outline.md](./docs/pitch-outline.md) |
+| 📝 **User Feedback** | [View Spreadsheet](https://docs.google.com/spreadsheets/d/131JXBW54fSMdmeeXcjTRUYZhYKoJSFi1WKzNA8zrSOo/edit?usp=sharing) |
+
+
 
 ---
 
@@ -104,6 +107,22 @@ contains that change.
 | 8 | Improve the wallet connection experience and make wallet actions clearer. | Standardized wallet-related UI across the application, improved Connect Wallet presentation, and integrated the wallet experience consistently into the main application flow. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
 | 9 | Polish the overall interface and make the product feel more modern. | Added a refined LuminaDex landing-page visual system with responsive styling, improved typography, animations, spacing, modern sections, and stronger visual hierarchy. | [`52fae37`](https://github.com/rishiisarkar/LuminaDex/commit/52fae375cef49e9bdf4a4fa7740ccde36f1a1e86) |
 | 10 | Improve consistency across Swap, Liquidity, Portfolio, navigation, and token displays. | Unified the core frontend experience with LuminaDex branding, shared navigation, redesigned application pages, XLM/USDC assets, reusable components, and consistent styling while preserving existing functionality. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+## Smart Contract Activity 
+<img width="1919" height="897" alt="image" src="https://github.com/user-attachments/assets/2a860d6b-a104-4994-b882-09fc6689d893" />
+
+## Monitoring Dashboard
+<div align="center">
+  <img
+    src="https://github.com/user-attachments/assets/def2319f-4edf-4e7d-a2f3-a892a44d5b13"
+    alt="Screenshot from 2026-07-24 18-41-31"
+    width="48%"
+  />
+  <img
+    src="https://github.com/user-attachments/assets/9aff7f1e-2efa-4acc-a2eb-42207dd0c733"
+    alt="Screenshot from 2026-07-24 18-41-45"
+    width="48%"
+  />
+</div>
 
 ## 🧪 CI/CD (GitHub Actions — `.github/workflows/`)
 
