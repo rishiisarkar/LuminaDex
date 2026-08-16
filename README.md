@@ -29,7 +29,7 @@ A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete
 | Resource | Link |
 |----------|------|
 | **Live Demo** | [https://lumina-dex-livid.vercel.app](https://lumina-dex-livid.vercel.app/) |
-| **User Profile Contract** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U) |
+| **User Profile Contract** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDDGU3TCEKRZ2LR2UIQZ2NH3NS2J5NAJNBGPIZTRD5TXZBNCZNCAK7P4) |
 | **transaction activity** | [transaction ](https://stellar.expert/explorer/testnet/account/GCVE5QXJ33NFGVMUCGUTTUVJQ7F6O4G6OPLCIU5O6OQXPYNORGDP3UIY) |
 | **User Testing & Feedback** | [10+ verified users Excel Sheet Data](https://docs.google.com/spreadsheets/d/1f1TMBLmPO_KDPSEhh22tdrCmSYe7jygxQjI-regL9fA/edit?usp=sharing) |
 | **User FeedBack Summery** | [Feedback Summery](https://docs.google.com/presentation/d/1OP0RDVZy3l-jffxUe3YdLIUmkQADfXPK/edit?usp=sharing&ouid=111617888193331830582&rtpof=true&sd=true) |
@@ -42,7 +42,7 @@ A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete
 |-------------|--------|----------|
 | **Live Demo Deployed** | ✅ Complete | https://lumina-dex-livid.vercel.app/ |
 | **CI/CD Pipeline** | ✅ Complete | GitHub Actions Enabled |
-| **Smart Contract Deployed** | ✅ Complete | `CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U` |
+| **Smart Contract Deployed** | ✅ Complete | `CDDGU3TCEKRZ2LR2UIQZ2NH3NS2J5NAJNBGPIZTRD5TXZBNCZNCAK7P4` |
 | **Mobile Responsive** | ✅ Complete | Optimized for Desktop, Tablet & Mobile |
 | **Security Review** | ✅ Complete | Contract tested and documented |
 | **User Testing Completed** | ✅ Complete | Feedback collected and improvements implemented |
