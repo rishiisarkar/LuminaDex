@@ -25,35 +25,43 @@ LuminaDex is a **Concentrated Liquidity Market Maker (CLMM) decentralized exchan
 A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete price ranges** rather than across the entire price curve from 0 to infinity. This makes every dollar of capital dramatically more efficient — LPs earn more fees, traders get less slippage — but requires active management of positions.
 
 ### 🔗 Project Resources & Links
+This repository contains **over 40+ meaningful commits**, showcasing continuous development, smart contract integration, UI improvements, and core feature implementations.
 
 | Resource | Link / Details |
 | :--- | :--- |
 | **Live Demo** | [https://lumina-dex-livid.vercel.app](https://lumina-dex-livid.vercel.app/) |
 | 📜 **Contract Address (Testnet)** | `CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32` |
-| 🔍 **Proof of 59+ Wallet Interactions** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32) |
+| 🔍 **Proof of 62+ Wallet Interactions** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32) |
 | 📈 **Pitch Deck (Presentation)** | [View on Google Drive](https://docs.google.com/presentation/d/1135sJMAdPgD99A1Jt0SJ0oHWpn-uwUY6/edit?usp=sharing&ouid=111617888193331830582&rtpof=true&sd=true) |
-| 📊 **Live Demo Video** | [docs/pitch-outline.md](./docs/pitch-outline.md) |
+| 📸 **Live Demo Video** | [Watch Demo](https://drive.google.com/file/d/1t2fU7E7AqFaGoWMrFVGRmSH8xdBBTyz8/view?usp=sharing) |
 | 📝 **User Feedback** | [View Spreadsheet](https://docs.google.com/spreadsheets/d/131JXBW54fSMdmeeXcjTRUYZhYKoJSFi1WKzNA8zrSOo/edit?usp=sharing) |
+| 📊 **Monitoring & Analytics Dashboard** | [/monitoring & Analytics](#monitoring-dashboard) |
+| 📝 **Smart Contract Activity (62+ Wallet)** | [/Smart Contract Activity](#smart-contract-activity) |
 
 
 
 ---
 
 
-## 📋 Level 5 Submission Checklist
+## ✅ Level 5 Submission Checklist
 
-| Requirement | Status | Evidence |
-|---|---|---|
-| Minimum 20+ meaningful commits | ✅ (42+ commits) | `git log --oneline` |
-| Live deployed application | ✅ |  [https://lumina-dex-livid.vercel.app](https://lumina-dex-livid.vercel.app/) |
-| PPT/Pitch deck link | ✅ | [`docs/pitch-deck.html`](./docs/pitch-deck.html) — [View Pitch Deck Guide](./docs/pitch-deck.md) |
-| Demo video link | ✅ | [`docs/demo-video.md`](./docs/demo-video.md) |
-| Proof of 50+ users | ✅ (52 users) | [50+ verified users Excel Sheet Data](https://docs.google.com/spreadsheets/d/131JXBW54fSMdmeeXcjTRUYZhYKoJSFi1WKzNA8zrSOo/edit?usp=sharing) |
-| Screenshots of analytics/transaction activity | ✅ | See [Screenshots](#-screenshots) & [Analytics Dashboard](#-analytics-dashboard) |
-| Updated README and documentation | ✅ | This file |
-| User feedback iteration summary | ✅ | See [Improvements Based on Feedback](#-improvements-based-on-user-feedback) |
-| Google Form for user details | ✅ | [Feedback Form]([https://forms.gle/YOUR_FORM_ID_HERE](https://forms.gle/gEEYjqmHRHJ9u9Rm8)) |
+All required Level 5 deliverables have been completed and verified below.
 
+| Requirement | Status | Evidence / Verification |
+| :--- | :---: | :--- |
+| **20+ Meaningful Git Commits** | ✅ Complete | **43+ meaningful commits** — verify using `git log --oneline` |
+| **Live Deployed Application** | ✅ Complete | 🌐 [Launch LuminaDex](https://lumina-dex-livid.vercel.app/) |
+| **Project Presentation / Pitch Deck** | ✅ Complete | 📊 [View Presentation](https://docs.google.com/presentation/d/1135sJMAdPgD99A1Jt0SJ0oHWpn-uwUY6/edit?usp=sharing&ouid=111617888193331830582&rtpof=true&sd=true) |
+| **Demo Video** | ✅ Complete | 🎥 [Watch Demo Video](https://drive.google.com/file/d/1t2fU7E7AqFaGoWMrFVGRmSH8xdBBTyz8/view?usp=sharing) |
+| **Proof of 50+ Test Users** | ✅ Complete | 👥 [50+ Verified User Responses](https://docs.google.com/spreadsheets/d/131JXBW54fSMdmeeXcjTRUYZhYKoJSFi1WKzNA8zrSOo/edit?usp=sharing) |
+| **Analytics & Transaction Activity** | ✅ Complete | 📈 See [Smart Contract Activity](#smart-contract-activity) and [Analytics Dashboard](#monitoring-dashboard) |
+| **User Feedback & Product Iterations** | ✅ Complete | 📈 See [Improvements Based on User Feedback](#-user-feedback--improvements) |
+| **User Feedback Collection Form** | ✅ Complete | 📝 [Open Feedback Form](https://forms.gle/gEEYjqmHRHJ9u9Rm8) |
+| **CI/CD Pipeline** | ✅ Complete | ⚙️ GitHub Actions configured — see [CI/CD Pipeline](#-cicd-github-actions--githubworkflows) |
+
+> **Submission Status:** ✅ **All Level 5 requirements completed**
+>
+> LuminaDex includes a live production deployment, 43+ meaningful commits, verified testing from 50+ users, documented feedback-driven iterations, analytics and smart contract activity proof, automated CI/CD, a complete pitch deck, and a working demo video.
 ---
 ## 🚀 Deployed Contracts (Stellar Testnet)
 
@@ -80,14 +88,13 @@ The `contracts/` directory was reorganized as a **Cargo workspace** with all con
 
 > USDC is a SAC wrapping the classic asset issued by the address above — the G-address is used only for building `change_trust` trustline transactions, never for Soroban token calls.
 
-User Feedback Implementation
 
-The product went through a round of hands-on user feedback covering the marketing
+## 👥 Level 5 User Onboarding
+
+> The product went through a round of hands-on user feedback covering the marketing
 site and the Swap / Liquidity / Portfolio app shell. Each row below maps the
 feedback we received to the concrete change shipped for it and the commit that
 contains that change.
-
-## 👥 Level 5 User Onboarding
 
 🔗 **Google Form:** [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSeepO3hoKKHkP9ysz-5hoHqNLHKnWmTWujFGEL5B7sjOqAAyQ/viewform?usp=header)
 📊 **Response Sheet:** [Response Sheet](https://docs.google.com/spreadsheets/d/1f1TMBLmPO_KDPSEhh22tdrCmSYe7jygxQjI-regL9fA/edit?usp=sharing)
@@ -107,8 +114,15 @@ contains that change.
 | 8 | Improve the wallet connection experience and make wallet actions clearer. | Standardized wallet-related UI across the application, improved Connect Wallet presentation, and integrated the wallet experience consistently into the main application flow. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
 | 9 | Polish the overall interface and make the product feel more modern. | Added a refined LuminaDex landing-page visual system with responsive styling, improved typography, animations, spacing, modern sections, and stronger visual hierarchy. | [`52fae37`](https://github.com/rishiisarkar/LuminaDex/commit/52fae375cef49e9bdf4a4fa7740ccde36f1a1e86) |
 | 10 | Improve consistency across Swap, Liquidity, Portfolio, navigation, and token displays. | Unified the core frontend experience with LuminaDex branding, shared navigation, redesigned application pages, XLM/USDC assets, reusable components, and consistent styling while preserving existing functionality. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+
+## Landing Page 
+<img width="1919" height="923" alt="Screenshot 2026-08-16 184350" src="https://github.com/user-attachments/assets/dcf07969-bbca-48a6-bbb9-bd8f36eca472" />
+## Liquidity Page 
+<img width="1620" height="898" alt="image" src="https://github.com/user-attachments/assets/dbcd8256-4391-42d9-830f-809e387ccb89" />
+
 ## Smart Contract Activity 
-<img width="1919" height="897" alt="image" src="https://github.com/user-attachments/assets/2a860d6b-a104-4994-b882-09fc6689d893" />
+<img width="1915" height="916" alt="image" src="https://github.com/user-attachments/assets/2993eb1c-5891-4da3-953b-5d0a1a2399fb" />
+
 
 ## Monitoring Dashboard
 <div align="center">
