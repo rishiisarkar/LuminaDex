@@ -8,6 +8,7 @@ import {
   Droplets, Gauge, Globe2, Layers3, LockKeyhole, Menu, Orbit, Repeat2,
   ShieldCheck, Sparkles, TimerReset, TrendingUp, WalletCards, X, Zap,
 } from "lucide-react";
+import WalletButton from "@/components/WalletButton";
 import { usePool } from "@/hooks/usePool";
 import styles from "./lumina-landing.module.css";
 
@@ -52,7 +53,7 @@ function Brand({ compact = false }: { compact?: boolean }) {
 function LandingNav() {
   const [open, setOpen] = useState(false);
   const links = [{ label: "Features", href: "#features" }, { label: "Liquidity", href: "#liquidity" }, { label: "Docs", href: "#clmm" }, { label: "Governance", href: "#roadmap" }, { label: "Roadmap", href: "#roadmap" }];
-  return <header className={styles.header}><nav className={styles.nav} aria-label="Main navigation"><Link href="/" aria-label="LuminaDex home"><Brand /></Link><div className={styles.navLinks}>{links.map((link) => <a key={link.label} href={link.href}>{link.label}</a>)}</div><div className={styles.navActions}><a href="#faq" className={styles.faq}>FAQ</a><Link href="/swap" className={styles.primaryButton}>Launch App <ArrowRight size={16} /></Link></div><button className={styles.menuButton} onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label="Toggle navigation">{open ? <X size={21} /> : <Menu size={21} />}</button></nav>{open && <div className={styles.mobileNav}>{links.map((link) => <a key={link.label} href={link.href} onClick={() => setOpen(false)}>{link.label}</a>)}<a href="#faq" onClick={() => setOpen(false)}>FAQ</a><Link href="/swap" onClick={() => setOpen(false)}>Launch App <ArrowRight size={15} /></Link></div>}</header>;
+  return <header className={styles.header}><nav className={styles.nav} aria-label="Main navigation"><Link href="/" aria-label="LuminaDex home"><Brand /></Link><div className={styles.navLinks}>{links.map((link) => <a key={link.label} href={link.href}>{link.label}</a>)}</div><div className={styles.navActions}><a href="#faq" className={styles.faq}>FAQ</a><div className={`${styles.walletMount} ${styles.navWallet}`}><WalletButton /></div></div><button className={styles.menuButton} onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label="Toggle navigation">{open ? <X size={21} /> : <Menu size={21} />}</button></nav>{open && <div className={styles.mobileNav}>{links.map((link) => <a key={link.label} href={link.href} onClick={() => setOpen(false)}>{link.label}</a>)}<a href="#faq" onClick={() => setOpen(false)}>FAQ</a><div className={`${styles.walletMount} ${styles.mobileWallet}`}><WalletButton /></div><Link href="/swap" onClick={() => setOpen(false)}>Launch App <ArrowRight size={15} /></Link></div>}</header>;
 }
 
 function AuroraBackground() {
@@ -69,7 +70,7 @@ function MarketChart() {
 }
 
 function SwapPreview() {
-  return <div className={styles.swapCard}><div className={styles.swapTitle}><span>Swap</span><SlidersIcon size={17} /></div><div className={styles.tokenInput}><div><small>You pay</small><div className={styles.asset}><TokenIcon src="/xlm.svg" label="Stellar Lumens" /><span><b>XLM</b><small>Stellar Lumens</small></span></div></div><div className={styles.amount}><b>100</b><small>$11.24</small></div></div><button className={styles.swapDirection} aria-label="Switch assets"><Repeat2 size={15} /></button><div className={styles.tokenInput}><div><small>You receive</small><div className={styles.asset}><TokenIcon src="/usdc.svg" label="USD Coin" /><span><b>USDC</b><small>USD Coin</small></span></div></div><div className={styles.amount}><b>11.24</b><small>$11.24</small></div></div><Link href="/swap" className={styles.connectButton}>Connect Wallet</Link><div className={styles.tradeDetails}><span>Best price <b>1 XLM ≈ 0.1124 USDC</b></span><span>Slippage tolerance <b>0.5%</b></span></div></div>;
+  return <div className={styles.swapCard}><div className={styles.swapTitle}><span>Swap</span><SlidersIcon size={17} /></div><div className={styles.tokenInput}><div><small>You pay</small><div className={styles.asset}><TokenIcon src="/xlm.svg" label="Stellar Lumens" /><span><b>XLM</b><small>Stellar Lumens</small></span></div></div><div className={styles.amount}><b>100</b><small>$11.24</small></div></div><button className={styles.swapDirection} aria-label="Switch assets"><Repeat2 size={15} /></button><div className={styles.tokenInput}><div><small>You receive</small><div className={styles.asset}><TokenIcon src="/usdc.svg" label="USD Coin" /><span><b>USDC</b><small>USD Coin</small></span></div></div><div className={styles.amount}><b>11.24</b><small>$11.24</small></div></div><div className={`${styles.walletMount} ${styles.previewWallet}`}><WalletButton /></div><div className={styles.tradeDetails}><span>Best price <b>1 XLM ≈ 0.1124 USDC</b></span><span>Slippage tolerance <b>0.5%</b></span></div></div>;
 }
 
 function TradingPreview() {
