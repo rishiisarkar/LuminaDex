@@ -13,7 +13,8 @@
 </div>
 
 ---
-<img width="2497" height="1302" alt="Screenshot 2026-07-20 133851" src="https://github.com/user-attachments/assets/c6d9347b-83b3-4bb6-8ba9-2d53ac064360" />
+<img width="1919" height="923" alt="Screenshot 2026-08-16 184350" src="https://github.com/user-attachments/assets/dcf07969-bbca-48a6-bbb9-bd8f36eca472" />
+
 
 
 
@@ -29,26 +30,94 @@ A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete
 | Resource | Link |
 |----------|------|
 | **Live Demo** | [https://lumina-dex-livid.vercel.app](https://lumina-dex-livid.vercel.app/) |
-| **User Profile Contract** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDDGU3TCEKRZ2LR2UIQZ2NH3NS2J5NAJNBGPIZTRD5TXZBNCZNCAK7P4) |
-| **transaction activity** | [transaction ](https://stellar.expert/explorer/testnet/account/GCVE5QXJ33NFGVMUCGUTTUVJQ7F6O4G6OPLCIU5O6OQXPYNORGDP3UIY) |
-| **User Testing & Feedback** | [10+ verified users Excel Sheet Data](https://docs.google.com/spreadsheets/d/1f1TMBLmPO_KDPSEhh22tdrCmSYe7jygxQjI-regL9fA/edit?usp=sharing) |
+| **User Profile Contract** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32) |
+| **User Testing & Feedback** | [50+ verified users Excel Sheet Data]https://docs.google.com/spreadsheets/d/131JXBW54fSMdmeeXcjTRUYZhYKoJSFi1WKzNA8zrSOo/edit?usp=sharing) |
 | **User FeedBack Summery** | [Feedback Summery](https://docs.google.com/presentation/d/1OP0RDVZy3l-jffxUe3YdLIUmkQADfXPK/edit?usp=sharing&ouid=111617888193331830582&rtpof=true&sd=true) |
 
 ---
 
-# Level 4  Submission Checklist
+
+## 📋 Level 5 Submission Checklist
 
 | Requirement | Status | Evidence |
-|-------------|--------|----------|
-| **Live Demo Deployed** | ✅ Complete | https://lumina-dex-livid.vercel.app/ |
-| **CI/CD Pipeline** | ✅ Complete | GitHub Actions Enabled |
-| **Smart Contract Deployed** | ✅ Complete | `CDDGU3TCEKRZ2LR2UIQZ2NH3NS2J5NAJNBGPIZTRD5TXZBNCZNCAK7P4` |
-| **Mobile Responsive** | ✅ Complete | Optimized for Desktop, Tablet & Mobile |
-| **Security Review** | ✅ Complete | Contract tested and documented |
-| **User Testing Completed** | ✅ Complete | Feedback collected and improvements implemented |
-| **Pitch Desk** | ✅ Complete | Google Slide Pitch Desk implemented |
+|---|---|---|
+| Minimum 20+ meaningful commits | ✅ (42+ commits) | `git log --oneline` |
+| Live deployed application | ✅ |  [https://lumina-dex-livid.vercel.app](https://lumina-dex-livid.vercel.app/) |
+| PPT/Pitch deck link | ✅ | [`docs/pitch-deck.html`](./docs/pitch-deck.html) — [View Pitch Deck Guide](./docs/pitch-deck.md) |
+| Demo video link | ✅ | [`docs/demo-video.md`](./docs/demo-video.md) |
+| Proof of 50+ users | ✅ (52 users) | [50+ verified users Excel Sheet Data](https://docs.google.com/spreadsheets/d/131JXBW54fSMdmeeXcjTRUYZhYKoJSFi1WKzNA8zrSOo/edit?usp=sharing) |
+| Screenshots of analytics/transaction activity | ✅ | See [Screenshots](#-screenshots) & [Analytics Dashboard](#-analytics-dashboard) |
+| Updated README and documentation | ✅ | This file |
+| User feedback iteration summary | ✅ | See [Improvements Based on Feedback](#-improvements-based-on-user-feedback) |
+| Google Form for user details | ✅ | [Feedback Form]([https://forms.gle/YOUR_FORM_ID_HERE](https://forms.gle/gEEYjqmHRHJ9u9Rm8)) |
 
 ---
+## 🚀 Deployed Contracts (Stellar Testnet)
+
+The `contracts/` directory was reorganized as a **Cargo workspace** with all contracts as members. Compilations and optimizations were performed, followed by fresh deployments using the `rishii` account on Stellar Testnet.
+
+**Network:** Stellar Testnet · **Passphrase:** `Test SDF Network ; September 2015`
+
+| Contract | Deployed Address (testnet) | Explorer |
+|---|---|---|
+| **Factory** | `CDFY5UX77PQDP2QGNY4YGZVKK6FE6J2LSSVZFXTQSHRO2JIES7LSZGPE` | [view](https://stellar.expert/explorer/testnet/contract/CDFY5UX77PQDP2QGNY4YGZVKK6FE6J2LSSVZFXTQSHRO2JIES7LSZGPE) |
+| **Pool** (XLM/USDC 0.3%) | `CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32` | [view](https://stellar.expert/explorer/testnet/contract/CCYBX2FOT5RWL6T2CQROAA3ZECYNNE3PSJ7WQXULU6AJOCCK6YHSTH32) |
+| **Router** | `CDLCGPUP7NW4B4SSFG5H4I75PKDGPUZDHOX5C6YICJY7RDJ7VP7BAT62` | [view](https://stellar.expert/explorer/testnet/contract/CDLCGPUP7NW4B4SSFG5H4I75PKDGPUZDHOX5C6YICJY7RDJ7VP7BAT62) |
+| **Position Manager** | `CC6IBQ7VNVK7CQYIZX47NJPDH5DL5ISQSA26BLBZXVMVEQ3QGUAZDREI` | [view](https://stellar.expert/explorer/testnet/contract/CC6IBQ7VNVK7CQYIZX47NJPDH5DL5ISQSA26BLBZXVMVEQ3QGUAZDREI) |
+| XLM (Stellar Asset Contract) | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` | [view](https://stellar.expert/explorer/testnet/contract/CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC) |
+| USDC (Stellar Asset Contract) | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` | [view](https://stellar.expert/explorer/testnet/contract/CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA) |
+> ℹ️ **These are the current, live testnet deployments** and supersede any previously published contract addresses for this project.
+
+### Token Addresses (Stellar Testnet)
+
+| Token | Type | Soroban address (SAC) | Classic issuer |
+|---|---|---|---|
+| XLM | Native Stellar asset (SAC) | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` | native |
+| USDC | SEP-41 SAC over classic USDC | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` | `GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5` |
+
+> USDC is a SAC wrapping the classic asset issued by the address above — the G-address is used only for building `change_trust` trustline transactions, never for Soroban token calls.
+
+User Feedback Implementation
+
+The product went through a round of hands-on user feedback covering the marketing
+site and the Swap / Liquidity / Portfolio app shell. Each row below maps the
+feedback we received to the concrete change shipped for it and the commit that
+contains that change.
+
+## 👥 Level 5 User Onboarding
+
+🔗 **Google Form:** [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSeepO3hoKKHkP9ysz-5hoHqNLHKnWmTWujFGEL5B7sjOqAAyQ/viewform?usp=header)
+📊 **Response Sheet:** [Response Sheet](https://docs.google.com/spreadsheets/d/1f1TMBLmPO_KDPSEhh22tdrCmSYe7jygxQjI-regL9fA/edit?usp=sharing)
+---
+
+## 📈 User Feedback & Improvements
+
+| # | User Feedback | Implementation | Commit |
+|---|---|---|---|
+| 1 | Improve price accuracy and reduce inconsistencies between displayed values and actual pool state. | Updated liquidity pricing to use the pool's on-chain `sqrtPriceX64` and current tick, improving the accuracy of price-range and liquidity calculations. | [`614cb0e`](https://github.com/rishiisarkar/LuminaDex/commit/614cb0e2744660916e6c50a060a5f32c46647023) |
+| 2 | Reduce transaction failures caused by slippage. | Added slippage-protected minimum token amounts when creating liquidity positions and improved validation before submitting transactions. | [`614cb0e`](https://github.com/rishiisarkar/LuminaDex/commit/614cb0e2744660916e6c50a060a5f32c46647023) |
+| 3 | Make failed transactions easier to understand instead of showing unclear errors. | Added clearer validation and error handling for invalid price ranges, invalid liquidity amounts, insufficient XLM/USDC balances, and token authorization failures. | [`614cb0e`](https://github.com/rishiisarkar/LuminaDex/commit/614cb0e2744660916e6c50a060a5f32c46647023) |
+| 4 | Improve USDC support and make token handling more reliable. | Added stronger USDC/XLM validation, fresh wallet balance checks, USDC trustline handling, correct token ordering verification, and official token assets throughout the UI. | [`614cb0e`](https://github.com/rishiisarkar/LuminaDex/commit/614cb0e2744660916e6c50a060a5f32c46647023) |
+| 5 | Improve the experience when users do not have enough tokens to provide liquidity. | Added real-time XLM and USDC balance validation with detailed messages showing required amounts, available balances, and the XLM gas reserve requirement. | [`614cb0e`](https://github.com/rishiisarkar/LuminaDex/commit/614cb0e2744660916e6c50a060a5f32c46647023) |
+| 6 | Improve mobile responsiveness, especially on smaller screens. | Refined responsive landing-page layouts, spacing, typography, sections, and visual behavior to provide a better experience across mobile and desktop devices. | [`52fae37`](https://github.com/rishiisarkar/LuminaDex/commit/52fae375cef49e9bdf4a4fa7740ccde36f1a1e86) |
+| 7 | Make the application easier for beginners to understand and navigate. | Simplified the LuminaDex navigation and strengthened the landing-page presentation so users can more easily understand Swap, Liquidity, and Portfolio flows. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 8 | Improve the wallet connection experience and make wallet actions clearer. | Standardized wallet-related UI across the application, improved Connect Wallet presentation, and integrated the wallet experience consistently into the main application flow. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+| 9 | Polish the overall interface and make the product feel more modern. | Added a refined LuminaDex landing-page visual system with responsive styling, improved typography, animations, spacing, modern sections, and stronger visual hierarchy. | [`52fae37`](https://github.com/rishiisarkar/LuminaDex/commit/52fae375cef49e9bdf4a4fa7740ccde36f1a1e86) |
+| 10 | Improve consistency across Swap, Liquidity, Portfolio, navigation, and token displays. | Unified the core frontend experience with LuminaDex branding, shared navigation, redesigned application pages, XLM/USDC assets, reusable components, and consistent styling while preserving existing functionality. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
+
+## 🧪 CI/CD (GitHub Actions — `.github/workflows/`)
+
+| Workflow | Trigger | Steps |
+|---|---|---|
+| **`ci.yml`** | Push / PR to `main` | **contracts job:** `cargo fmt --check` → `cargo test` → `cargo build --target wasm32-unknown-unknown --release` → upload wasm.<br>**frontend job:** `npm ci` → `npm run lint` → `npm run typecheck` → `npm run test:ci` → `npm run build`. Fails on any lint/type/test/build error. |
+| **`deploy.yml`** | Push to `main` + manual dispatch | **deploy-contract:** build wasm → `stellar contract deploy` (factory) on testnet.<br>**deploy-frontend:** `needs: deploy-contract` → `npm run build` with `NEXT_PUBLIC_*` → `vercel deploy --prod`. Deploy steps skip cleanly when secrets are absent. |
+<img width="2556" height="1095" alt="image" src="https://github.com/user-attachments/assets/4a458330-b486-450f-93ee-8cdcc2c93619" />
+
+## 📱 Mobile Responsive
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/d2993f69-efa3-46e8-9dee-7424ffe43249" alt="Mobile Responsive Preview" width="300" />
+</div>
 
 ### What This Project Builds
 
@@ -68,120 +137,6 @@ A CLMM DEX allows Liquidity Providers (LPs) to deposit liquidity into **discrete
 | Token pair | XLM (native) / USDC (SEP-41 on testnet) |
 | Frontend | React + TypeScript + Stellar SDK |
 | Wallet | Freighter (browser extension) |
-
----
-## 🚀 Deployed Contracts (Stellar Testnet)
-
-The `contracts/` directory was reorganized as a **Cargo workspace** with all contracts as members. Compilations and optimizations were performed, followed by fresh deployments using the `rishii` account on Stellar Testnet.
-
-**Network:** Stellar Testnet · **Passphrase:** `Test SDF Network ; September 2015`
-
-| Contract | Deployed Address (Testnet) | Notes | Explorer |
-|---|---|---|---|
-| **Factory** | `CCDUWTVMG6J4V6SZJBWKO5E24IEYHZEHXJZNIVKQURFN6DATWISOL72T` | Pool registry & deployer | [view](https://stellar.expert/explorer/testnet/contract/CCDUWTVMG6J4V6SZJBWKO5E24IEYHZEHXJZNIVKQURFN6DATWISOL72T) |
-| **Pool (XLM/USDC, 0.3% Fee)** | `CBR7MAQPM35KPK3ULM4FBLEQMQFJZC6N7YWXMPWPYWVPOL2OVNKKBPQV` | Deployed and initialized at live market price of **~$0.183** | [view](https://stellar.expert/explorer/testnet/contract/CBR7MAQPM35KPK3ULM4FBLEQMQFJZC6N7YWXMPWPYWVPOL2OVNKKBPQV) |
-| **Router** | `CBJR47MFKAATLVITCHAYDXEML4FB4HVTZXK4DPZQPWYNN3AG4GJU3ERD` | Exact-in / exact-out swap entrypoints | [view](https://stellar.expert/explorer/testnet/contract/CBJR47MFKAATLVITCHAYDXEML4FB4HVTZXK4DPZQPWYNN3AG4GJU3ERD) |
-| **Position Manager** | `CDARU3KCM2CKQLQ74V4NYJ6V5X6Q4IXLKJGSDEIOLEQAUOAYUQ27QKBH` | LP position lifecycle | [view](https://stellar.expert/explorer/testnet/contract/CDARU3KCM2CKQLQ74V4NYJ6V5X6Q4IXLKJGSDEIOLEQAUOAYUQ27QKBH) |
-| **UserProfile Contract** | `CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U` | On-chain user profile registry (organized under `contracts/`) | [view](https://stellar.expert/explorer/testnet/contract/CDCTJGULUEJSL3DBJQYD7DVQEA52J7QZDGY5EPDVIODBJQW532O3675U) |
-
-> ℹ️ **These are the current, live testnet deployments** and supersede any previously published contract addresses for this project.
-
-### Token Addresses (Stellar Testnet)
-
-| Token | Type | Soroban Address (SAC) | Classic Issuer | Asset Code | Explorer |
-|---|---|---|---|---|---|
-| XLM | Native Stellar asset (SAC) | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` | `native` | — | [view](https://stellar.expert/explorer/testnet/contract/CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC) |
-| USDC | SEP-41 SAC over classic USDC | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` | `GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5` | `USDC` | [view](https://stellar.expert/explorer/testnet/contract/CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA) |
-
-> USDC is a SAC wrapping the classic asset issued by the address above — the G-address is used only for building `change_trust` trustline transactions, never for Soroban token calls.
-
-User Feedback Implementation
-
-The product went through a round of hands-on user feedback covering the marketing
-site and the Swap / Liquidity / Portfolio app shell. Each row below maps the
-feedback we received to the concrete change shipped for it and the commit that
-contains that change.
-
-## 👥 july User Onboarding
-
-📊 **Response Sheet:** [Response Sheet](https://docs.google.com/spreadsheets/d/1f1TMBLmPO_KDPSEhh22tdrCmSYe7jygxQjI-regL9fA/edit?usp=sharing)
----
-
-### 📊 User Onboarding Data
-
-<div align="center">
-
-| # | User | Email | Wallet Address | Rating |
-|---|------|-------|---------------|--------|
-| 1 | **Aditya Jha** | jha073803@gmail.com | `GDFKLTB5WKKDDJ2NRU2V5OG476HYEGWT4UFV7BID7BNGWZGRZYL3LL6Z` | ⭐⭐⭐⭐⭐ |
-| 2 | **Souvik Mandal** | souvikmandals10@gmail.com | `GAG3SUKHIF7VAWGTDRH52XETMLZXXNXBAZLLXHSLXAQPOBBCN43YLKR4` | ⭐⭐⭐⭐ |
-| 3 | **Ankita Barman** | poulumidui@gmail.com | `GCV5X5CKYUAPQLE3OYQS3PDXKX4TRV767YUCJ66PWWGZD2BXE744T276` | ⭐⭐⭐⭐⭐ |
-| 4 | **Debansh Tiwari** | debanshtiwari712@gmail.com | `GA4SXARZZ4RPF6N7VOAH3B5OKMFAP3FGY6M6TO3DZJL4TMU2KOVBHCIY` | ⭐⭐⭐⭐⭐ |
-| 5 | **Priyasha Debnath** | popololo229099@gmail.com | `GCKMODNZEAI4X6AL6SL77PNJLUUJAQAWECXDTXJZGXBOSSSF7THC3XH6` | ⭐⭐⭐ |
-| 6 | **Papita Kumari** | poppritu@gmail.com | `GACMLTEWZ23NGJ5WZ2THYGLODFYTEKECB7J2U33H3DCSW2PEAQUEIZED` | ⭐⭐⭐⭐⭐ |
-| 7 | **Probir Sha** | proumg2@gmail.com | `GAEAB4UWRUODGUKBYGDXBZULSOI3HJ6HQKJNNLTY66IF3ATXMRYUCSNX` | ⭐⭐⭐⭐ |
-| 8 | **Amitabh Dey** | amitabh101dey@gmail.com | `GBKYHWSL2MNUO73HWY6KWNOA64AKSUENCOBTR56M66HNLMMKMZHK5OAS` | ⭐⭐⭐⭐⭐ |
-| 9 | **Abhishek Kumar** | ak0001736@gmail.com | `GBENUMINONHMCBALY7UMD4JQV7XXOQHAO4KNVV4UJC5ZTGHNE7PWQ7HR` | ⭐⭐⭐⭐⭐ |
-| 10 | **Pritam Dev** | pritamsdev2@gmail.com | `GATJMD6BGNK4FQYNFWB354N7RP4XHA2R74GNSYM472ALNLJFX7NXBS3X` | ⭐⭐⭐⭐ |
-
-</div>
-
-> **Total Users Onboarded:** 10 &nbsp;|&nbsp; **Average Rating:** ⭐ 4.9/5 &nbsp;|&nbsp; **Recommend Rate:** 100%
-
-
-
-| # | User Feedback | Implementation | Commit |
-|---|---|---|---|
-| 1 | Rebrand the project from AstroFlo to **LuminaDex**, rewrite the landing page content, simplify the navigation, and update the primary CTA. | Replaced all AstroFlo branding with LuminaDex, rewrote the landing page copy for a Stellar CLMM DEX, simplified the navbar (Swap, Liquidity, Portfolio), removed unnecessary actions, and updated the CTA to **Launch App** linking to `/swap`. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-| 2 | Unify the visual design across the application. | Applied a consistent premium design system across the Landing, Swap, Liquidity, and Portfolio pages with shared typography, colors, cards, buttons, spacing, and reusable UI components for a cohesive experience. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-| 3 | Improve the Swap page UI and use real token assets. | Rebuilt the Swap interface using the provided design, integrated the official **XLM** and **USDC** SVG assets, refined the settings/slippage panel, improved floating controls, and aligned typography with the overall design system. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-| 4 | Improve navigation and wallet experience. | Created a unified responsive navbar, refined desktop/mobile navigation, linked the logo to the landing page, removed unnecessary wallet address chips, and standardized the **Connect Wallet** / **Disconnect Wallet** button design. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-| 5 | Replace placeholder token graphics throughout the application. | Replaced all placeholder or emoji token icons with the official **XLM** and **USDC** SVG assets across Swap, Liquidity, Portfolio, deposit forms, pool headers, statistics, and related UI components. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-| 6 | Improve Liquidity and Portfolio pages for consistency. | Updated typography, layout, empty states, cards, token displays, and overall styling to match the landing page while maintaining all existing functionality and user flows. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-| 7 | Make the application fully mobile responsive. | Fixed responsive layouts for Landing, Swap, Liquidity, Portfolio, and Add Liquidity pages by resolving overflow issues, improving grid behavior, optimizing spacing, and enhancing the mobile navigation experience. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-| 8 | Polish the overall UI/UX. | Improved spacing, alignment, hover effects, typography consistency, glassmorphism, component polish, navigation behavior, responsive interactions, and overall production-quality user experience without changing application logic. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-| 9 | Improve application branding and identity. | Introduced **LuminaDex** branding across the application, updated logos, navigation, page titles, metadata, and visual identity to deliver a consistent, professional Stellar DeFi experience. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-| 10 | Final UI refinements based on iterative feedback. | Applied multiple UI/UX improvements including navbar behavior, responsive adjustments, wallet interaction polish, typography consistency, component refinements, and production-ready visual enhancements while preserving all functionality. | [`08320e7`](https://github.com/rishiisarkar/LuminaDex/commit/08320e7daa288be24e1550d5ac8a730063adddfa) |
-
-> Rows land in the same commit (08320e7) because they were iterative 
-> refinements to the same app-shell files (navbar, swap card, theme tokens) 
-> made in direct response to feedback within a single continuous session, 
-> rather than independent features — each item was still verified individually 
-> (typecheck + live browser screenshot) before moving to the next.
-
-## 🧪 CI/CD (GitHub Actions — `.github/workflows/`)
-
-| Workflow | Trigger | Steps |
-|---|---|---|
-| **`ci.yml`** | Push / PR to `main` | **contracts job:** `cargo fmt --check` → `cargo test` → `cargo build --target wasm32-unknown-unknown --release` → upload wasm.<br>**frontend job:** `npm ci` → `npm run lint` → `npm run typecheck` → `npm run test:ci` → `npm run build`. Fails on any lint/type/test/build error. |
-| **`deploy.yml`** | Push to `main` + manual dispatch | **deploy-contract:** build wasm → `stellar contract deploy` (factory) on testnet.<br>**deploy-frontend:** `needs: deploy-contract` → `npm run build` with `NEXT_PUBLIC_*` → `vercel deploy --prod`. Deploy steps skip cleanly when secrets are absent. |
-<img width="2556" height="1095" alt="image" src="https://github.com/user-attachments/assets/4a458330-b486-450f-93ee-8cdcc2c93619" />
-
-## 📱 Mobile Responsive
-
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/d2993f69-efa3-46e8-9dee-7424ffe43249" alt="Mobile Responsive Preview" width="300" />
-</div>
-
-## 🏆 Stellar Journey to Master
-
-### 🧭 Belt System Progress
-
-| Level | Belt | Focus | Status |
-|-------|------|-------|--------|
-| ⚪️ Level 1 | White Belt | Wallets & transactions | ✅ Completed |
-| 🟡 Level 2 | Yellow Belt | Multi-wallet, contracts & events | ✅ Completed |
-| 🟠 Level 3 | Orange Belt | Mini dApp + tests | ✅ **Completed** |
-| 🟢 Level 4 | Green Belt | Advanced contracts & production readiness | 🔜 Upcoming |
-| 🔵 Level 5 | Blue Belt | Real MVP (5+ users) | 🔜 Upcoming |
-| ⚫️ Level 6 | Black Belt | Scale + Demo Day readiness | 🔜 Upcoming |
-
-### 🟠 Current Status: ORANGE BELT — LEVEL 3 COMPLETE
-
-At Level 3, LuminaDex ships a working mini dApp on Stellar Testnet: deployed and initialized Soroban contracts, a functional Swap / Liquidity / Portfolio frontend wired to those contracts, and passing contract test suites for the core CLMM math and lifecycle.
-
----
-
 
 ## ⚠️ Why CLMM on Stellar
 
