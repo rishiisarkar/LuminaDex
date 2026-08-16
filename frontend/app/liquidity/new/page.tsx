@@ -17,7 +17,8 @@ import {
   fromStroops,
   getLiquidityForAmounts,
   getAmountsForLiquidity,
-  priceToSqrtPriceX64,
+  sqrtPriceX64ToPrice,
+  tickToSqrtPriceX64,
   tickToPrice,
   roundTick,
   priceToTick,
@@ -31,6 +32,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { POOL_ADDRESS } from "@/lib/stellar/contracts";
 import { XLM_ADDRESS, USDC_ADDRESS, USDC_ISSUER, USDC_ASSET_CODE, STROOP } from "@/lib/stellar/assets";
 import { TICK_SPACING } from "@/lib/math";
+import { readTickSpacing, readToken0, readToken1 } from "@/lib/contract";
+import { fetchBalances } from "@/hooks/useBalances";
 
 const PRESETS = [
   { label: "±1%", pct: 0.01 },
@@ -41,6 +44,7 @@ const PRESETS = [
 ] as const;
 
 const XLM_GAS_RESERVE = 2n * STROOP;
+const ADD_LIQUIDITY_SLIPPAGE_BPS = 50n;
 
 export default function AddLiquidityPage() {
   const router = useRouter();
@@ -58,13 +62,13 @@ export default function AddLiquidityPage() {
   const usdcUsd = spot?.usdcUsd ?? 1;
 
   const liveUsdcPerXlm = xlmUsd > 0 ? xlmUsd / usdcUsd : 0;
-  const onChainXlmPerUsdc = pool && pool.tick !== undefined ? tickToPrice(pool.tick) : 0;
+  const onChainXlmPerUsdc = pool ? sqrtPriceX64ToPrice(pool.sqrtPriceX64) : 0;
   const poolUsdcPerXlm = onChainXlmPerUsdc > 0 ? 1 / onChainXlmPerUsdc : 0;
 
-  const currentUsdcPerXlm = liveUsdcPerXlm > 0 ? liveUsdcPerXlm : poolUsdcPerXlm;
-  const currentXlmPerUsdc = currentUsdcPerXlm > 0 ? 1 / currentUsdcPerXlm : 0;
-  const sqrtCurrent = currentXlmPerUsdc > 0 ? priceToSqrtPriceX64(currentXlmPerUsdc) : 0n;
-  const currentTick = currentXlmPerUsdc > 0 ? clampTick(priceToTick(currentXlmPerUsdc)) : 0;
+  const currentUsdcPerXlm = poolUsdcPerXlm > 0 ? poolUsdcPerXlm : liveUsdcPerXlm;
+  const currentXlmPerUsdc = onChainXlmPerUsdc;
+  const sqrtCurrent = pool?.sqrtPriceX64 ?? 0n;
+  const currentTick = pool?.tick ?? 0;
 
   const [tickLower, setTickLower] = useState(0);
   const [tickUpper, setTickUpper] = useState(1);
@@ -86,8 +90,8 @@ export default function AddLiquidityPage() {
     }
   }, [currentXlmPerUsdc, ticksReady]);
 
-  const sqrtLower = priceToSqrtPriceX64(tickToPrice(tickLower));
-  const sqrtUpper = priceToSqrtPriceX64(tickToPrice(tickUpper));
+  const sqrtLower = tickToSqrtPriceX64(tickLower);
+  const sqrtUpper = tickToSqrtPriceX64(tickUpper);
 
   const minUsdcPerXlm = 1 / tickToPrice(tickUpper);
   const maxUsdcPerXlm = 1 / tickToPrice(tickLower);
@@ -157,7 +161,43 @@ export default function AddLiquidityPage() {
 
   const a0Usdc = toStroops(amountUsdc);
   const a1Xlm = toStroops(amountXlm);
-  const liquidity = getLiquidityForAmounts(sqrtCurrent, sqrtLower, sqrtUpper, a0Usdc, a1Xlm);
+  const hasValidTickRange =
+    ticksReady &&
+    tickLower < tickUpper &&
+    tickLower % TICK_SPACING === 0 &&
+    tickUpper % TICK_SPACING === 0 &&
+    sqrtCurrent > 0n &&
+    sqrtLower < sqrtUpper;
+  const liquidity = hasValidTickRange
+    ? getLiquidityForAmounts(sqrtCurrent, sqrtLower, sqrtUpper, a0Usdc, a1Xlm)
+    : 0n;
+  const requiredAmounts = liquidity > 0n && hasValidTickRange
+    ? getAmountsForLiquidity(sqrtCurrent, sqrtLower, sqrtUpper, liquidity)
+    : { amount0: 0n, amount1: 0n };
+  const amount0Min = applySlippageMin(requiredAmounts.amount0);
+  const amount1Min = applySlippageMin(requiredAmounts.amount1);
+  const validationMessage =
+    !hasValidTickRange && ticksReady
+      ? "Invalid price range"
+      : requiredAmounts.amount0 > a0Usdc
+        ? "Invalid liquidity amount"
+        : requiredAmounts.amount1 > a1Xlm
+          ? "Invalid liquidity amount"
+          : balances && requiredAmounts.amount0 > balances.usdc
+            ? "Insufficient USDC balance"
+            : balances && requiredAmounts.amount1 + XLM_GAS_RESERVE > balances.xlm
+              ? "Insufficient XLM balance"
+              : null;
+  const validationDetail =
+    validationMessage === "Insufficient USDC balance" && balances
+      ? `This range requires ${fromStroops(requiredAmounts.amount0)} USDC, but your wallet has ${fromStroops(balances.usdc)} USDC. Add USDC or choose an XLM-only range.`
+      : validationMessage === "Insufficient XLM balance" && balances
+        ? `This range requires ${fromStroops(requiredAmounts.amount1)} XLM plus a 2 XLM gas reserve, but your wallet has ${fromStroops(balances.xlm)} XLM.`
+        : validationMessage === "Invalid liquidity amount"
+          ? "The selected liquidity would require more tokens than the entered amounts."
+          : validationMessage === "Invalid price range"
+            ? "Choose a lower price below the upper price, aligned to the pool tick spacing."
+            : null;
 
   const xlmValue = (parseFloat(amountXlm) || 0) * xlmUsd;
   const usdcValue = (parseFloat(amountUsdc) || 0) * usdcUsd;
@@ -194,15 +234,72 @@ export default function AddLiquidityPage() {
 
   async function handleAdd() {
     if (!address) { await connect(); return; }
-    if (liquidity === 0n) return;
+    if (liquidity === 0n) {
+      addToast(hasValidTickRange ? "Invalid liquidity amount" : "Invalid price range", "error");
+      return;
+    }
     setLoading(true);
     try {
-      const deadline = BigInt(Math.floor(Date.now() / 1000) + 300);
+      const [token0, token1, spacing, freshBalances] = await Promise.all([
+        readToken0(POOL_ADDRESS),
+        readToken1(POOL_ADDRESS),
+        readTickSpacing(POOL_ADDRESS),
+        queryClient.fetchQuery({
+          queryKey: ["balances", address],
+          queryFn: () => fetchBalances(address),
+          staleTime: 0,
+        }),
+      ]);
+
+      if (token0 !== USDC_ADDRESS || token1 !== XLM_ADDRESS) {
+        console.error("Pool token ordering mismatch", {
+          pool: POOL_ADDRESS,
+          expectedToken0: USDC_ADDRESS,
+          expectedToken1: XLM_ADDRESS,
+          actualToken0: token0,
+          actualToken1: token1,
+        });
+        throw new Error("Token authorization failed");
+      }
+
+      if (
+        spacing <= 0 ||
+        tickLower >= tickUpper ||
+        tickLower % spacing !== 0 ||
+        tickUpper % spacing !== 0
+      ) {
+        throw new Error("Invalid price range");
+      }
+
+      if (requiredAmounts.amount0 > a0Usdc || requiredAmounts.amount1 > a1Xlm) {
+        console.error("Liquidity calculation exceeds entered amounts", {
+          enteredUsdc: a0Usdc.toString(),
+          enteredXlm: a1Xlm.toString(),
+          requiredUsdc: requiredAmounts.amount0.toString(),
+          requiredXlm: requiredAmounts.amount1.toString(),
+          liquidity: liquidity.toString(),
+          tickLower,
+          tickUpper,
+          sqrtCurrent: sqrtCurrent.toString(),
+        });
+        throw new Error("Invalid liquidity amount");
+      }
+
+      if (requiredAmounts.amount0 > freshBalances.usdc) {
+        throw new Error("Insufficient USDC balance");
+      }
+
+      if (requiredAmounts.amount1 + XLM_GAS_RESERVE > freshBalances.xlm) {
+        throw new Error("Insufficient XLM balance");
+      }
+
+      const deadline = getMintDeadline();
       const currentLedger = await getLatestLedger();
       const approvalExpiry = currentLedger + 500;
+      let mintResult: { hash: string; ledger?: number } | null = null;
 
       await trackTx("Add Liquidity", async (updateStep) => {
-        if (a0Usdc > 0n && !(await hasTrustline(address, USDC_ASSET_CODE, USDC_ISSUER))) {
+        if (requiredAmounts.amount0 > 0n && !(await hasTrustline(address, USDC_ASSET_CODE, USDC_ISSUER))) {
           updateStep("preparing");
           const trustXdr = await buildTrustlineTx(address, USDC_ASSET_CODE, USDC_ISSUER);
           updateStep("waiting_signature");
@@ -212,9 +309,9 @@ export default function AddLiquidityPage() {
           await submitTransaction(signedTrust);
         }
 
-        if (a1Xlm > 0n) {
+        if (requiredAmounts.amount1 > 0n) {
           updateStep("preparing");
-          const xdr = await buildApprovalTx(address, XLM_ADDRESS, POOL_ADDRESS, a1Xlm * 2n, approvalExpiry);
+          const xdr = await buildApprovalTx(address, XLM_ADDRESS, POOL_ADDRESS, requiredAmounts.amount1, approvalExpiry);
           updateStep("waiting_signature");
           const signed = await sign(xdr);
           updateStep("submitting");
@@ -222,9 +319,9 @@ export default function AddLiquidityPage() {
           await submitTransaction(signed);
         }
 
-        if (a0Usdc > 0n) {
+        if (requiredAmounts.amount0 > 0n) {
           updateStep("preparing");
-          const xdr = await buildApprovalTx(address, USDC_ADDRESS, POOL_ADDRESS, a0Usdc * 2n, approvalExpiry);
+          const xdr = await buildApprovalTx(address, USDC_ADDRESS, POOL_ADDRESS, requiredAmounts.amount0, approvalExpiry);
           updateStep("waiting_signature");
           const signed = await sign(xdr);
           updateStep("submitting");
@@ -235,31 +332,35 @@ export default function AddLiquidityPage() {
         updateStep("preparing");
         const mintXdr = await buildMintTx(
           address, POOL_ADDRESS, tickLower, tickUpper, liquidity,
-          0n, 0n, deadline
+          amount0Min, amount1Min, deadline
         );
         updateStep("waiting_signature");
         const signedMint = await sign(mintXdr);
         updateStep("submitting");
         updateStep("pending");
         const response = await submitTransaction(signedMint);
-
-        return {
+        mintResult = {
           hash: response.hash,
           ledger: response.ledger,
         };
+
+        return mintResult;
       });
+
+      if (!mintResult) return;
 
       queryClient.invalidateQueries({ queryKey: ["positions"] });
       queryClient.invalidateQueries({ queryKey: ["balances"] });
       router.push("/liquidity");
     } catch (err: unknown) {
       console.error("Add liquidity submission error:", err);
+      addToast(getAddLiquidityErrorMessage(err), "error");
     } finally {
       setLoading(false);
     }
   }
 
-  const canAdd = address && liquidity > 0n && !loading && ticksReady;
+  const canAdd = address && liquidity > 0n && !loading && ticksReady && !validationMessage;
   const fmtP = (p: number) => (p >= 1 ? p.toFixed(4) : p.toFixed(6));
 
   return (
@@ -427,6 +528,14 @@ export default function AddLiquidityPage() {
                 <span className="text-white/50 text-xs">Total Deposit</span>
                 <span className="text-white text-base font-bold">{totalValue > 0 ? formatUsd(totalValue) : "$0.00"}</span>
               </div>
+              {liquidity > 0n && (
+                <div className="flex justify-between items-center text-xs text-white/50">
+                  <span>Required</span>
+                  <span>
+                    {fromStroops(requiredAmounts.amount1)} XLM / {fromStroops(requiredAmounts.amount0)} USDC
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between items-center text-xs text-white/50">
                 <span>Deposit Ratio</span>
                 <span className="inline-flex items-center gap-1">
@@ -439,12 +548,19 @@ export default function AddLiquidityPage() {
               </div>
             </div>
 
+            {validationMessage && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-xs text-red-300 leading-relaxed">
+                <div className="font-semibold">{validationMessage}</div>
+                {validationDetail && <div className="mt-1 text-red-200/80">{validationDetail}</div>}
+              </div>
+            )}
+
             <button className="btn-primary w-full py-4 text-base font-bold rounded-xl transition-all shadow-lg" onClick={handleAdd} disabled={!canAdd}>
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <div className="spinner w-4 h-4" /> Processing…
                 </span>
-              ) : !address ? "Connect Wallet" : liquidity === 0n ? "Enter Amounts" : "Add Liquidity"}
+              ) : !address ? "Connect Wallet" : validationMessage ?? (liquidity === 0n ? "Enter Amounts" : "Add Liquidity")}
             </button>
           </div>
         </div>
@@ -506,6 +622,51 @@ function TokenBox({ symbol, icon, value, usd, balance, disabled, onChange, onMax
       {usd > 0 && <div className="text-[11px] text-white/40 text-right mt-1">≈ {formatUsd(usd)}</div>}
     </div>
   );
+}
+
+function applySlippageMin(amount: bigint): bigint {
+  if (amount === 0n) return 0n;
+  return (amount * (10_000n - ADD_LIQUIDITY_SLIPPAGE_BPS)) / 10_000n;
+}
+
+function getMintDeadline(): bigint {
+  return BigInt(Math.floor(Date.now() / 1000) + 300);
+}
+
+function getAddLiquidityErrorMessage(err: unknown): string {
+  const message = err instanceof Error ? err.message : String(err);
+  let details = "";
+  try {
+    details = JSON.stringify(err, (_key, value) =>
+      typeof value === "bigint" ? value.toString() : value
+    );
+  } catch {
+    details = "";
+  }
+  const raw = `${message} ${details}`.toLowerCase();
+
+  if (raw.includes("insufficient usdc")) return "Insufficient USDC balance";
+  if (raw.includes("insufficient xlm")) return "Insufficient XLM balance";
+  if (
+    raw.includes("resulting balance is not within the allowed range") ||
+    raw.includes("tx_insufficient_balance") ||
+    raw.includes("underfunded")
+  ) {
+    return "Insufficient XLM balance";
+  }
+  if (raw.includes("authorization") || raw.includes("allowance") || raw.includes("auth")) {
+    return "Token authorization failed";
+  }
+  if (raw.includes("invalid liquidity") || raw.includes("zero liquidity")) {
+    return "Invalid liquidity amount";
+  }
+  if (raw.includes("price range") || raw.includes("tick")) {
+    return "Invalid price range";
+  }
+  if (raw.includes("simulation")) {
+    return "Transaction simulation failed";
+  }
+  return "Transaction simulation failed";
 }
 
 function compact(n: number): string {

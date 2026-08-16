@@ -10,7 +10,7 @@ export interface Balances {
 }
 
 /** Reads SAC `balance(address)` for both tokens of the connected wallet. */
-async function fetchBalances(address: string): Promise<Balances> {
+export async function fetchBalances(address: string): Promise<Balances> {
   const arg = [addressToScVal(address)];
   const [xlmRes, usdcRes] = await Promise.allSettled([
     simulateContractRead(XLM_ADDRESS, "balance", arg),

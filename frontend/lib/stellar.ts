@@ -56,7 +56,17 @@ export async function buildContractTx(
 
   const sim = await server.simulateTransaction(tx);
   if (SorobanRpc.Api.isSimulationError(sim)) {
-    throw new Error(`Simulation error: ${sim.error}`);
+    const diagnostics = (sim as { diagnosticEvents?: unknown }).diagnosticEvents;
+    console.error("Soroban simulation failed", {
+      contractId,
+      method,
+      error: sim.error,
+      diagnostics,
+      simulation: sim,
+    });
+    const error = new Error(`Simulation error: ${sim.error}`);
+    (error as Error & { simulation?: unknown }).simulation = sim;
+    throw error;
   }
 
   return SorobanRpc.assembleTransaction(tx, sim).build();
@@ -128,7 +138,17 @@ export async function simulateContractRead(
   const sim = await server.simulateTransaction(tx);
 
   if (SorobanRpc.Api.isSimulationError(sim)) {
-    throw new Error(`Simulation error: ${sim.error}`);
+    const diagnostics = (sim as { diagnosticEvents?: unknown }).diagnosticEvents;
+    console.error("Soroban read simulation failed", {
+      contractId,
+      method,
+      error: sim.error,
+      diagnostics,
+      simulation: sim,
+    });
+    const error = new Error(`Simulation error: ${sim.error}`);
+    (error as Error & { simulation?: unknown }).simulation = sim;
+    throw error;
   }
 
   const successSim = sim as SorobanRpc.Api.SimulateTransactionSuccessResponse;

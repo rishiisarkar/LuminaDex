@@ -6,7 +6,7 @@ import { PM_ADDRESS, POOL_ADDRESS } from "@/lib/stellar/contracts";
 import { Q64 } from "@/lib/math";
 import {
   getAmountsForLiquidity,
-  priceToSqrtPriceX64,
+  tickToSqrtPriceX64,
   tickToPrice,
 } from "@/lib/math";
 import { scValToNative } from "@stellar/stellar-sdk";
@@ -215,8 +215,8 @@ export function usePositions(owner: string | null) {
               fetchTickInfo(meta.tick_upper),
             ]);
 
-            const sqrtLower = priceToSqrtPriceX64(tickToPrice(meta.tick_lower));
-            const sqrtUpper = priceToSqrtPriceX64(tickToPrice(meta.tick_upper));
+            const sqrtLower = tickToSqrtPriceX64(meta.tick_lower);
+            const sqrtUpper = tickToSqrtPriceX64(meta.tick_upper);
             const liquidity = BigInt(meta.liquidity);
 
             const { amount0, amount1 } = getAmountsForLiquidity(
