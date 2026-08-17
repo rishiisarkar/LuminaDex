@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useTxTracker, TxStep } from "@/context/TxTrackerContext";
+import { usePathname } from "next/navigation";
 import { 
   X, 
   Loader2, 
@@ -12,6 +13,9 @@ import {
   FileText,
   RefreshCw
 } from "lucide-react";
+import StarRating from "@/components/assistant/StarRating";
+import { submitFeedback } from "@/lib/feedback/submitFeedback";
+import { useWallet } from "@/hooks/useWallet";
 
 interface StepConfig {
   id: TxStep;
@@ -46,8 +50,11 @@ export default function TxStatusModal() {
   const { state, isModalOpen, closeModal, retryTx } = useTxTracker();
   const { step, txHash, ledger, error, title } = state;
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
-
-  if (!isModalOpen || step === "idle") return null;
+  const [showExperiencePrompt, setShowExperiencePrompt] = useState(false);
+  const [promptRating, setPromptRating] = useState(0);
+  const [promptSubmitted, setPromptSubmitted] = useState(false);
+  const pathname = usePathname();
+  const { address } = useWallet();
 
   const isCompleted = step === "confirmed";
   const isFailed = step === "failed";
@@ -60,6 +67,64 @@ export default function TxStatusModal() {
   if (step === "pending") activeIndex = 3;
   if (isCompleted) activeIndex = 4;
   if (isFailed) activeIndex = activeIndex; // hold index on fail
+
+  const promptKind = getPromptKind(title);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+    if (!isCompleted || !promptKind || typeof window === "undefined") {
+      setShowExperiencePrompt(false);
+      return;
+    }
+    const key = getPromptStorageKey(promptKind);
+    const lastPrompt = Number(window.localStorage.getItem(key) ?? "0");
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    setShowExperiencePrompt(Date.now() - lastPrompt > sevenDays);
+    setPromptRating(0);
+    setPromptSubmitted(false);
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [isCompleted, promptKind]);
+
+  async function submitPromptRating(rating: number) {
+    setPromptRating(rating);
+    if (!promptKind || promptSubmitted) return;
+    setPromptSubmitted(true);
+    const queued = await submitFeedback(
+      {
+        type: "rating",
+        rating,
+        category: promptKind === "swap" ? "Swap" : "Liquidity",
+        message: `Post-transaction rating for ${title}`,
+      },
+      {
+        route: pathname,
+        walletAddress: address ?? undefined,
+        walletConnected: Boolean(address),
+        network: "Stellar Testnet",
+        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
+        screenSize:
+          typeof window !== "undefined"
+            ? `${window.innerWidth}x${window.innerHeight}`
+            : undefined,
+      }
+    );
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(getPromptStorageKey(promptKind), String(Date.now()));
+    }
+    if (queued) {
+      setPromptSubmitted(true);
+    }
+  }
+
+  function dismissPrompt() {
+    setShowExperiencePrompt(false);
+    if (promptKind && typeof window !== "undefined") {
+      window.localStorage.setItem(getPromptStorageKey(promptKind), String(Date.now()));
+    }
+  }
+
+  if (!isModalOpen || step === "idle") return null;
 
   return (
     <AnimatePresence>
@@ -212,6 +277,47 @@ export default function TxStatusModal() {
                   </div>
                 </div>
               )}
+
+              {showExperiencePrompt && (
+                <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-white">How was your experience?</p>
+                      <p className="mt-0.5 text-xs text-white/45">
+                        A quick rating helps us improve this flow.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={dismissPrompt}
+                      className="text-xs font-semibold text-white/35 hover:text-white"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                  <div className="mt-3">
+                    <StarRating value={promptRating} onChange={submitPromptRating} compact />
+                  </div>
+                  {promptSubmitted && (
+                    <p className="mt-2 text-xs font-semibold text-emerald-300">
+                      Thanks for the rating.
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      window.dispatchEvent(
+                        new CustomEvent("lumina:open-assistant", {
+                          detail: { mode: "feedback" },
+                        })
+                      )
+                    }
+                    className="mt-3 text-xs font-bold text-cyan-200/80 hover:text-cyan-100"
+                  >
+                    Share feedback
+                  </button>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -265,6 +371,16 @@ export default function TxStatusModal() {
       </div>
     </AnimatePresence>
   );
+}
+
+function getPromptKind(title: string): "swap" | "liquidity" | null {
+  if (/^swap\b/i.test(title)) return "swap";
+  if (/^add liquidity\b/i.test(title)) return "liquidity";
+  return null;
+}
+
+function getPromptStorageKey(kind: "swap" | "liquidity") {
+  return `luminadex_last_feedback_prompt_${kind}`;
 }
 
 function formatTechnicalDetails(originalError: unknown): string {
