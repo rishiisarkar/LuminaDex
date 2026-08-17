@@ -245,6 +245,9 @@ export default function SwapPage() {
                   minimumReceived={`${fromStroops(amountOutMin)} ${tokenOut.symbol}`}
                   fee={`${feeAmount} ${tokenIn.symbol}`}
                   slippage={slippage}
+                  tokenPair={`${tokenIn.symbol} / ${tokenOut.symbol}`}
+                  amountIn={`${amountIn} ${tokenIn.symbol}`}
+                  network="Stellar Testnet"
                   isThinPool={priceImpactResult.isThinPool}
                   lastFetchedAt={pool?.lastFetchedAt}
                   onHighImpactAcknowledged={setHighImpactAcknowledged}

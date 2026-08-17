@@ -5,11 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight, BookOpen, Boxes, Check, ChevronRight, CircleDollarSign, Code2,
-  Droplets, Gauge, Globe2, Layers3, LockKeyhole, Menu, Orbit, Repeat2,
+  CircleHelp, Droplets, Gauge, Globe2, Layers3, LockKeyhole, Menu, Orbit, Repeat2,
   ShieldCheck, Sparkles, TimerReset, TrendingUp, WalletCards, X, Zap,
 } from "lucide-react";
 import WalletButton from "@/components/WalletButton";
 import { usePool } from "@/hooks/usePool";
+import { useOnboarding } from "@/components/onboarding/OnboardingProvider";
 import styles from "./lumina-landing.module.css";
 
 const features = [
@@ -52,8 +53,9 @@ function Brand({ compact = false }: { compact?: boolean }) {
 
 function LandingNav() {
   const [open, setOpen] = useState(false);
+  const { openGuide } = useOnboarding();
   const links = [{ label: "Features", href: "#features" }, { label: "Liquidity", href: "#liquidity" }, { label: "Docs", href: "#clmm" }, { label: "Governance", href: "#roadmap" }, { label: "Roadmap", href: "#roadmap" }];
-  return <header className={styles.header}><nav className={styles.nav} aria-label="Main navigation"><Link href="/" aria-label="LuminaDex home"><Brand /></Link><div className={styles.navLinks}>{links.map((link) => <a key={link.label} href={link.href}>{link.label}</a>)}</div><div className={styles.navActions}><a href="#faq" className={styles.faq}>FAQ</a><div className={`${styles.walletMount} ${styles.navWallet}`}><WalletButton /></div></div><button className={styles.menuButton} onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label="Toggle navigation">{open ? <X size={21} /> : <Menu size={21} />}</button></nav>{open && <div className={styles.mobileNav}>{links.map((link) => <a key={link.label} href={link.href} onClick={() => setOpen(false)}>{link.label}</a>)}<a href="#faq" onClick={() => setOpen(false)}>FAQ</a><div className={`${styles.walletMount} ${styles.mobileWallet}`}><WalletButton /></div><Link href="/swap" onClick={() => setOpen(false)}>Launch App <ArrowRight size={15} /></Link></div>}</header>;
+  return <header className={styles.header}><nav className={styles.nav} aria-label="Main navigation"><Link href="/" aria-label="LuminaDex home"><Brand /></Link><div className={styles.navLinks}>{links.map((link) => <a key={link.label} href={link.href}>{link.label}</a>)}</div><div className={styles.navActions}><button type="button" className={styles.learnButton} onClick={openGuide}><CircleHelp size={15} /> Learn</button><a href="#faq" className={styles.faq}>FAQ</a><div data-tour="wallet" className={`${styles.walletMount} ${styles.navWallet}`}><WalletButton /></div></div><button className={styles.menuButton} onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label="Toggle navigation">{open ? <X size={21} /> : <Menu size={21} />}</button></nav>{open && <div className={styles.mobileNav}>{links.map((link) => <a key={link.label} href={link.href} onClick={() => setOpen(false)}>{link.label}</a>)}<button type="button" className={styles.mobileLearnButton} onClick={() => { setOpen(false); openGuide(); }}><CircleHelp size={15} /> Learn</button><a href="#faq" onClick={() => setOpen(false)}>FAQ</a><div data-tour="wallet" className={`${styles.walletMount} ${styles.mobileWallet}`}><WalletButton /></div><Link href="/swap" data-tour="swap" onClick={() => setOpen(false)}>Launch App <ArrowRight size={15} /></Link></div>}</header>;
 }
 
 function AuroraBackground() {
@@ -111,8 +113,24 @@ function PoolsSection() {
 }
 
 function HowItWorks() {
-  const steps = [{ icon: WalletCards, title: "Connect", text: "Connect your Stellar-compatible wallet. No registration or custody required." }, { icon: Repeat2, title: "Trade or provide", text: "Swap assets or create a concentrated liquidity position in a few clicks." }, { icon: TrendingUp, title: "Earn", text: "Collect trading fees while your liquidity is active inside your chosen range." }];
-  return <section className={`${styles.section} ${styles.howSection}`}><SectionHeading eyebrow="How it works" title={<>From wallet to yield<br />in <span>three steps.</span></>} /><div className={styles.steps}>{steps.map(({ icon: Icon, title, text }, index) => <article key={title}><span className={styles.stepNumber}>0{index + 1}</span><span className={styles.stepIcon}><Icon size={24} /></span><h3>{title}</h3><p>{text}</p>{index < steps.length - 1 && <ArrowRight className={styles.stepArrow} size={22} />}</article>)}</div></section>;
+  const steps = [
+    { icon: WalletCards, title: "Connect Your Wallet", text: "Connect your Stellar wallet to securely interact with LuminaDex and access Swap, Liquidity, and Portfolio features." },
+    { icon: Repeat2, title: "Swap XLM & USDC", text: "Choose the token you want to swap, enter an amount, review the exchange rate, price impact and slippage, then confirm in your wallet.", note: "Always review the minimum amount received before confirming." },
+    { icon: Droplets, title: "Provide Liquidity", text: "Deposit XLM and USDC into a selected price range and earn fees when trades occur within your active liquidity range.", note: "Instead of spreading liquidity across every possible price, you choose the range where your capital should be active." },
+    { icon: TrendingUp, title: "Monitor Your Position", text: "View your liquidity positions, token balances and activity from the Portfolio dashboard.", cta: true },
+  ];
+  return <section className={`${styles.section} ${styles.howSection}`}><SectionHeading eyebrow="How LuminaDex Works" title={<>Swap or provide liquidity<br />in <span>clear steps.</span></>} text="Swap tokens or provide concentrated liquidity on Stellar in just a few steps." /><div className={styles.steps}>{steps.map(({ icon: Icon, title, text, note, cta }, index) => <article key={title}><span className={styles.stepNumber}>0{index + 1}</span><span className={styles.stepIcon}><Icon size={24} /></span><h3>{title}</h3><p>{text}</p>{note && <small className={styles.stepNote}>{note}</small>}{cta && <Link href="/swap" data-tour="swap" className={styles.stepCta}>Launch App <ArrowRight size={15} /></Link>}{index < steps.length - 1 && <ArrowRight className={styles.stepArrow} size={22} />}</article>)}</div></section>;
+}
+
+function BeginnerGuideSection() {
+  const concepts = [
+    ["What is Slippage?", "Slippage is the difference between the expected token price and the final execution price. Higher market movement may result in a slightly different final amount."],
+    ["What is Price Impact?", "Price impact shows how much your trade may affect the pool price. Larger trades generally create a larger price impact."],
+    ["What is Concentrated Liquidity?", "Concentrated liquidity allows liquidity providers to choose the price range where their assets are actively used for trading."],
+    ["What is Minimum Received?", "The minimum amount of tokens you are guaranteed to receive based on your selected slippage tolerance."],
+    ["What is a Liquidity Range?", "Your liquidity earns trading fees while the market price remains inside your selected range."],
+  ];
+  return <section className={`${styles.section} ${styles.beginnerSection}`}><SectionHeading eyebrow="New to DeFi?" title={<>Learn the terms<br /><span>before you trade.</span></>} text="LuminaDex explains the important concepts before you commit a transaction." /><div className={styles.conceptGrid}>{concepts.map(([title, text], index) => <article key={title} className={styles.conceptCard}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></article>)}</div></section>;
 }
 
 function LiquiditySection() {
@@ -148,5 +166,5 @@ function Footer() {
 }
 
 export function AuraLanding() {
-  return <main data-landing className={styles.page}><LandingNav /><section className={styles.hero}><AuroraBackground /><div className={styles.heroContent}><span className={styles.stellarBadge}><Orbit size={15} /> Built on Stellar Soroban <Sparkles size={13} /></span><h1><span className={styles.heroPlain}>Concentrated<span className={styles.mobileBreak}><br /></span> Liquidity.</span><br /><span className={styles.heroGradient}>Limitless<span className={styles.mobileBreak}><br /></span> Possibilities.</span></h1><p>LuminaDex is a next-generation CLMM DEX on Stellar Soroban, offering capital-efficient trades, low fees, and maximum flexibility.</p><div className={styles.heroActions}><Link href="/swap" className={styles.primaryButton}>Launch App <ArrowRight size={17} /></Link><a href="#clmm" className={styles.secondaryButton}>Explore Docs <BookOpen size={16} /></a></div></div><TradingPreview /></section><div className={styles.ecosystemMini}><span>Trusted by the Stellar community</span><div><span><Orbit size={23} /> Stellar</span><span>Soroban</span><span>Freighter</span><span>NEXUS</span><span>LOBSTR</span></div></div><StatsSection /><WhySection /><ClmmSection /><PoolsSection /><HowItWorks /><LiquiditySection /><SecuritySection /><EcosystemSection /><RoadmapSection /><FaqSection /><FinalCta /><Footer /></main>;
+  return <main data-landing className={styles.page}><LandingNav /><section className={styles.hero}><AuroraBackground /><div className={styles.heroContent}><span className={styles.stellarBadge}><Orbit size={15} /> Built on Stellar Soroban <Sparkles size={13} /></span><h1><span className={styles.heroPlain}>Concentrated<span className={styles.mobileBreak}><br /></span> Liquidity.</span><br /><span className={styles.heroGradient}>Limitless<span className={styles.mobileBreak}><br /></span> Possibilities.</span></h1><p>LuminaDex is a next-generation CLMM DEX on Stellar Soroban, offering capital-efficient trades, low fees, and maximum flexibility.</p><div className={styles.heroActions}><Link href="/swap" data-tour="swap" className={styles.primaryButton}>Launch App <ArrowRight size={17} /></Link><a href="#clmm" className={styles.secondaryButton}>Explore Docs <BookOpen size={16} /></a></div></div><TradingPreview /></section><div className={styles.ecosystemMini}><span>Trusted by the Stellar community</span><div><span><Orbit size={23} /> Stellar</span><span>Soroban</span><span>Freighter</span><span>NEXUS</span><span>LOBSTR</span></div></div><StatsSection /><WhySection /><ClmmSection /><PoolsSection /><HowItWorks /><BeginnerGuideSection /><LiquiditySection /><SecuritySection /><EcosystemSection /><RoadmapSection /><FaqSection /><FinalCta /><Footer /></main>;
 }

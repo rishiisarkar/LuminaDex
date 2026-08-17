@@ -6,6 +6,7 @@ import { WalletProvider } from "@/context/WalletContext";
 import { ToastProvider } from "@/components/Toast";
 import { TxTrackerProvider } from "@/context/TxTrackerContext";
 import { EventSyncProvider } from "@/context/EventSyncProvider";
+import { OnboardingProvider } from "@/components/onboarding/OnboardingProvider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   // Create the QueryClient once per session inside a useState initializer
@@ -26,7 +27,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <WalletProvider>
         <ToastProvider>
           <TxTrackerProvider>
-            <EventSyncProvider>{children}</EventSyncProvider>
+            <OnboardingProvider>
+              <EventSyncProvider>{children}</EventSyncProvider>
+            </OnboardingProvider>
           </TxTrackerProvider>
         </ToastProvider>
       </WalletProvider>

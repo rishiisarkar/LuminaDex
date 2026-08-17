@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import InfoTooltip from "@/components/education/InfoTooltip";
 const SLIPPAGE_PRESETS = [0.1, 0.5, 1.0] as const;
 
 interface Props {
@@ -52,7 +53,7 @@ export default function SlippageSettings({ slippage, onChange, trigger }: Props)
             zIndex: 100,
           }}
         >
-          <p
+          <div
             style={{
               color: "var(--text-secondary)",
               fontSize: "12px",
@@ -60,10 +61,17 @@ export default function SlippageSettings({ slippage, onChange, trigger }: Props)
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "0.05em",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
             }}
           >
             Slippage Tolerance
-          </p>
+            <InfoTooltip
+              content="The maximum price difference you are willing to accept before the transaction is cancelled."
+              side="bottom"
+            />
+          </div>
           <div style={{ display: "flex", gap: "6px", marginBottom: "10px" }}>
             {SLIPPAGE_PRESETS.map((p) => (
               <button

@@ -1,23 +1,37 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { simulateContractRead, addressToScVal, buildContractTx, submitTransaction } from "@/lib/stellar";
+import {
+  simulateContractRead,
+  addressToScVal,
+  buildContractTx,
+  submitTransaction,
+  isMissingContractFunctionError,
+} from "@/lib/stellar";
 import { PROFILE_CONTRACT_ADDRESS } from "@/lib/stellar/contracts";
 import { useWallet } from "@/hooks/useWallet";
 import { useTxTracker } from "@/context/TxTrackerContext";
 import { scValToNative, xdr } from "@stellar/stellar-sdk";
 
+interface UserProfileResult {
+  nickname: string;
+  isAvailable: boolean;
+}
+
 /** Read user profile from the deployed contract. */
-async function fetchUserProfile(address: string): Promise<string> {
+async function fetchUserProfile(address: string): Promise<UserProfileResult> {
   try {
     const result = await simulateContractRead(PROFILE_CONTRACT_ADDRESS, "get_profile", [
       addressToScVal(address),
-    ]);
-    if (!result) return "";
-    return String(scValToNative(result));
+    ], { suppressMissingContractFunctionError: true });
+    if (!result) return { nickname: "", isAvailable: true };
+    return { nickname: String(scValToNative(result)), isAvailable: true };
   } catch (err) {
+    if (isMissingContractFunctionError(err)) {
+      return { nickname: "", isAvailable: false };
+    }
     console.error("Failed to fetch on-chain profile:", err);
-    return "";
+    return { nickname: "", isAvailable: true };
   }
 }
 
@@ -26,7 +40,7 @@ export function useProfile(address: string | null) {
   const { sign } = useWallet();
   const { trackTx } = useTxTracker();
 
-  const query = useQuery<string>({
+  const query = useQuery<UserProfileResult>({
     queryKey: ["user-profile", address],
     queryFn: () => fetchUserProfile(address!),
     enabled: !!address,
@@ -76,7 +90,8 @@ export function useProfile(address: string | null) {
   });
 
   return {
-    nickname: query.data ?? "",
+    nickname: query.data?.nickname ?? "",
+    isAvailable: query.data?.isAvailable ?? true,
     isLoading: query.isLoading,
     isRefetching: query.isRefetching,
     error: query.error,

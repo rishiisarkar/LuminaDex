@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useTxTracker, TxStep } from "@/context/TxTrackerContext";
 import { 
@@ -23,28 +23,29 @@ const STEPS: StepConfig[] = [
   {
     id: "preparing",
     label: "Preparing Transaction",
-    description: "Simulating on-chain and estimating fees",
+    description: "Building your Stellar transaction.",
   },
   {
     id: "waiting_signature",
-    label: "Waiting for Signature",
-    description: "Please approve the request in your wallet extension",
+    label: "Waiting for Wallet",
+    description: "Confirm the transaction in your connected wallet.",
   },
   {
     id: "submitting",
-    label: "Submitting to Network",
-    description: "Sending transaction XDR to Stellar Testnet RPC",
+    label: "Submitting",
+    description: "Sending your transaction to the Stellar network.",
   },
   {
     id: "pending",
-    label: "Pending Consensus",
-    description: "Waiting for Stellar validators to close the ledger",
+    label: "Confirming",
+    description: "Waiting for on-chain confirmation.",
   },
 ];
 
 export default function TxStatusModal() {
   const { state, isModalOpen, closeModal, retryTx } = useTxTracker();
   const { step, txHash, ledger, error, title } = state;
+  const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
   if (!isModalOpen || step === "idle") return null;
 
@@ -112,7 +113,6 @@ export default function TxStatusModal() {
             {STEPS.map((s, idx) => {
               const isStepDone = idx < activeIndex || isCompleted;
               const isStepActive = idx === activeIndex && isPending;
-              const isStepPending = idx > activeIndex && !isCompleted;
 
               let icon = (
                 <div className="w-5 h-5 rounded-full border border-white/10 flex items-center justify-center text-[10px] text-white/30 font-semibold font-mono">
@@ -186,7 +186,7 @@ export default function TxStatusModal() {
             >
               <div className="flex gap-2 items-center text-emerald-400 font-semibold text-sm">
                 <Check className="w-4 h-4" />
-                Transaction Confirmed!
+                Transaction Confirmed
               </div>
 
               {ledger && (
@@ -224,10 +224,11 @@ export default function TxStatusModal() {
             >
               <div className="flex gap-2 items-center text-rose-400 font-semibold text-sm">
                 <AlertTriangle className="w-4 h-4" />
-                {error.title}
+                Transaction Failed
               </div>
 
               <div className="text-xs text-white/70 leading-relaxed">
+                <span className="font-semibold text-white/85">{error.title}: </span>
                 {error.message}
               </div>
 
@@ -235,6 +236,21 @@ export default function TxStatusModal() {
                 <span className="font-bold text-rose-400/90 block mb-0.5 uppercase tracking-wide text-[9px]">Recovery steps</span>
                 {error.recovery}
               </div>
+
+              <button
+                type="button"
+                onClick={() => setShowTechnicalDetails((value) => !value)}
+                className="flex items-center gap-2 text-xs font-semibold text-white/50 hover:text-white transition-colors"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                {showTechnicalDetails ? "Hide technical details" : "View technical details"}
+              </button>
+
+              {showTechnicalDetails && (
+                <pre className="max-h-36 overflow-auto whitespace-pre-wrap rounded-xl border border-white/10 bg-black/25 p-3 text-[11px] leading-relaxed text-white/45">
+                  {formatTechnicalDetails(error.originalError)}
+                </pre>
+              )}
 
               <button
                 onClick={retryTx}
@@ -249,4 +265,20 @@ export default function TxStatusModal() {
       </div>
     </AnimatePresence>
   );
+}
+
+function formatTechnicalDetails(originalError: unknown): string {
+  if (!originalError) return "No technical details were returned.";
+  if (originalError instanceof Error) {
+    return originalError.stack || originalError.message;
+  }
+  try {
+    return JSON.stringify(
+      originalError,
+      (_key, value) => (typeof value === "bigint" ? value.toString() : value),
+      2
+    );
+  } catch {
+    return String(originalError);
+  }
 }

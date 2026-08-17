@@ -60,8 +60,8 @@ export default function PortfolioPage() {
             <h2 className="text-white text-lg sm:text-xl font-bold mb-2">
               Connect to view your portfolio
             </h2>
-            <p className="text-white/40 text-sm mb-6 max-w-md mx-auto">
-              Your active positions, fees earned, and recent Stellar transaction history will be shown here.
+              <p className="text-white/40 text-sm mb-6 max-w-md mx-auto">
+              Connect your wallet and create your first liquidity position to begin tracking assets and earnings.
             </p>
             <button
               className="btn-primary px-8 py-3.5 text-sm font-bold rounded-xl"
@@ -109,18 +109,23 @@ export default function PortfolioPage() {
                 </div>
               ) : (
                 <div className="text-center py-14 px-6 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-xl">
-                  <div className="text-4xl mb-3">📭</div>
+                  <div className="text-4xl mb-3">◇</div>
                   <p className="text-white font-bold text-base mb-1">
-                    No positions found
+                    Your portfolio is empty
                   </p>
                   <p className="text-white/40 text-sm mb-5">
-                    Provide liquidity to the XLM/USDC pool to earn trading fees
+                    Create your first XLM/USDC liquidity position to begin tracking assets and fees here.
                   </p>
-                  <Link href="/liquidity/new">
-                    <button className="btn-primary px-6 py-3 font-bold text-sm rounded-xl">
-                      Add Liquidity
-                    </button>
-                  </Link>
+                  <div className="flex flex-col items-center gap-3">
+                    <Link href="/liquidity/new">
+                      <button className="btn-primary px-6 py-3 font-bold text-sm rounded-xl">
+                        Add Liquidity
+                      </button>
+                    </Link>
+                    <Link href="/#clmm" className="text-cyan-200/80 hover:text-cyan-100 text-sm font-semibold">
+                      How liquidity works →
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>

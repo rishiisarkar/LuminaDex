@@ -34,6 +34,7 @@ import { XLM_ADDRESS, USDC_ADDRESS, USDC_ISSUER, USDC_ASSET_CODE, STROOP } from 
 import { TICK_SPACING } from "@/lib/math";
 import { readTickSpacing, readToken0, readToken1 } from "@/lib/contract";
 import { fetchBalances } from "@/hooks/useBalances";
+import InfoTooltip from "@/components/education/InfoTooltip";
 
 const PRESETS = [
   { label: "±1%", pct: 0.01 },
@@ -388,7 +389,10 @@ export default function AddLiquidityPage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-lg sm:text-xl font-extrabold text-white">XLM / USDC</span>
-                <span className="text-xs font-bold rounded-full px-2.5 py-0.5 bg-white/15 text-white">0.3%</span>
+                <span className="text-xs font-bold rounded-full px-2.5 py-0.5 bg-white/15 text-white inline-flex items-center gap-1.5">
+                  0.3%
+                  <InfoTooltip content="The percentage of each trade paid to liquidity providers in this pool." />
+                </span>
               </div>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="live-dot" />
@@ -405,7 +409,12 @@ export default function AddLiquidityPage() {
           <div className="flex gap-6 sm:gap-8 flex-wrap">
             <Stat label="Liquidity (TVL)" value={tvlUsd !== null ? formatUsd(tvlUsd) : "—"} />
             <Stat label="Pool Reserves" value={reserves ? `${compact(reserves.xlmReserve)} XLM` : "—"} sub={reserves ? `${compact(reserves.usdcReserve)} USDC` : undefined} />
-            <Stat label="Current Price" value={currentUsdcPerXlm > 0 ? `$${fmtP(currentUsdcPerXlm)}` : "—"} sub="USDC per XLM" />
+            <Stat
+              label="Current Price"
+              tooltip="The current XLM/USDC market price represented by this liquidity pool."
+              value={currentUsdcPerXlm > 0 ? `$${fmtP(currentUsdcPerXlm)}` : "—"}
+              sub="USDC per XLM"
+            />
           </div>
         </div>
 
@@ -413,7 +422,10 @@ export default function AddLiquidityPage() {
           {/* Left: Set Price Range */}
           <div className="lg:col-span-7 p-5 sm:p-6 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-xl">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-base sm:text-lg font-bold text-white">Set Price Range</h2>
+              <h2 className="text-base sm:text-lg font-bold text-white inline-flex items-center gap-2">
+                Set Price Range
+                <InfoTooltip content="Your deposited assets earn trading fees while the market price remains inside this range." />
+              </h2>
               <span className="text-xs text-white/50">USDC per XLM</span>
             </div>
 
@@ -437,8 +449,20 @@ export default function AddLiquidityPage() {
 
             {/* Min / Max inputs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
-              <PriceField label="Min Price" sub="USDC per XLM" value={minUsdcPerXlm} onCommit={setMinPrice} />
-              <PriceField label="Max Price" sub="USDC per XLM" value={maxUsdcPerXlm} onCommit={setMaxPrice} />
+              <PriceField
+                label="Min Price"
+                tooltip="Your liquidity becomes active when the market price is above this value."
+                sub="USDC per XLM"
+                value={minUsdcPerXlm}
+                onCommit={setMinPrice}
+              />
+              <PriceField
+                label="Max Price"
+                tooltip="Your liquidity remains active until the market price moves above this value."
+                sub="USDC per XLM"
+                value={maxUsdcPerXlm}
+                onCommit={setMaxPrice}
+              />
             </div>
 
             {/* Presets */}
@@ -555,6 +579,21 @@ export default function AddLiquidityPage() {
               </div>
             )}
 
+            <div className="bg-white/[0.02] border border-white/10 rounded-xl p-4 flex flex-col gap-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-bold text-white">Review position</span>
+                <span className={`text-xs font-semibold ${price0Only || price1Only ? "text-yellow-300" : "text-green-300"}`}>
+                  {price0Only || price1Only ? "Out of range" : "In range"}
+                </span>
+              </div>
+              <ReviewRow label="XLM Amount" value={`${amountXlm || "0"} XLM`} />
+              <ReviewRow label="USDC Amount" value={`${amountUsdc || "0"} USDC`} />
+              <ReviewRow label="Minimum Price" value={`${fmtP(minUsdcPerXlm)} USDC per XLM`} />
+              <ReviewRow label="Maximum Price" value={`${fmtP(maxUsdcPerXlm)} USDC per XLM`} />
+              <ReviewRow label="Current Pool Price" value={currentUsdcPerXlm > 0 ? `${fmtP(currentUsdcPerXlm)} USDC per XLM` : "—"} />
+              <ReviewRow label="Fee Tier" value="0.3%" />
+            </div>
+
             <button className="btn-primary w-full py-4 text-base font-bold rounded-xl transition-all shadow-lg" onClick={handleAdd} disabled={!canAdd}>
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -569,20 +608,26 @@ export default function AddLiquidityPage() {
   );
 }
 
-function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function Stat({ label, tooltip, value, sub }: { label: string; tooltip?: string; value: string; sub?: string }) {
   return (
     <div>
-      <div className="text-[11px] text-white/40 mb-0.5">{label}</div>
+      <div className="text-[11px] text-white/40 mb-0.5 inline-flex items-center gap-1.5">
+        {label}
+        {tooltip && <InfoTooltip content={tooltip} />}
+      </div>
       <div className="text-base font-bold text-white">{value}</div>
       {sub && <div className="text-[11px] text-white/40">{sub}</div>}
     </div>
   );
 }
 
-function PriceField({ label, sub, value, onCommit }: { label: string; sub: string; value: number; onCommit: (v: number) => void }) {
+function PriceField({ label, tooltip, sub, value, onCommit }: { label: string; tooltip: string; sub: string; value: number; onCommit: (v: number) => void }) {
   return (
     <div className="bg-white/[0.02] border border-white/10 rounded-xl p-3">
-      <div className="text-[11px] text-white/40 mb-1">{label}</div>
+      <div className="text-[11px] text-white/40 mb-1 inline-flex items-center gap-1.5">
+        {label}
+        <InfoTooltip content={tooltip} />
+      </div>
       <input
         type="number" step="any"
         key={value.toFixed(8)}
@@ -620,6 +665,15 @@ function TokenBox({ symbol, icon, value, usd, balance, disabled, onChange, onMax
         className="w-full bg-transparent border-none outline-none text-white text-2xl font-semibold text-right font-jetbrains"
       />
       {usd > 0 && <div className="text-[11px] text-white/40 text-right mt-1">≈ {formatUsd(usd)}</div>}
+    </div>
+  );
+}
+
+function ReviewRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-3 text-xs">
+      <span className="text-white/45">{label}</span>
+      <span className="text-right font-semibold text-white/75">{value}</span>
     </div>
   );
 }

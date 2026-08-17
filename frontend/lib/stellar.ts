@@ -122,7 +122,8 @@ const DUMMY_ACCOUNT = new Account(
 export async function simulateContractRead(
   contractId: string,
   method: string,
-  args: xdr.ScVal[]
+  args: xdr.ScVal[],
+  options: { suppressMissingContractFunctionError?: boolean } = {}
 ): Promise<xdr.ScVal | null> {
   const server = getRpc();
   const contract = new Contract(contractId);
@@ -139,13 +140,18 @@ export async function simulateContractRead(
 
   if (SorobanRpc.Api.isSimulationError(sim)) {
     const diagnostics = (sim as { diagnosticEvents?: unknown }).diagnosticEvents;
-    console.error("Soroban read simulation failed", {
-      contractId,
-      method,
-      error: sim.error,
-      diagnostics,
-      simulation: sim,
-    });
+    if (
+      !options.suppressMissingContractFunctionError ||
+      !isMissingContractFunctionSimulation(sim.error, diagnostics)
+    ) {
+      console.error("Soroban read simulation failed", {
+        contractId,
+        method,
+        error: sim.error,
+        diagnostics,
+        simulation: sim,
+      });
+    }
     const error = new Error(`Simulation error: ${sim.error}`);
     (error as Error & { simulation?: unknown }).simulation = sim;
     throw error;
@@ -153,6 +159,36 @@ export async function simulateContractRead(
 
   const successSim = sim as SorobanRpc.Api.SimulateTransactionSuccessResponse;
   return successSim.result?.retval ?? null;
+}
+
+export function isMissingContractFunctionError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  const simulation = (err as { simulation?: { error?: string; diagnosticEvents?: unknown } })?.simulation;
+  return isMissingContractFunctionSimulation(
+    simulation?.error ?? message,
+    simulation?.diagnosticEvents
+  );
+}
+
+function isMissingContractFunctionSimulation(
+  error: unknown,
+  diagnostics: unknown
+): boolean {
+  const text = `${String(error)} ${stringifyUnknown(diagnostics)}`.toLowerCase();
+  return (
+    text.includes("missingvalue") ||
+    text.includes("missing value") ||
+    text.includes("non-existent contract function") ||
+    text.includes("trying to invoke non-existent contract function")
+  );
+}
+
+function stringifyUnknown(value: unknown): string {
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
 }
 
 export async function submitTransaction(

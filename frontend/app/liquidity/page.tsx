@@ -7,6 +7,7 @@ import { usePool } from "@/hooks/usePool";
 import PositionCard from "@/components/liquidity/PositionCard";
 import { useQueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
+import InfoTooltip from "@/components/education/InfoTooltip";
 
 export default function LiquidityPage() {
   const { address, connect } = useWallet();
@@ -54,7 +55,15 @@ export default function LiquidityPage() {
                 key={label}
                 className="p-4 rounded-2xl bg-white/[0.02] border border-white/10 text-center backdrop-blur-xl"
               >
-                <p className="text-white/40 text-xs mb-1">{label}</p>
+                <p className="text-white/40 text-xs mb-1 inline-flex items-center justify-center gap-1.5">
+                  {label}
+                  {label === "Current Price" && (
+                    <InfoTooltip content="The current XLM/USDC market price represented by this liquidity pool." />
+                  )}
+                  {label === "Active Liquidity" && (
+                    <InfoTooltip content="Your deposited assets earn trading fees while the market price remains inside the active range." />
+                  )}
+                </p>
                 <p className="text-white font-bold text-lg">{value}</p>
                 <p className="text-white/30 text-[11px] mt-0.5">{sub}</p>
               </div>
@@ -66,7 +75,7 @@ export default function LiquidityPage() {
         {!address ? (
           <EmptyState
             title="Connect your wallet"
-            desc="Connect Freighter wallet to view and manage your liquidity positions"
+            desc="Connect your Stellar wallet to view positions, add liquidity, and track any fees you earn."
             action={<button className="btn-primary px-6 py-3 font-bold text-sm rounded-xl" onClick={connect}>Connect Wallet</button>}
           />
         ) : isLoading ? (
@@ -86,14 +95,19 @@ export default function LiquidityPage() {
           </div>
         ) : (
           <EmptyState
-            title="No positions yet"
-            desc="Add liquidity to the XLM/USDC pool to start earning fees"
+            title="No liquidity positions yet"
+            desc="Provide liquidity to an XLM/USDC pool to start earning trading fees while the market stays inside your selected range."
             action={
-              <Link href="/liquidity/new">
-                <button className="btn-primary px-6 py-3 font-bold text-sm rounded-xl">
-                  Add Liquidity
-                </button>
-              </Link>
+              <div className="flex flex-col items-center gap-3">
+                <Link href="/liquidity/new">
+                  <button className="btn-primary px-6 py-3 font-bold text-sm rounded-xl">
+                    Add Liquidity
+                  </button>
+                </Link>
+                <Link href="/#clmm" className="text-cyan-200/80 hover:text-cyan-100 text-sm font-semibold">
+                  How liquidity works →
+                </Link>
+              </div>
             }
           />
         )}
@@ -113,7 +127,7 @@ function EmptyState({
 }) {
   return (
     <div className="text-center py-16 px-6 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-xl">
-      <div className="text-4xl mb-3">💧</div>
+      <div className="text-4xl mb-3">◇</div>
       <h2 className="text-white font-bold text-lg mb-2">{title}</h2>
       <p className="text-white/40 text-sm max-w-sm mx-auto mb-6">{desc}</p>
       {action}

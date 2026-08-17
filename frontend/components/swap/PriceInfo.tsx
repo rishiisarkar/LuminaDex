@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import InfoTooltip from "@/components/education/InfoTooltip";
 
 interface Props {
   rate: string;
@@ -8,6 +9,9 @@ interface Props {
   minimumReceived: string;
   fee: string;
   slippage: number;
+  tokenPair?: string;
+  amountIn?: string;
+  network?: string;
   isThinPool?: boolean;
   lastFetchedAt?: number;      // from usePool, for staleness dot
   onHighImpactAcknowledged?: (v: boolean) => void;
@@ -19,6 +23,9 @@ export default function PriceInfo({
   minimumReceived,
   fee,
   slippage,
+  tokenPair,
+  amountIn,
+  network = "Stellar Testnet",
   isThinPool = false,
   lastFetchedAt,
   onHighImpactAcknowledged,
@@ -56,9 +63,23 @@ export default function PriceInfo({
         gap: "10px",
       }}
     >
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px", paddingBottom: "4px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ color: "var(--text-primary)", fontSize: "13px", fontWeight: 700 }}>
+            Review before swapping
+          </span>
+          <span style={{ color: "var(--text-secondary)", fontSize: "11px" }}>{network}</span>
+        </div>
+        {tokenPair && <Row label="Token Pair" value={tokenPair} valueColor="var(--text-primary)" />}
+        {amountIn && <Row label="You Pay" value={amountIn} valueColor="var(--text-primary)" />}
+      </div>
+
       {/* Rate + staleness dot */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ color: "var(--text-secondary)", fontSize: "13px" }}>Rate</span>
+        <LabelWithTooltip
+          label="Exchange Rate"
+          content="The estimated conversion rate between the selected tokens based on the current liquidity pool."
+        />
         <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span style={{ color: "var(--text-primary)", fontSize: "13px", fontWeight: 600 }}>{rate}</span>
           {lastFetchedAt !== undefined && (
@@ -85,7 +106,12 @@ export default function PriceInfo({
       )}
 
       {/* Price impact */}
-      <Row label="Price Impact" value={`${impactPct}%`} valueColor={impactColor} />
+      <Row
+        label="Price Impact"
+        tooltip="The estimated effect your trade will have on the current pool price."
+        value={`${impactPct}%`}
+        valueColor={impactColor}
+      />
 
       {/* Gap 2: thin-pool context */}
       {isThinPool && (
@@ -134,18 +160,57 @@ export default function PriceInfo({
         </div>
       )}
 
-      <Row label="Minimum Received" value={minimumReceived} valueColor="var(--text-primary)" />
-      <Row label="Slippage Tolerance" value={`${slippage}%`} valueColor="var(--text-secondary)" />
-      <Row label="Fee (0.3%)" value={fee} valueColor="var(--text-secondary)" />
+      <Row
+        label="Minimum Received"
+        tooltip="The minimum number of tokens you will receive after accounting for your slippage setting."
+        value={minimumReceived}
+        valueColor="var(--text-primary)"
+      />
+      <Row
+        label="Slippage Tolerance"
+        tooltip="The maximum price difference you are willing to accept before the transaction is cancelled."
+        value={`${slippage}%`}
+        valueColor="var(--text-secondary)"
+      />
+      <Row label="Pool Fee (0.3%)" value={fee} valueColor="var(--text-secondary)" />
+      <Row
+        label="Network Fee"
+        tooltip="The Stellar network fee required to process this transaction."
+        value="Shown in wallet"
+        valueColor="var(--text-secondary)"
+      />
     </div>
   );
 }
 
-function Row({ label, value, valueColor }: { label: string; value: string; valueColor: string }) {
+function Row({
+  label,
+  tooltip,
+  value,
+  valueColor,
+}: {
+  label: string;
+  tooltip?: string;
+  value: string;
+  valueColor: string;
+}) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-      <span style={{ color: "var(--text-secondary)", fontSize: "13px" }}>{label}</span>
+      {tooltip ? (
+        <LabelWithTooltip label={label} content={tooltip} />
+      ) : (
+        <span style={{ color: "var(--text-secondary)", fontSize: "13px" }}>{label}</span>
+      )}
       <span style={{ color: valueColor, fontSize: "13px", fontWeight: 600 }}>{value}</span>
     </div>
+  );
+}
+
+function LabelWithTooltip({ label, content }: { label: string; content: string }) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "13px" }}>
+      {label}
+      <InfoTooltip content={content} />
+    </span>
   );
 }

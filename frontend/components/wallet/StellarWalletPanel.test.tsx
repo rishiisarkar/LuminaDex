@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import StellarWalletPanel from "./StellarWalletPanel";
 import type { UseStellarWallet } from "@/hooks/use-stellar-wallet";
@@ -34,6 +34,10 @@ function buildState(overrides: Partial<UseStellarWallet>): UseStellarWallet {
 
 beforeEach(() => {
   mockedHook.mockReset();
+});
+
+afterEach(() => {
+  cleanup();
 });
 
 describe("StellarWalletPanel", () => {
