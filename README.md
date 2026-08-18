@@ -92,7 +92,7 @@ The `contracts/` directory was reorganized as a **Cargo workspace** with all con
 ## 👥 Level 5 User Onboarding
 
 🔗 **Google Form:** [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSeepO3hoKKHkP9ysz-5hoHqNLHKnWmTWujFGEL5B7sjOqAAyQ/viewform?usp=header)
-📊 **Response Sheet:** [Response Sheet](https://docs.google.com/spreadsheets/d/1f1TMBLmPO_KDPSEhh22tdrCmSYe7jygxQjI-regL9fA/edit?usp=sharing)
+📊 **Response Sheet:** [Response Sheet](https://docs.google.com/spreadsheets/d/131JXBW54fSMdmeeXcjTRUYZhYKoJSFi1WKzNA8zrSOo/edit?gid=1333456282#gid=1333456282)
 ---
 > These are selected user feedback points that highlighted the most necessary improvements for LuminaDex. We used them to prioritize and implement meaningful updates across the platform based on real user needs.
 ## 💬 Feedback & Improvements
